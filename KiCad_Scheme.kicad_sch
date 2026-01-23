@@ -1,7 +1,7 @@
 (kicad_sch
-	(version 20231120)
+	(version 20250114)
 	(generator "eeschema")
-	(generator_version "8.0")
+	(generator_version "9.0")
 	(uuid "e99fb634-873d-43be-86a6-ee1889cd3062")
 	(paper "A4")
 	(lib_symbols
@@ -52,6 +52,7 @@
 					(hide yes)
 				)
 			)
+			(embedded_fonts no)
 		)
 	)
 	(symbol
@@ -118,47 +119,10 @@
 			)
 		)
 	)
-	(sheet
-		(at 86.36 64.77)
-		(size 41.91 31.75)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "c96408a8-577b-4de6-84a4-f63d0f8c8aa7")
-		(property "Sheetname" "abba"
-			(at 86.36 64.0584 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "untitled.kicad_sch"
-			(at 86.36 97.1046 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(instances
-			(project ""
-				(path "/e99fb634-873d-43be-86a6-ee1889cd3062"
-					(page "2")
-				)
-			)
-		)
-	)
 	(sheet_instances
 		(path "/"
 			(page "1")
 		)
 	)
+	(embedded_fonts no)
 )
