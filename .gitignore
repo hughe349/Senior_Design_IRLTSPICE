@@ -1,3 +1,8 @@
 
-**.kicad_prl
-*-backups/**
+# Global
+**.DS_Store
+
+# ========
+# Hardware
+# ========
+hardware/**/**-backups/**
