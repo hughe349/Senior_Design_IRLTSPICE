@@ -6,3 +6,9 @@
 # Hardware
 # ========
 hardware/**/**-backups/**
+
+
+# ========
+# Software
+# ========
+software/**/build/**
