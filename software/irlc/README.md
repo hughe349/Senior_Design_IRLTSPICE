@@ -1,4 +1,4 @@
-# IRLTSPICE Compiler - IRLC
+#IRLTSPICE Compiler - IRLC
 
 ## Setup
 1. To build/setup env run:

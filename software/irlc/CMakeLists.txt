@@ -20,30 +20,49 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # ============
 
 # Boost
-set(BOOST_INCLUDE_LIBRARIES graph)
+set(BOOST_INCLUDE_LIBRARIES graph program_options) 
 FetchContent_Declare(
-  Boost
-  GIT_REPOSITORY https://github.com/boostorg/boost.git
-  GIT_TAG boost-1.90.0
-  GIT_SHALLOW 1
+    Boost 
+    GIT_REPOSITORY https://github.com/boostorg/boost.git
+    GIT_TAG boost-1.90.0
+    GIT_SHALLOW 1
 )
 FetchContent_MakeAvailable(Boost)
-
-# =======
-# Testing
-# =======
-
-enable_testing()
-add_subdirectory(tests)
 
 # =======
 # Targets
 # =======
 
-add_executable(irlc)
-target_sources(irlc
-  PRIVATE
-    ./src/main.cpp
+# Lib (separated for testing and such)
+add_library(libirlc) 
+target_sources(libirlc 
+    PRIVATE 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/route.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/parse_spice.cpp
+)
+target_include_directories(libirlc 
+    PUBLIC 
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/
+)
+target_link_libraries(libirlc 
+    PRIVATE 
+        Boost::graph
 )
 
+# Actual compiler
+add_executable(irlc)
+target_sources(irlc 
+    PRIVATE 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
+)
+target_link_libraries(irlc 
+    PRIVATE 
+        libirlc 
+        Boost::program_options
+)
 
+# =======
+# Testing
+# =======
+enable_testing()
+add_subdirectory(tests)

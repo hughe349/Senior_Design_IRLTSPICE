@@ -9,11 +9,13 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 
 add_executable(irlc-tests
-    ./test_boost.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/test_routing.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/test_boost.cpp
 )
 
 target_link_libraries(irlc-tests
     PRIVATE
+        libirlc
         Boost::graph
         Catch2::Catch2WithMain
 )
