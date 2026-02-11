@@ -39,6 +39,7 @@ target_sources(libirlc
     PRIVATE 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/route.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/parse_spice.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/parse_eechema.cpp
 )
 target_include_directories(libirlc 
     PUBLIC 

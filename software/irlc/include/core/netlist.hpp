@@ -5,17 +5,41 @@
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_selectors.hpp>
+#include <sys/types.h>
+#include <utility>
+#include <vector>
+
+// Netlists are represented as a bipartite graph, where the left side
+//   consists of vertecies representing nets and the right side consists
+//   of vertecies representing components.
+//   Each edge has a type corresponding to which pin of the component
+//     it is.
+//   Each vertex contains metadata about the component/net, i.e.
+//     if it is GND/5V or an OpAmp or what resistance it should be
 
 struct RawNetlistVertexInfo {
     enum RawNetlistVertexKind {
-        WIRE,
-        INTERNAL_OPAMP,
-        INTERNAL_DIODE,
+        NET,
+        R,
+        C,
+        OPAMP,
+        DIODE,
+        Q_PNP,
+        Q_NPN,
     } kind;
+    union RawNetlistVertexValue {
+        uint r_value;
+        uint c_value;
+        enum RawNetlistNetValue {
+            WIRE,
+            V_LOW,
+            V_HIGH,
+        } net_value;
+    } value;
 };
 
 struct RawNetlistEdgeInfo {
-    enum RawNetlistVertexKind {
+    enum RawNetlistEdgeKind {
         R,
         C,
         OPAMP_PLUS,
@@ -30,10 +54,6 @@ struct RawNetlistEdgeInfo {
         D_K,
         D_A,
     } kind;
-    union {
-        int r_value;
-        int c_value;
-    } value;
 };
 
 // See:
@@ -42,13 +62,19 @@ struct RawNetlistEdgeInfo {
 // could insert parallel edges if we aren't careful
 //
 // A RawNetlist contains info about all of the components, with no notion of
-// standard cells. Connected wires are represented as vertecies, and components
-// are edges. For asymmetric components or components with multiple pins, each
-// pin is represented as an edge,
-//     and a new "internal wiring" node is created.
+// standard cells.
 // BGL Properties:
 //      Vertex - RawNetlistVertexInfo
 //      Edge - RawNetlistEdgeInfo
 typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, RawNetlistVertexInfo,
                               RawNetlistEdgeInfo>
     RawNetlist;
+
+// An AssignedNetList has assigned each component (not each net) to std cells
+// The raw_list should not be modified, as this struct may hold references to it.
+typedef struct _AssignedNetList {
+    const RawNetlist raw_list;
+    uint std_cell_count;
+    // A list of pairs mapping (std_cell_id, component_vertex)
+    std::vector<std::pair<uint, RawNetlist::vertex_descriptor>> std_cell_assignments;
+} AssignedNetlist;

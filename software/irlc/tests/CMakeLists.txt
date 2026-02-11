@@ -11,6 +11,7 @@ FetchContent_MakeAvailable(Catch2)
 add_executable(irlc-tests
     ${CMAKE_CURRENT_LIST_DIR}/test_routing.cpp
     ${CMAKE_CURRENT_LIST_DIR}/test_boost.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/test_parsers.cpp
 )
 
 target_link_libraries(irlc-tests
