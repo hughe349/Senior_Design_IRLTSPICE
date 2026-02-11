@@ -9,7 +9,8 @@
 # Hardware
 # ========
 hardware/**/**-backups/**
-
+hardware/**/*.lck
+hardware/**/*auto_saved*
 
 # ========
 # Software
