@@ -5,6 +5,7 @@
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_selectors.hpp>
+#include <memory>
 #include <sys/types.h>
 #include <utility>
 #include <vector>
@@ -73,7 +74,7 @@ typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, RawN
 // An AssignedNetList has assigned each component (not each net) to std cells
 // The raw_list should not be modified, as this struct may hold references to it.
 typedef struct _AssignedNetList {
-    const RawNetlist raw_list;
+    std::unique_ptr<const RawNetlist> raw_list;
     uint std_cell_count;
     // A list of pairs mapping (std_cell_id, component_vertex)
     std::vector<std::pair<uint, RawNetlist::vertex_descriptor>> std_cell_assignments;

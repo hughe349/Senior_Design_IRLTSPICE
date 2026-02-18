@@ -1,15 +1,10 @@
-#include "core/netlist.hpp"
 #include "core/parse.hpp"
+#include <variant>
 
-INetlistParser *EeschemaParser::make_if_likely_compatible(const std::string &filename,
-                                                          std::istream &in) {
-    if (filename.ends_with(".xml")) {
-        return new EeschemaParser();
-    } else {
-        return NULL;
-    }
+using namespace std;
+
+bool EeschemaParser::matches_filename(const string &filename) {
+    return filename.ends_with(".xml");
 };
 
-RawNetlist *EeschemaParser::parse_raw(std::istream &in) { return NULL; }
-
-AssignedNetlist *EeschemaParser::parse_assigned(std::istream &in) { return NULL; }
+ParseResult EeschemaParser::try_parse(string_view in) { return monostate(); }

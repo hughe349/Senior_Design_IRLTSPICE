@@ -1,0 +1,20 @@
+*
+
+.subckt 
+
+
+.include "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Simulation_SPICE.sp"
+C10 Net-_U10--_ 0 C
+R10 INPUT Net-_U10--_ R_US
+R11 +5V Net-_U10-+_ R_US
+R12 Net-_R12-Pad1_ Net-_U10-+_ R_US
+XU10 Net-_U10-+_ Net-_U10--_ unconnected-_U10-V+-Pad3_ unconnected-_U10-V--Pad4_ Net-_R12-Pad1_ kicad_builtin_opamp
+C20 unconnected-_C20-Pad1_ unconnected-_C20-Pad2_ C
+R20 Net-_R12-Pad1_ Net-_U20--_ R_US
+XU20 Net-_U20-+_ Net-_U20--_ unconnected-_U20-V+-Pad3_ unconnected-_U20-V--Pad4_ OUTPUT kicad_builtin_opamp
+R21 unconnected-_R21-Pad1_ unconnected-_R21-Pad2_ R_US
+R22 OUTPUT ; hello
++ Net-_U20-+_ R_US $ hi
+
+.ends
+    
