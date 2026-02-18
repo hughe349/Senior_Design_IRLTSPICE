@@ -4,7 +4,11 @@
 #include <array>
 #include <iostream>
 #include <memory>
+#include <sstream>
+#include <stdexcept>
+#include <string>
 #include <string_view>
+#include <sys/types.h>
 #include <variant>
 
 typedef std::variant<std::monostate, std::unique_ptr<RawNetlist>, std::unique_ptr<AssignedNetlist>>
@@ -16,12 +20,25 @@ class INetlistParser {
     INetlistParser() {}
 
   public:
-    virtual ParseResult try_parse(std::string_view in) { return std::monostate(); };
+    virtual ParseResult try_parse(const std::string &filename, std::string_view in) {
+        return std::monostate();
+    };
+};
+
+class ParseException : public std::runtime_error {
+  private:
+    ParseException(std::string what) : std::runtime_error(what) {}
+
+  public:
+    typedef enum parseExceptionKind { LEX_ERROR, PARSE_ERROR } ParseExceptionKind;
+
+    static ParseException create(ParseExceptionKind kind, std::string description,
+                                 std::string_view filename, uint32_t line);
 };
 
 // Simple spice netlist format parser
 class SpiceParser : public INetlistParser {
-    std::unique_ptr<RawNetlist> try_parse_raw(std::string_view in);
+    std::unique_ptr<RawNetlist> try_parse_raw(const std::string &filename, std::string_view in);
     // Either returns nullptr (and raw is still pointing to something)
     // Or returns a valid ptr (and raw has been std::move-ed into the AssignedNetlist)
     std::unique_ptr<AssignedNetlist> try_assign(std::unique_ptr<RawNetlist> &raw);
@@ -31,7 +48,7 @@ class SpiceParser : public INetlistParser {
 
     static bool matches_filename(const std::string &filename);
 
-    virtual ParseResult try_parse(std::string_view in) override;
+    virtual ParseResult try_parse(const std::string &filename, std::string_view in) override;
 };
 
 // KiCad eeschema xml parser
@@ -41,7 +58,7 @@ class EeschemaParser : public INetlistParser {
 
     static bool matches_filename(const std::string &filename);
 
-    virtual ParseResult try_parse(std::string_view in) override;
+    virtual ParseResult try_parse(const std::string &filename, std::string_view in) override;
 };
 
 // Factory for making parsers

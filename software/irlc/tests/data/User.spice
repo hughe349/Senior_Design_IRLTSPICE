@@ -14,6 +14,8 @@ R20 Net-_R12-Pad1_ Net-_U20--_ R_US
 XU20 Net-_U20-+_ Net-_U20--_ unconnected-_U20-V+-Pad3_ unconnected-_U20-V--Pad4_ OUTPUT kicad_builtin_opamp
 R21 unconnected-_R21-Pad1_ unconnected-_R21-Pad2_ R_US
 R22 OUTPUT ; hello
+* waddup
+* hello
 + Net-_U20-+_ R_US $ hi
 
 .ends

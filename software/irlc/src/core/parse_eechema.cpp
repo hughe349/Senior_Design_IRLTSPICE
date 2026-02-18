@@ -7,4 +7,6 @@ bool EeschemaParser::matches_filename(const string &filename) {
     return filename.ends_with(".xml");
 };
 
-ParseResult EeschemaParser::try_parse(string_view in) { return monostate(); }
+ParseResult EeschemaParser::try_parse(const std::string &filename, string_view in) {
+    return monostate();
+}

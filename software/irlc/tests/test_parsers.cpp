@@ -43,7 +43,7 @@ TEST_CASE("Parsing Tokenizes", "[parse]") {
 
     auto spiceparsers = AllParsersFactory::make_parsers_prioritized(filename1);
 
-    spiceparsers[0]->try_parse(content);
+    spiceparsers[0]->try_parse(filename1, content);
 
     REQUIRE(false);
 }
