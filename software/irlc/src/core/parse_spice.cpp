@@ -1,10 +1,15 @@
 #include "core/netlist.hpp"
 #include "core/parse.hpp"
 #include <cassert>
+#include <cctype>
+#include <charconv>
 #include <cstdint>
 #include <iostream>
 #include <memory>
+#include <ranges>
+#include <string>
 #include <string_view>
+#include <unordered_map>
 #include <variant>
 
 using namespace std;
@@ -187,6 +192,142 @@ template <class... Ts> struct overloads : Ts... {
     using Ts::operator()...;
 };
 
+// WARN:
+// If you move this out of this file it can't be string views they don't own.
+typedef unordered_map<string_view, RawNetlist::vertex_descriptor> NetNameMap;
+
+static inline void assert_net_count(int num, string_view reference, const string &filename,
+                                    const vector<Token *> &line) {
+    if (line.size() != num + 2) {
+        throw ParseException::create(ParseException::PARSE_ERROR,
+                                     string("Component: ") + string(reference) +
+                                         ", has bad number of nets. Expected: " + to_string(num) +
+                                         ", got: " + to_string(line.size() - 2),
+                                     filename, line[0]->line_number);
+    }
+}
+
+static inline float get_component_value(string_view reference, const string &filename,
+                                        const vector<Token *> &line) {
+    Token *val_token = line[line.size() - 1];
+    const char *end = val_token->underlying.end();
+    float value = std::strtof(val_token->underlying.begin(), const_cast<char **>(&end));
+    if (end != val_token->underlying.end()) {
+        throw ParseException::create(
+            ParseException::PARSE_ERROR,
+            string("Component: ") + string(reference) +
+                " , has non-numeric value: " + string(val_token->underlying),
+            filename, val_token->line_number);
+    }
+    return value;
+}
+
+static inline RawNetlist::vertex_descriptor
+get_or_add_net(RawNetlist &netlist, NetNameMap &netnames, string_view net_name) {
+
+    if (netnames.contains(net_name)) {
+        return netnames[net_name];
+    }
+
+    auto net = boost::add_vertex(
+        RawNetlistVertexInfo{
+            .kind = RawNetlistVertexInfo::NET,
+            .name = string(net_name),
+            .value = {.net_value = IRL_NET_IS_V_GND(net_name)
+                                       ? RawNetlistVertexInfo::RawNetlistVertexValue::V_GND
+                                   : IRL_NET_IS_V_HIGH(net_name)
+                                       ? RawNetlistVertexInfo::RawNetlistVertexValue::V_HIGH
+                                       : RawNetlistVertexInfo::RawNetlistVertexValue::WIRE}},
+        netlist);
+
+    netnames[net_name] = net;
+    cout << "Added string_view\n";
+    return net;
+}
+
+void add_element(RawNetlist &netlist, NetNameMap &netnames, const vector<Token *> &line,
+                 const string &filename) {
+    if (line.size() < 2) {
+        throw ParseException::create(
+            ParseException::PARSE_ERROR,
+            "Malformed component line. Must have at least a reference designator and a value",
+            filename, line[0]->line_number);
+    }
+
+    string_view reference = line[0]->underlying;
+    auto first_num = &reference[reference.find_first_of("0123456789")];
+
+    string_view reference_kind = string_view{reference.begin(), first_num};
+    int reference_num;
+    // Parse reference_num
+    auto result = std::from_chars(first_num, reference.end(), reference_num);
+    if (reference_kind.length() == 0 || result.ec != std::errc{} || result.ptr != reference.end() ||
+        first_num == reference.end()) {
+        throw ParseException::create(ParseException::PARSE_ERROR,
+                                     "Malformed reference designator: " + string(reference) +
+                                         ". Expected to be of form TYPE1234",
+                                     filename, line[0]->line_number);
+    }
+
+    // NOTE:
+    // If slow, we could do a regex/FA on a concatenated reference + value to find proper
+    // initializer
+    // This is a perfomative comment to show I thought of a cool idea to do this but was too lazy
+
+    if (reference_kind.length() == 1) {
+        switch (toupper(reference_kind[0])) {
+        case 'R': {
+            assert_net_count(2, reference, filename, line);
+            float ohms = get_component_value(reference, filename, line);
+            auto r_vert = boost::add_vertex(
+                RawNetlistVertexInfo{
+                    .kind = RawNetlistVertexInfo::R,
+                    .name = string(reference),
+                    .value = {.r_value = ohms},
+                },
+                netlist);
+
+            auto pad_1 = get_or_add_net(netlist, netnames, line[1]->underlying);
+            auto pad_2 = get_or_add_net(netlist, netnames, line[2]->underlying);
+
+            boost::add_edge(r_vert, pad_1, RawNetlistEdgeInfo{.kind = RawNetlistEdgeInfo::R},
+                            netlist);
+
+            boost::add_edge(r_vert, pad_2, RawNetlistEdgeInfo{.kind = RawNetlistEdgeInfo::R},
+                            netlist);
+        } break;
+        case 'C': {
+            assert_net_count(2, reference, filename, line);
+            float farads = get_component_value(reference, filename, line);
+            auto r_vert = boost::add_vertex(
+                RawNetlistVertexInfo{
+                    .kind = RawNetlistVertexInfo::C,
+                    .name = string(reference),
+                    .value = {.c_value = farads},
+                },
+                netlist);
+
+            auto pad_1 = get_or_add_net(netlist, netnames, line[1]->underlying);
+            auto pad_2 = get_or_add_net(netlist, netnames, line[2]->underlying);
+
+            boost::add_edge(r_vert, pad_1, RawNetlistEdgeInfo{.kind = RawNetlistEdgeInfo::C},
+                            netlist);
+
+            boost::add_edge(r_vert, pad_2, RawNetlistEdgeInfo{.kind = RawNetlistEdgeInfo::C},
+                            netlist);
+        } break;
+        case 'U':
+            break;
+        default:
+            throw ParseException::create(ParseException::PARSE_ERROR,
+                                         "Unknown reference designator kind/letter used: " +
+                                             string(reference),
+                                         filename, line[0]->line_number);
+            break;
+        }
+    }
+}
+
 unique_ptr<RawNetlist> SpiceParser::try_parse_raw(const string &filename, string_view in) {
 
     RawNetlist netlist;
@@ -194,11 +335,8 @@ unique_ptr<RawNetlist> SpiceParser::try_parse_raw(const string &filename, string
     Tokenizer tokenizer(in);
 
     vector<Token> tokens{};
-    Token token = tokenizer.next();
-
-    while (token.kind != END_OF_FILE) {
+    for (Token token = tokenizer.next(); token.kind != END_OF_FILE; token = tokenizer.next()) {
         tokens.push_back(token);
-        token = tokenizer.next();
     }
 
     // TODO:
@@ -208,10 +346,12 @@ unique_ptr<RawNetlist> SpiceParser::try_parse_raw(const string &filename, string
                   << tok.underlying << "]\n";
     }
 
+    NetNameMap netnames{};
+
     Token *tok = &tokens[0];
-    vector<Token *> this_line{};
+    vector<Token *> line{};
     while (tok->kind != END_OF_FILE) {
-        this_line.resize(0);
+        line.resize(0);
 
         while (tok->kind == NEWLINE) {
             tok++;
@@ -221,17 +361,16 @@ unique_ptr<RawNetlist> SpiceParser::try_parse_raw(const string &filename, string
 
         if (tok->kind != NORMAL) {
             throw ParseException::create(ParseException::PARSE_ERROR,
-                                         string("Unexpected token: ") + get_name(token.kind) +
+                                         string("Unexpected token: ") + get_name(tok->kind) +
                                              ", Expected: NORMAL",
-                                         filename, token.line_number);
+                                         filename, tok->line_number);
         }
 
         bool should_continue;
         do {
             should_continue = false;
             while (tok->kind == NORMAL) {
-                this_line.push_back(tok);
-                tok++;
+                line.push_back(tok++);
             }
             if (tok->kind == NEWLINE && (tok + 1)->kind == CONTINUATION) {
                 tok = tok + 2;
@@ -240,10 +379,41 @@ unique_ptr<RawNetlist> SpiceParser::try_parse_raw(const string &filename, string
         } while (should_continue);
 
         cout << "Line contains: [ ";
-        for (const Token *t : this_line) {
+        for (const Token *t : line) {
             cout << '\'' << t->underlying << "', ";
         }
         cout << " ]\n";
+
+        if (line[0]->underlying[0] == '.') {
+            cout << "Line is a dot cmd. Skipping.\n";
+        } else {
+            add_element(netlist, netnames, line, filename);
+        }
+    }
+
+    cout << "COMPONENT OVERVIEW:\n";
+    for (const auto &vertex : netlist.m_vertices) {
+        if (vertex.m_property.kind != RawNetlistVertexInfo::NET) {
+            cout << vertex.m_property.name << ", connected to: ";
+            for (const auto &edge : vertex.m_out_edges) {
+                cout << netlist[edge.get_target()].name << ", ";
+            }
+            cout << "\n";
+        }
+    }
+    cout << "NET OVERVIEW:\n";
+    for (const auto &vertex : netlist.m_vertices) {
+        if (vertex.m_property.kind == RawNetlistVertexInfo::NET) {
+            if (vertex.m_out_edges.size() < 2) {
+                cout << "Net: " << vertex.m_property.name << ", is unconnected";
+            } else {
+                cout << "Net: " << vertex.m_property.name << ", bridges: ";
+                for (const auto &edge : vertex.m_out_edges) {
+                    cout << netlist[edge.get_target()].name << ", ";
+                }
+            }
+            cout << "\n";
+        }
     }
 
     return nullptr;

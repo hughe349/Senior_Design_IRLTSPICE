@@ -28,16 +28,27 @@ struct RawNetlistVertexInfo {
         Q_PNP,
         Q_NPN,
     } kind;
+    std::string name;
     union RawNetlistVertexValue {
-        uint r_value;
-        uint c_value;
+        float r_value;
+        float c_value;
         enum RawNetlistNetValue {
             WIRE,
-            V_LOW,
+            V_GND,
             V_HIGH,
         } net_value;
     } value;
 };
+
+constexpr const std::array IRL_V_GROUND_NET_NAMES = {"0", "GND"};
+constexpr const std::array IRL_V_HIGH_NET_NAMES = {"VCC", "VDD"};
+
+#define IRL_NET_IS_V_GND(net_name)                                                                 \
+    (std::find(IRL_V_GROUND_NET_NAMES.begin(), IRL_V_GROUND_NET_NAMES.end(), net_name) !=          \
+     IRL_V_GROUND_NET_NAMES.end())
+#define IRL_NET_IS_V_HIGH(net_name)                                                                \
+    (std::find(IRL_V_HIGH_NET_NAMES.begin(), IRL_V_HIGH_NET_NAMES.end(), net_name) !=              \
+     IRL_V_HIGH_NET_NAMES.end())
 
 struct RawNetlistEdgeInfo {
     enum RawNetlistEdgeKind {
