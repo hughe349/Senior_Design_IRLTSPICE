@@ -3,12 +3,26 @@
 // Master docs:
 // https://www.boost.org/doc/libs/latest/libs/graph/doc/table_of_contents.html
 
+#include <array>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_selectors.hpp>
+#include <cstddef>
 #include <memory>
+#include <span>
 #include <sys/types.h>
 #include <utility>
 #include <vector>
+
+typedef enum NetlistVertexKind {
+    NET,
+    R,
+    C,
+    OPAMP,
+    DIODE,
+    Q_PNP,
+    Q_NPN,
+    CELL_BUFFER,
+} NetlistVertexKind;
 
 // Netlists are represented as a bipartite graph, where the left side
 //   consists of vertecies representing nets and the right side consists
@@ -19,24 +33,17 @@
 //     if it is GND/5V or an OpAmp or what resistance it should be
 
 struct RawNetlistVertexInfo {
-    enum RawNetlistVertexKind {
-        NET,
-        R,
-        C,
-        OPAMP,
-        DIODE,
-        Q_PNP,
-        Q_NPN,
-    } kind;
+    NetlistVertexKind kind;
     std::string name;
     union RawNetlistVertexValue {
-        float r_value;
-        float c_value;
+        float numeric_value;
         enum RawNetlistNetValue {
             WIRE,
             V_GND,
             V_HIGH,
         } net_value;
+        struct NoVal {
+        } no_val;
     } value;
 };
 
@@ -50,23 +57,42 @@ constexpr const std::array IRL_V_HIGH_NET_NAMES = {"VCC", "VDD"};
     (std::find(IRL_V_HIGH_NET_NAMES.begin(), IRL_V_HIGH_NET_NAMES.end(), net_name) !=              \
      IRL_V_HIGH_NET_NAMES.end())
 
+typedef enum NetlistEdgeKind {
+    PIN_R,
+    PIN_C,
+    PIN_OPAMP_PLUS,
+    PIN_OPAMP_MINUS,
+    PIN_OPAMP_SUPPLY_PLUS,
+    PIN_OPAMP_SUPPLY_MINUS,
+    PIN_OPAMP_OUT,
+    PIN_Q_PNP_BASE,
+    PIN_Q_PNP_EMITTER,
+    PIN_Q_PNP_COLLECTOR,
+    PIN_Q_NPN_BASE,
+    PIN_Q_NPN_EMITTER,
+    PIN_Q_NPN_COLLECTOR,
+    PIN_D_K,
+    PIN_D_A,
+    PIN_CELL_BUFFER_IN,
+    PIN_CELL_BUFFER_OUT
+} NetlistEdgeKind;
+
 struct RawNetlistEdgeInfo {
-    enum RawNetlistEdgeKind {
-        R,
-        C,
-        OPAMP_PLUS,
-        OPAMP_MINUS,
-        OPAMP_OUT,
-        Q_PNP_BASE,
-        Q_PNP_EMITTER,
-        Q_PNP_COLLECTOR,
-        Q_NPN_BASE,
-        Q_NPN_EMITTER,
-        Q_NPN_COLLECTOR,
-        D_K,
-        D_A,
-    } kind;
+    NetlistEdgeKind kind;
 };
+
+typedef struct _RecognizedComponent {
+    // Identifying info
+    const char *long_name;
+    NetlistVertexKind component_kind;
+    bool numeric_value;
+
+    std::span<const char *const> spice_prefixes;
+    std::span<const char *const> spice_values;
+
+    // Ordered according to how they appear in a spice file
+    std::span<const NetlistEdgeKind> pins;
+} RecognizedComponent;
 
 // See:
 // https://www.boost.org/doc/libs/latest/libs/graph/doc/using_adjacency_list.html
@@ -90,3 +116,46 @@ typedef struct _AssignedNetList {
     // A list of pairs mapping (std_cell_id, component_vertex)
     std::vector<std::pair<uint, RawNetlist::vertex_descriptor>> std_cell_assignments;
 } AssignedNetlist;
+
+// Bullshit for listing parseable components
+// =========================================
+// I really should not have done this, but I realllly wanted it comptime w/o manually naming the
+// arrays Static members of constexpr lambdas being c++23 sucks :(
+
+template <typename T> consteval std::array<T, 0> arrify() { return std::array<T, 0>(); }
+template <typename... Ts> consteval auto arrify(Ts... elems) { return std::to_array({elems...}); }
+
+#define COMPONENT(KIND, NAME, NUMERIC, PFXS, VALS, PINS)                                           \
+    static constexpr auto _##KIND##_pfxs = PFXS;                                                   \
+    static constexpr auto _##KIND##_vals = VALS;                                                   \
+    static constexpr auto _##KIND##_pins = PINS;                                                   \
+    static constexpr RecognizedComponent component_##KIND = {                                      \
+        .long_name = NAME,                                                                         \
+        .component_kind = KIND,                                                                    \
+        .numeric_value = NUMERIC,                                                                  \
+        .spice_prefixes = _##KIND##_pfxs,                                                          \
+        .spice_values = _##KIND##_vals,                                                            \
+        .pins = _##KIND##_pins,                                                                    \
+    };
+
+struct RCStorage {
+    COMPONENT(R, "Resistor", true, arrify("R"), arrify<const char *>(), arrify(PIN_R, PIN_R))
+    COMPONENT(C, "Capacitor", true, arrify("C"), arrify<const char *>(), arrify(PIN_C, PIN_C))
+    COMPONENT(OPAMP, "Operational Amplifier", false, arrify("U", "XU"),
+              arrify("opamp", "kicad_builtin_opamp"),
+              arrify(PIN_OPAMP_MINUS, PIN_OPAMP_MINUS, PIN_OPAMP_SUPPLY_PLUS,
+                     PIN_OPAMP_SUPPLY_MINUS, PIN_OPAMP_OUT))
+    COMPONENT(DIODE, "Diode", false, arrify("D"), arrify<const char *>(), arrify(PIN_D_A, PIN_D_K))
+    COMPONENT(Q_PNP, "BJT (PNP)", false, arrify("Q"), arrify("PNP"),
+              arrify(PIN_Q_PNP_COLLECTOR, PIN_Q_PNP_BASE, PIN_Q_PNP_EMITTER))
+    COMPONENT(Q_NPN, "BJT (NPN)", false, arrify("Q"), arrify("NPN"),
+              arrify(PIN_Q_NPN_COLLECTOR, PIN_Q_NPN_BASE, PIN_Q_NPN_EMITTER))
+    COMPONENT(CELL_BUFFER, "IRLTSPICE standard cell output buffer", false, arrify("U"),
+              arrify("IRL_BUFFER"), arrify(PIN_CELL_BUFFER_OUT, PIN_CELL_BUFFER_IN))
+};
+
+constexpr RecognizedComponent RECOGNIZED_COMPONENTS[] = {
+    RCStorage::component_R,           RCStorage::component_C,     RCStorage::component_OPAMP,
+    RCStorage::component_DIODE,       RCStorage::component_Q_PNP, RCStorage::component_Q_NPN,
+    RCStorage::component_CELL_BUFFER,
+};

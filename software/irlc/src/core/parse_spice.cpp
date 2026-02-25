@@ -6,7 +6,6 @@
 #include <cstdint>
 #include <iostream>
 #include <memory>
-#include <ranges>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -201,8 +200,8 @@ static inline void assert_net_count(int num, string_view reference, const string
     if (line.size() != num + 2) {
         throw ParseException::create(ParseException::PARSE_ERROR,
                                      string("Component: ") + string(reference) +
-                                         ", has bad number of nets. Expected: " + to_string(num) +
-                                         ", got: " + to_string(line.size() - 2),
+                                         ", connected to bad number of nets. Expected: " +
+                                         to_string(num) + ", got: " + to_string(line.size() - 2),
                                      filename, line[0]->line_number);
     }
 }
@@ -231,7 +230,7 @@ get_or_add_net(RawNetlist &netlist, NetNameMap &netnames, string_view net_name) 
 
     auto net = boost::add_vertex(
         RawNetlistVertexInfo{
-            .kind = RawNetlistVertexInfo::NET,
+            .kind = NET,
             .name = string(net_name),
             .value = {.net_value = IRL_NET_IS_V_GND(net_name)
                                        ? RawNetlistVertexInfo::RawNetlistVertexValue::V_GND
@@ -241,7 +240,7 @@ get_or_add_net(RawNetlist &netlist, NetNameMap &netnames, string_view net_name) 
         netlist);
 
     netnames[net_name] = net;
-    cout << "Added string_view\n";
+    // cout << "Added string_view\n";
     return net;
 }
 
@@ -269,62 +268,82 @@ void add_element(RawNetlist &netlist, NetNameMap &netnames, const vector<Token *
                                      filename, line[0]->line_number);
     }
 
+    string_view value = line[line.size() - 1]->underlying;
+
     // NOTE:
     // If slow, we could do a regex/FA on a concatenated reference + value to find proper
     // initializer
     // This is a perfomative comment to show I thought of a cool idea to do this but was too lazy
 
-    if (reference_kind.length() == 1) {
-        switch (toupper(reference_kind[0])) {
-        case 'R': {
-            assert_net_count(2, reference, filename, line);
-            float ohms = get_component_value(reference, filename, line);
-            auto r_vert = boost::add_vertex(
-                RawNetlistVertexInfo{
-                    .kind = RawNetlistVertexInfo::R,
-                    .name = string(reference),
-                    .value = {.r_value = ohms},
-                },
-                netlist);
+    bool found_match = false;
+    bool any_ref_found = false;
 
-            auto pad_1 = get_or_add_net(netlist, netnames, line[1]->underlying);
-            auto pad_2 = get_or_add_net(netlist, netnames, line[2]->underlying);
+    for (const auto &recognized : RECOGNIZED_COMPONENTS) {
+        bool matches_ref = false;
+        for (const auto &ref : recognized.spice_prefixes) {
+            if (reference_kind == ref) {
+                matches_ref = true;
+                any_ref_found = true;
+                break;
+            }
+        }
+        if (!matches_ref) {
+            continue; // Go to next component
+        }
+        // Default to match if spice_values has no entries
+        bool matches_val = recognized.spice_values.size() == 0;
+        // this loop only gets run if spice_values has entries
+        for (const auto &val : recognized.spice_values) {
+            if (val == value) {
+                matches_val = true;
+                continue;
+            }
+        }
+        if (!matches_val) {
+            continue;
+        }
 
-            boost::add_edge(r_vert, pad_1, RawNetlistEdgeInfo{.kind = RawNetlistEdgeInfo::R},
-                            netlist);
+        found_match = true;
 
-            boost::add_edge(r_vert, pad_2, RawNetlistEdgeInfo{.kind = RawNetlistEdgeInfo::R},
-                            netlist);
-        } break;
-        case 'C': {
-            assert_net_count(2, reference, filename, line);
-            float farads = get_component_value(reference, filename, line);
-            auto r_vert = boost::add_vertex(
-                RawNetlistVertexInfo{
-                    .kind = RawNetlistVertexInfo::C,
-                    .name = string(reference),
-                    .value = {.c_value = farads},
-                },
-                netlist);
+        assert_net_count(recognized.pins.size(), reference, filename, line);
+        RawNetlist::vertex_descriptor vert;
+        if (recognized.numeric_value) {
+            float val = get_component_value(reference, filename, line);
+            vert = boost::add_vertex(RawNetlistVertexInfo{.kind = recognized.component_kind,
+                                                          .name = string(reference),
+                                                          .value =
+                                                              {
+                                                                  .numeric_value = val,
+                                                              }},
+                                     netlist);
+        } else {
+            vert = boost::add_vertex(RawNetlistVertexInfo{.kind = recognized.component_kind,
+                                                          .name = string(reference),
+                                                          .value = {.no_val = {}}},
+                                     netlist);
+        }
 
-            auto pad_1 = get_or_add_net(netlist, netnames, line[1]->underlying);
-            auto pad_2 = get_or_add_net(netlist, netnames, line[2]->underlying);
+        for (int i = 0; i < recognized.pins.size(); i++) {
+            auto pad = get_or_add_net(netlist, netnames, line[1 + i]->underlying);
+            boost::add_edge(vert, pad, RawNetlistEdgeInfo{.kind = recognized.pins[i]}, netlist);
+        }
 
-            boost::add_edge(r_vert, pad_1, RawNetlistEdgeInfo{.kind = RawNetlistEdgeInfo::C},
-                            netlist);
+        // We found a match, break out of the loop
+        break;
+    }
 
-            boost::add_edge(r_vert, pad_2, RawNetlistEdgeInfo{.kind = RawNetlistEdgeInfo::C},
-                            netlist);
-        } break;
-        case 'U':
-            break;
-        default:
+    if (!found_match) {
+        if (!any_ref_found)
             throw ParseException::create(ParseException::PARSE_ERROR,
                                          "Unknown reference designator kind/letter used: " +
                                              string(reference),
                                          filename, line[0]->line_number);
-            break;
-        }
+        else
+            throw ParseException::create(
+                ParseException::PARSE_ERROR,
+                string("Unknown component value : ") + string(value) +
+                    ", used for reference designator: " + string(reference),
+                filename, line[0]->line_number);
     }
 }
 
@@ -393,7 +412,7 @@ unique_ptr<RawNetlist> SpiceParser::try_parse_raw(const string &filename, string
 
     cout << "COMPONENT OVERVIEW:\n";
     for (const auto &vertex : netlist.m_vertices) {
-        if (vertex.m_property.kind != RawNetlistVertexInfo::NET) {
+        if (vertex.m_property.kind != NET) {
             cout << vertex.m_property.name << ", connected to: ";
             for (const auto &edge : vertex.m_out_edges) {
                 cout << netlist[edge.get_target()].name << ", ";
@@ -403,7 +422,7 @@ unique_ptr<RawNetlist> SpiceParser::try_parse_raw(const string &filename, string
     }
     cout << "NET OVERVIEW:\n";
     for (const auto &vertex : netlist.m_vertices) {
-        if (vertex.m_property.kind == RawNetlistVertexInfo::NET) {
+        if (vertex.m_property.kind == NET) {
             if (vertex.m_out_edges.size() < 2) {
                 cout << "Net: " << vertex.m_property.name << ", is unconnected";
             } else {

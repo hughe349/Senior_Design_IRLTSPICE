@@ -31,7 +31,7 @@ TEST_CASE("Factory Identifies Parsers", "[parse]") {
 
 TEST_CASE("Parsing Tokenizes", "[parse]") {
 
-    std::string filename1 = "../../tests/data/User.spice";
+    std::string filename1 = "../../tests/data/User_BJT.cir";
 
     std::ifstream file(filename1);
 
