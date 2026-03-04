@@ -33,29 +33,56 @@ typedef enum NetlistVertexKind {
 //     if it is GND/5V or an OpAmp or what resistance it should be
 
 struct RawNetlistVertexInfo {
+    // NOTE:
+    // If you add to this, remember to update get_net_kind
+    enum NetValue {
+        WIRE,
+        V_GND,
+        V_HIGH,
+        V_NEG,
+    };
+
     NetlistVertexKind kind;
     std::string name;
     union RawNetlistVertexValue {
         float numeric_value;
-        enum RawNetlistNetValue {
-            WIRE,
-            V_GND,
-            V_HIGH,
-        } net_value;
+        NetValue net_value;
         struct NoVal {
         } no_val;
     } value;
 };
 
 constexpr const std::array IRL_V_GROUND_NET_NAMES = {"0", "GND"};
-constexpr const std::array IRL_V_HIGH_NET_NAMES = {"VCC", "VDD"};
+constexpr const std::array IRL_V_HIGH_NET_NAMES = {"VCC", "VDD", "+5V"};
+constexpr const std::array IRL_V_NEG_NET_NAMES = {"-5V"};
 
-#define IRL_NET_IS_V_GND(net_name)                                                                 \
-    (std::find(IRL_V_GROUND_NET_NAMES.begin(), IRL_V_GROUND_NET_NAMES.end(), net_name) !=          \
-     IRL_V_GROUND_NET_NAMES.end())
-#define IRL_NET_IS_V_HIGH(net_name)                                                                \
-    (std::find(IRL_V_HIGH_NET_NAMES.begin(), IRL_V_HIGH_NET_NAMES.end(), net_name) !=              \
-     IRL_V_HIGH_NET_NAMES.end())
+template <typename A>
+static inline RawNetlistVertexInfo::NetValue
+_get_net_kind(auto &net_name, std::pair<A, RawNetlistVertexInfo::NetValue> option) {
+    auto opt = option;
+    if (std::find(opt.first.begin(), opt.first.end(), net_name) != opt.first.end()) {
+        return option.second;
+    } else {
+        return RawNetlistVertexInfo::NetValue::WIRE;
+    }
+}
+template <typename A, typename... As>
+static inline RawNetlistVertexInfo::NetValue
+_get_net_kind(auto &net_name, std::pair<A, RawNetlistVertexInfo::NetValue> option,
+              std::pair<As, RawNetlistVertexInfo::NetValue>... options) {
+    auto opt = option;
+    if (std::find(opt.first.begin(), opt.first.end(), net_name) != opt.first.end()) {
+        return option.second;
+    } else {
+        return _get_net_kind(net_name, options...);
+    }
+}
+
+static inline RawNetlistVertexInfo::NetValue get_net_kind(auto &net_name) {
+    return _get_net_kind(net_name, std::pair{IRL_V_GROUND_NET_NAMES, RawNetlistVertexInfo::V_GND},
+                         std::pair{IRL_V_HIGH_NET_NAMES, RawNetlistVertexInfo::V_HIGH},
+                         std::pair{IRL_V_NEG_NET_NAMES, RawNetlistVertexInfo::V_NEG});
+};
 
 typedef enum NetlistEdgeKind {
     PIN_R,

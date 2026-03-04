@@ -14,6 +14,8 @@ add_executable(irlc-tests
     ${CMAKE_CURRENT_LIST_DIR}/test_parsers.cpp
 )
 
+target_link_options(irlc-tests PRIVATE -g -fsanitize=address)
+
 target_link_libraries(irlc-tests
     PRIVATE
         libirlc
