@@ -1,4 +1,4 @@
-27220789976802852
+27222562616260553
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -98657,6 +98657,13 @@ rotary encoder illuminated switch vertical
 0
 9
 8
+SeniorDesignFP
+QFP80P1200X1200X120-44N
+
+
+0
+44
+44
 SeniorDesignFP
 SOP65P640X120-24N
 
