@@ -37,6 +37,7 @@ FetchContent_MakeAvailable(Boost)
 add_library(libirlc) 
 target_sources(libirlc 
     PRIVATE 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/compiler.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/route.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/parse_spice.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/parse_eechema.cpp
