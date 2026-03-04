@@ -11,6 +11,7 @@
 hardware/**/**-backups/**
 hardware/**/*.lck
 hardware/**/*auto_saved*
+hardware/**/**bak
 
 # ========
 # Software
