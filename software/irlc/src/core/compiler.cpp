@@ -1,6 +1,8 @@
 #include "core/compiler.hpp"
+#include "core/debug.hpp"
 #include "core/netlist.hpp"
 #include "core/parse.hpp"
+#include "core/route.hpp"
 #include "core/verify.hpp"
 #include <cstdint>
 #include <fstream>
@@ -51,6 +53,10 @@ int IrlCompiler::invoke() {
         log_error("Failed to parse input file: " + *(this->opts.input_file));
         return -1;
     }
+
+    prune_unconnected_nets(*netlist);
+
+    debug_print_netlist(cout, *netlist);
 
     IrlVerifier verifier(*this);
 

@@ -48,7 +48,9 @@ constexpr std::array RAW_VERTEX_RULES = {
                 assert(target_info.kind == NET);
 
                 if (netlist[*e].kind == PIN_OPAMP_SUPPLY_PLUS) {
-                    return "";
+                    if (target_info.value.net_value != RawNetlistVertexInfo::V_HIGH) {
+                        return "";
+                    }
                 }
             }
 

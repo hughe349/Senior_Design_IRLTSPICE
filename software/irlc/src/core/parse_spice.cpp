@@ -1,7 +1,9 @@
 #include "boost/graph/breadth_first_search.hpp"
+#include "boost/graph/filtered_graph.hpp"
 #include "boost/graph/graph_traits.hpp"
 #include "boost/graph/named_function_params.hpp"
 #include "boost/graph/properties.hpp"
+#include "core/debug.hpp"
 #include "core/netlist.hpp"
 #include "core/parse.hpp"
 #include "util/macros.hpp"
@@ -384,31 +386,7 @@ unique_ptr<RawNetlist> SpiceParser::try_parse(const string &filename, string_vie
         }
     }
 
-    cout << "COMPONENT OVERVIEW:\n";
-    for (const auto &vertex : netlist->m_vertices) {
-        if (vertex.m_property.kind != NET) {
-            cout << vertex.m_property.name << ", connected to: ";
-            for (const auto &edge : vertex.m_out_edges) {
-                cout << (*netlist)[edge.get_target()].name << ", ";
-            }
-            cout << "\n";
-        }
-    }
-    cout << std::endl;
-    cout << "NET OVERVIEW:\n";
-    for (const auto &vertex : netlist->m_vertices) {
-        if (vertex.m_property.kind == NET) {
-            if (vertex.m_out_edges.size() < 2) {
-                cout << "Net: " << vertex.m_property.name << ", is unconnected";
-            } else {
-                cout << "Net: " << vertex.m_property.name << ", bridges: ";
-                for (const auto &edge : vertex.m_out_edges) {
-                    cout << (*netlist)[edge.get_target()].name << ", ";
-                }
-            }
-            cout << "\n";
-        }
-    }
+    debug_print_netlist(cout, *netlist);
 
     return netlist;
 }

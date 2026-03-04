@@ -131,7 +131,7 @@ typedef struct _RecognizedComponent {
 // BGL Properties:
 //      Vertex - RawNetlistVertexInfo
 //      Edge - RawNetlistEdgeInfo
-typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, RawNetlistVertexInfo,
+typedef boost::adjacency_list<boost::vecS, boost::listS, boost::undirectedS, RawNetlistVertexInfo,
                               RawNetlistEdgeInfo>
     RawNetlist;
 
