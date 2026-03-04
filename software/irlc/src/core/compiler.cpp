@@ -1,6 +1,11 @@
 #include "core/compiler.hpp"
 #include "core/netlist.hpp"
+#include "core/parse.hpp"
+#include "core/verify.hpp"
+#include <cstdint>
+#include <fstream>
 #include <iostream>
+#include <memory>
 #include <string>
 
 using namespace std;
@@ -10,6 +15,49 @@ int IrlCompiler::invoke() {
     int info_count = this->print_info();
     if (info_count != 0) {
         return 0;
+    }
+
+    if (!this->opts.input_file) {
+        log_error("Input file not specified");
+        return -1;
+    }
+
+    ifstream in_file(*(this->opts.input_file));
+    if (!in_file.is_open()) {
+        log_error("Could not open input file: " + *(this->opts.input_file));
+        return -1;
+    }
+
+    std::string in_content(istreambuf_iterator<char>{in_file}, istreambuf_iterator<char>{});
+
+    auto parsers = AllParsersFactory().make_parsers_prioritized(*(this->opts.input_file));
+
+    unique_ptr<RawNetlist> netlist(nullptr);
+    for (const INetlistParser *parser : parsers) {
+        if (this->verbose()) {
+            cout << "Attempting parser: " << parser->parser_name() << "\n";
+        }
+        try {
+            netlist = std::move(parser->try_parse(*(this->opts.input_file), in_content));
+            break;
+        } catch (ParseException e) {
+            log_error(e.what());
+        } catch (...) {
+            log_error("Unknown error occured parsing.");
+        }
+    }
+
+    if (netlist == nullptr) {
+        log_error("Failed to parse input file: " + *(this->opts.input_file));
+        return -1;
+    }
+
+    IrlVerifier verifier(*this);
+
+    uint32_t violations = verifier.check_netlist_violations(*netlist);
+
+    if (violations > 0) {
+        log_error("Raw netlist failes validation rules");
     }
 
     return 0;

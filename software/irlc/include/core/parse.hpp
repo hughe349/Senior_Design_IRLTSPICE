@@ -15,8 +15,10 @@ class INetlistParser {
     INetlistParser() {}
 
   public:
+    virtual const char *parser_name() const = 0;
+
     virtual std::unique_ptr<RawNetlist> try_parse(const std::string &filename,
-                                                  std::string_view in) = 0;
+                                                  std::string_view in) const = 0;
 };
 
 class ParseException : public std::runtime_error {
@@ -47,8 +49,10 @@ class SpiceParser : public INetlistParser {
 
     static bool matches_filename(const std::string &filename);
 
+    virtual const char *parser_name() const override { return "Spice Parser"; };
+
     virtual std::unique_ptr<RawNetlist> try_parse(const std::string &filename,
-                                                  std::string_view in) override;
+                                                  std::string_view in) const override;
 };
 
 // KiCad eeschema xml parser
@@ -58,8 +62,10 @@ class EeschemaParser : public INetlistParser {
 
     static bool matches_filename(const std::string &filename);
 
+    virtual const char *parser_name() const override { return "Eeschema Parser"; };
+
     virtual std::unique_ptr<RawNetlist> try_parse(const std::string &filename,
-                                                  std::string_view in) override;
+                                                  std::string_view in) const override;
 };
 
 // Factory for making parsers

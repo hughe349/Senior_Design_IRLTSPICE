@@ -10,6 +10,7 @@ bool EeschemaParser::matches_filename(const string &filename) {
     return filename.ends_with(".xml");
 };
 
-unique_ptr<RawNetlist> EeschemaParser::try_parse(const std::string &filename, string_view in) {
+unique_ptr<RawNetlist> EeschemaParser::try_parse(const std::string &filename,
+                                                 string_view in) const {
     throw runtime_error("Eeschema parsing not yet implemented.");
 }

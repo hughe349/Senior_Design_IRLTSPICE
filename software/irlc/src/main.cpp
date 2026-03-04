@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
     do {                                                                                           \
         opt_groups[CATEGORY].add_options()((flagify(QUOTE(LONG_N)) + "," SHORT_N).c_str(), MSG);   \
     } while (0);
-#define TYPED_OPT(LONG_N, SHORT_N, TYPE, MSG, CATEGORY)                                            \
+#define TYPED_OPT(LONG_N, SHORT_N, TYPE, DEFAULT, MSG, CATEGORY)                                   \
     do {                                                                                           \
         opt_groups[CATEGORY].add_options()((flagify(QUOTE(LONG_N)) + "," SHORT_N).c_str(),         \
                                            po::value<TYPE>(), MSG);                                \
@@ -89,8 +89,10 @@ IrlCompilerOptions build_compiler_options(std::map<std::string, po::variable_val
 
 #define FLAG_OPT(LONG_N, SHORT_N, MSG, CATEGORY)                                                   \
     .LONG_N = vm.count(flagify(QUOTE(LONG_N)).c_str()) > 0,
-#define TYPED_OPT(LONG_N, SHORT_N, TYPE, MSG, CATEGORY)                                            \
-    .LONG_N = vm[flagify(QUOTE(LONG_N)).c_str()].as<TYPE>(),
+#define TYPED_OPT(LONG_N, SHORT_N, TYPE, DEFAULT, MSG, CATEGORY)                                   \
+    .LONG_N = vm.count(flagify(QUOTE(LONG_N)).c_str()) > 0                                         \
+                  ? vm[flagify(QUOTE(LONG_N)).c_str()].as<TYPE>()                                  \
+                  : DEFAULT,
 
     return {COMPILER_OPTIONS};
 

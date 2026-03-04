@@ -4,6 +4,7 @@
 #include "boost/graph/properties.hpp"
 #include "core/netlist.hpp"
 #include "core/parse.hpp"
+#include "util/macros.hpp"
 #include <cassert>
 #include <cctype>
 #include <charconv>
@@ -166,9 +167,6 @@ struct Tokenizer {
 // =================================================================================================
 // Parse Algorithms
 // =================================================================================================
-template <class... Ts> struct overloads : Ts... {
-    using Ts::operator()...;
-};
 
 // WARN:
 // If you move this out of this file it can't be string views they don't own.
@@ -320,7 +318,7 @@ void add_element(RawNetlist &netlist, NetNameMap &netnames, const vector<Token *
     }
 }
 
-unique_ptr<RawNetlist> SpiceParser::try_parse(const string &filename, string_view in) {
+unique_ptr<RawNetlist> SpiceParser::try_parse(const string &filename, string_view in) const {
 
     unique_ptr<RawNetlist> netlist(new RawNetlist);
 
