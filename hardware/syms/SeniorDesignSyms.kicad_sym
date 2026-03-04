@@ -1657,7 +1657,7 @@
 			)
 		)
 		(property "Value" "MT8816AF1"
-			(at -12.954 -11.176 0)
+			(at -3.302 15.494 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2189,7 +2189,7 @@
 		(symbol "MT8816AF1_2_0"
 			(rectangle
 				(start -12.7 40.64)
-				(end 12.7 -2.54)
+				(end 7.62 17.78)
 				(stroke
 					(width 0.254)
 					(type default)
@@ -2199,253 +2199,253 @@
 				)
 			)
 			(pin input line
-				(at -17.78 38.1 0)
-				(length 5.08)
+				(at -15.24 38.1 0)
+				(length 2.54)
 				(name "AX0"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 				(number "44"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 			)
 			(pin input line
-				(at -17.78 35.56 0)
-				(length 5.08)
+				(at -15.24 36.83 0)
+				(length 2.54)
 				(name "AX1"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 				(number "18"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 			)
 			(pin input line
-				(at -17.78 33.02 0)
-				(length 5.08)
+				(at -15.24 35.56 0)
+				(length 2.54)
 				(name "AX2"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 				(number "19"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 			)
 			(pin input line
-				(at -17.78 30.48 0)
-				(length 5.08)
+				(at -15.24 34.29 0)
+				(length 2.54)
 				(name "AX3"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 				(number "43"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 			)
 			(pin input line
-				(at -17.78 26.67 0)
-				(length 5.08)
+				(at -15.24 31.75 0)
+				(length 2.54)
 				(name "AY0"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 				(number "20"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 			)
 			(pin input line
-				(at -17.78 24.13 0)
-				(length 5.08)
+				(at -15.24 30.48 0)
+				(length 2.54)
 				(name "AY1"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 				(number "21"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 			)
 			(pin input line
-				(at -17.78 21.59 0)
-				(length 5.08)
+				(at -15.24 29.21 0)
+				(length 2.54)
 				(name "AY2"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 				(number "40"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 			)
 			(pin input line
-				(at -17.78 15.24 0)
-				(length 5.08)
+				(at -15.24 26.67 0)
+				(length 2.54)
 				(name "STROBE"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 				(number "14"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 			)
 			(pin input line
-				(at -17.78 12.7 0)
-				(length 5.08)
+				(at -15.24 25.4 0)
+				(length 2.54)
 				(name "CS"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 				(number "34"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 			)
 			(pin input line
-				(at -17.78 10.16 0)
-				(length 5.08)
+				(at -15.24 24.13 0)
+				(length 2.54)
 				(name "DATA"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 				(number "36"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 			)
 			(pin power_in line
-				(at -17.78 7.62 0)
-				(length 5.08)
+				(at -15.24 22.86 0)
+				(length 2.54)
 				(name "VDD"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 				(number "38"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 			)
 			(pin power_in line
-				(at -17.78 5.08 0)
-				(length 5.08)
+				(at -15.24 21.59 0)
+				(length 2.54)
 				(name "VEE"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 				(number "16"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 			)
 			(pin input line
-				(at -17.78 2.54 0)
-				(length 5.08)
+				(at -15.24 20.32 0)
+				(length 2.54)
 				(name "RESET"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 				(number "42"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 			)
 			(pin power_in line
-				(at -17.78 0 0)
-				(length 5.08)
+				(at -15.24 19.05 0)
+				(length 2.54)
 				(name "VSS"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
 				(number "12"
 					(effects
 						(font
-							(size 1.016 1.016)
+							(size 0.508 0.508)
 						)
 					)
 				)
