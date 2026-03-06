@@ -432,6 +432,10 @@
     [
       "534f316e-b737-411c-8d6f-20e6ab703659",
       "Power Supply"
+    ],
+    [
+      "72af25e1-7cdc-412a-8304-78174a178e92",
+      "MicroController"
     ]
   ],
   "text_variables": {}
