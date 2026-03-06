@@ -37,6 +37,8 @@ struct RawNetlistVertexInfo {
     // If you add to this, remember to update get_net_kind
     enum NetValue {
         WIRE,
+        INPUT,
+        OUTPUT,
         V_GND,
         V_HIGH,
         V_NEG,
@@ -52,6 +54,8 @@ struct RawNetlistVertexInfo {
     } value;
 };
 
+constexpr const std::array IRL_INPUT_NET_NAMES = {"INPUT"};
+constexpr const std::array IRL_OUTPUT_NET_NAMES = {"OUTPUT"};
 constexpr const std::array IRL_V_GROUND_NET_NAMES = {"0", "GND"};
 constexpr const std::array IRL_V_HIGH_NET_NAMES = {"VCC", "VDD", "+5V"};
 constexpr const std::array IRL_V_NEG_NET_NAMES = {"-5V"};
@@ -79,7 +83,9 @@ _get_net_kind(auto &net_name, std::pair<A, RawNetlistVertexInfo::NetValue> optio
 }
 
 static inline RawNetlistVertexInfo::NetValue get_net_kind(auto &net_name) {
-    return _get_net_kind(net_name, std::pair{IRL_V_GROUND_NET_NAMES, RawNetlistVertexInfo::V_GND},
+    return _get_net_kind(net_name, std::pair{IRL_INPUT_NET_NAMES, RawNetlistVertexInfo::INPUT},
+                         std::pair{IRL_OUTPUT_NET_NAMES, RawNetlistVertexInfo::OUTPUT},
+                         std::pair{IRL_V_GROUND_NET_NAMES, RawNetlistVertexInfo::V_GND},
                          std::pair{IRL_V_HIGH_NET_NAMES, RawNetlistVertexInfo::V_HIGH},
                          std::pair{IRL_V_NEG_NET_NAMES, RawNetlistVertexInfo::V_NEG});
 };

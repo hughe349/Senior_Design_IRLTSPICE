@@ -79,6 +79,33 @@ constexpr std::array RAW_VERTEX_RULES = {
 
             return NO_VIOLATION;
         },
+    },
+    RawNetlistVertexRule{
+        .rule_name = "Passive components should not be bypassed.",
+        .rule = [](RawNetlist const &netlist,
+                   RawNetlist::vertex_descriptor v) -> RuleViolationResult {
+            if (netlist[v].kind == R || netlist[v].kind == C || netlist[v].kind == DIODE) {
+            } else {
+                return NO_VIOLATION;
+            }
+
+            if (boost::out_degree(v, netlist) != 2) {
+                return "Passive component must be connected to 2 nets.";
+            }
+
+            std::pair edges = boost::out_edges(v, netlist);
+            auto e1 = *edges.first;
+            auto e2 = *(edges.first + 1);
+
+            auto t1 = boost::target(e1, netlist);
+            auto t2 = boost::target(e2, netlist);
+
+            if (t1 == t2) {
+                return "Component bypassed by net: " + netlist[t1].name;
+            }
+
+            return NO_VIOLATION;
+        },
     }
 
 };

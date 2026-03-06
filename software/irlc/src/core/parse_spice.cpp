@@ -173,6 +173,7 @@ struct Tokenizer {
 // WARN:
 // If you move this out of this file it can't be string views they don't own.
 typedef unordered_map<string_view, RawNetlist::vertex_descriptor> NetNameMap;
+typedef unordered_map<string_view, string_view> ModelMap;
 
 static inline void assert_net_count(int num, string_view reference, const string &filename,
                                     const vector<Token *> &line) {
@@ -217,8 +218,8 @@ get_or_add_net(RawNetlist &netlist, NetNameMap &netnames, string_view net_name) 
     return net;
 }
 
-void add_element(RawNetlist &netlist, NetNameMap &netnames, const vector<Token *> &line,
-                 const string &filename) {
+void add_element(RawNetlist &netlist, NetNameMap &netnames, ModelMap &models,
+                 const vector<Token *> &line, const string &filename) {
     if (line.size() < 2) {
         throw ParseException::create(
             ParseException::PARSE_ERROR,
@@ -242,6 +243,9 @@ void add_element(RawNetlist &netlist, NetNameMap &netnames, const vector<Token *
     }
 
     string_view value = line[line.size() - 1]->underlying;
+    if (models.count(value) > 0) {
+        value = models[value];
+    }
 
     // NOTE:
     // If slow, we could do a regex/FA on a concatenated reference + value to find proper
@@ -341,6 +345,7 @@ unique_ptr<RawNetlist> SpiceParser::try_parse(const string &filename, string_vie
     }
 
     NetNameMap netnames{};
+    ModelMap models{};
 
     Token *tok = &tokens[0];
     vector<Token *> line{};
@@ -379,9 +384,16 @@ unique_ptr<RawNetlist> SpiceParser::try_parse(const string &filename, string_vie
         cout << " ]\n";
 
         if (line[0]->underlying[0] == '.') {
-            cout << "Line is a dot cmd. Skipping.\n";
+            string_view cmd = string_view(&line[0]->underlying[1], line[0]->underlying.size() - 1);
+            cout << "Line is a dot cmd: " << cmd << "\n";
+            if (cmd == "model" && line.size() == 3) {
+                cout << "    Model command!\n";
+                models[line[1]->underlying] = line[2]->underlying;
+            } else {
+                cout << "    Unknown command. Skipping.\n";
+            }
         } else {
-            add_element(*netlist, netnames, line, filename);
+            add_element(*netlist, netnames, models, line, filename);
             cout << " Added!\n";
         }
     }
