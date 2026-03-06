@@ -7,8 +7,10 @@ extern "C" {
 
 #include <stdint.h>
 
-void enable_connection(uint8_t);
-void disable_connection(uint8_t);
+void enable_connection(uint8_t x_pin, uint8_t y_pin);
+void disable_connection(uint8_t x_pin, uint8_t y_pin);
+void reset_crossbars(void);
+void strobe_crossbars(void);
 
 #ifdef __cplusplus
 }

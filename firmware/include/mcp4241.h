@@ -29,7 +29,7 @@ void incr_resistance(MCP4241_addr_t, SPI_HandleTypeDef *hspi);
 void decr_resistance(MCP4241_addr_t, SPI_HandleTypeDef *hspi);
 
 void set_resistance(MCP4241_addr_t, uint8_t, SPI_HandleTypeDef *hspi);
-uint8_t read_register(MCP4241_addr_t, SPI_HandleTypeDef *hspi);
+// uint8_t read_register(MCP4241_addr_t, SPI_HandleTypeDef *hspi);
 void write_register(MCP4241_addr_t, uint16_t, SPI_HandleTypeDef *hspi);
 
 #ifdef __cplusplus

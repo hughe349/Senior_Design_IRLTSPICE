@@ -12,9 +12,18 @@
 void setup_blinker(void);
 
 // defines
-#define START_STOP_CHAR 64
+// #define START_STOP_CHAR 64
 #define MAX_RES         127
 #define MIN_RES         0
+
+// demo
+// #define DEMO_DIGITAL_POT
+// // #define DEMO_CROSSBAR
+#define DEMO_HIGH_PASS
+// #define DEMO_LOW_PASS
+// #define DEMO_INVERTING_AMP
+// #define DEMO_SINE_SHAPER
+// #define DEMO_HALF_WAVE
 
 int main(void)
 {
@@ -31,24 +40,81 @@ int main(void)
   GPIOB->ODR &= 0;
 
   // reset crossbar
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, 1);
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, 0);
+  reset_crossbars();
 
-  enable_connection(0b00001100);
+  #ifdef DEMO_DIGITAL_POT
+    setup_blinker();
+    // enabling all connections in tcon
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
+    write_register(TCON_REG, 0x41FF, &hspi);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
+
+  // HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0); // manually framing w/ CS is needed rn, will be done by shift registers on real board
+  // set_resistance(V_WIPER_0, MAX_RES, &hspi);
+  // HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
 
 
-  while(1) {
-    enable_connection(0b00000010);
-    HAL_Delay(1000);
-    disable_connection(0b00000010);
-    enable_connection(0b00000001);
-    HAL_Delay(1000);
-    enable_connection(0b00000010);
-    HAL_Delay(1000);
-    disable_connection(0b00000010);
-    disable_connection(0b00000001);
-    HAL_Delay(1000);
+  while (1)
+  {
+    HAL_Delay(3000);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
+    set_resistance(V_WIPER_0, MAX_RES, &hspi);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
+
+    HAL_Delay(3000);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
+    set_resistance(V_WIPER_0, MIN_RES, &hspi);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
   }
+
+  #endif
+
+  #ifdef DEMO_LOW_PASS
+    enable_connection(0, 0);
+    enable_connection(1, 3);
+    enable_connection(4, 3);
+    enable_connection(5, 5);
+  #endif
+
+  #ifdef DEMO_HIGH_PASS
+    enable_connection(4, 0);
+    enable_connection(5, 3);
+    enable_connection(0, 3);
+    enable_connection(1, 5);
+  #endif
+
+  #ifdef DEMO_INVERTING_AMP
+    enable_connection(0, 0);
+
+    enable_connection(1, 1);
+    enable_connection(2, 1);
+    enable_connection(6, 1);
+
+    enable_connection(8, 3);
+    enable_connection(3, 3);
+
+    enable_connection(7, 5);
+  #endif
+
+  #ifdef DEMO_SINE_SHAPER
+    enable_connection(0, 0);
+
+    enable_connection(1, 3);
+    enable_connection(2, 3);
+    enable_connection(9, 3);
+    enable_connection(13, 3);
+
+    enable_connection(3, 5);
+    enable_connection(10, 5);
+    enable_connection(12, 5);
+  #endif
+
+  #ifdef DEMO_HALF_WAVE
+    enable_connection(12, 0);
+    enable_connection(13, 3);
+    enable_connection(0, 3);
+    enable_connection(1, 5);
+  #endif
 
 }
 
@@ -151,13 +217,13 @@ void SysTick_Handler(void)
 // }
 
 
-// void setup_blinker(void) {
-//   __HAL_RCC_GPIOC_CLK_ENABLE();
-//   GPIO_InitTypeDef GPIO_InitStruct = {0};
-//   GPIO_InitStruct.Pin = GPIO_PIN_6;
-//   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-//   GPIO_InitStruct.Pull = GPIO_NOPULL;
-//   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-//   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-//   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
-// }
+void setup_blinker(void) {
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  GPIO_InitStruct.Pin = GPIO_PIN_6;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
+}
