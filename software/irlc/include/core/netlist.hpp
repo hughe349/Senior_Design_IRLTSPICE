@@ -3,6 +3,7 @@
 // Master docs:
 // https://www.boost.org/doc/libs/latest/libs/graph/doc/table_of_contents.html
 
+#include "util/macros.hpp"
 #include <array>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_selectors.hpp>
@@ -56,38 +57,43 @@ struct RawNetlistVertexInfo {
 
 constexpr const std::array IRL_INPUT_NET_NAMES = {"INPUT"};
 constexpr const std::array IRL_OUTPUT_NET_NAMES = {"OUTPUT"};
-constexpr const std::array IRL_V_GROUND_NET_NAMES = {"0", "GND"};
+constexpr const std::array IRL_V_GND_NET_NAMES = {"0", "GND"};
 constexpr const std::array IRL_V_HIGH_NET_NAMES = {"VCC", "VDD", "+5V"};
 constexpr const std::array IRL_V_NEG_NET_NAMES = {"-5V"};
 
-template <typename A>
-static inline RawNetlistVertexInfo::NetValue
-_get_net_kind(auto &net_name, std::pair<A, RawNetlistVertexInfo::NetValue> option) {
-    auto opt = option;
-    if (std::find(opt.first.begin(), opt.first.end(), net_name) != opt.first.end()) {
-        return option.second;
-    } else {
-        return RawNetlistVertexInfo::NetValue::WIRE;
+#define NET_PAIR(KIND)                                                                             \
+    std::pair {                                                                                    \
+        std::span(IRL_##KIND##_NET_NAMES.begin(), IRL_##KIND##_NET_NAMES.end()),                   \
+            RawNetlistVertexInfo::KIND                                                             \
     }
-}
-template <typename A, typename... As>
-static inline RawNetlistVertexInfo::NetValue
-_get_net_kind(auto &net_name, std::pair<A, RawNetlistVertexInfo::NetValue> option,
-              std::pair<As, RawNetlistVertexInfo::NetValue>... options) {
-    auto opt = option;
-    if (std::find(opt.first.begin(), opt.first.end(), net_name) != opt.first.end()) {
-        return option.second;
-    } else {
-        return _get_net_kind(net_name, options...);
+
+constexpr std::array RECOGNIZED_NETS =
+    arrify(NET_PAIR(INPUT), NET_PAIR(OUTPUT), NET_PAIR(V_GND), NET_PAIR(V_HIGH), NET_PAIR(V_NEG));
+
+static inline const char *net_name(RawNetlistVertexInfo::NetValue const &netval) {
+    switch (netval) {
+    case RawNetlistVertexInfo::WIRE:
+        return "Normal Wire";
+    case RawNetlistVertexInfo::INPUT:
+        return "Circuit Input";
+    case RawNetlistVertexInfo::OUTPUT:
+        return "Circuit Output";
+    case RawNetlistVertexInfo::V_GND:
+        return "Ground";
+    case RawNetlistVertexInfo::V_HIGH:
+        return "Positive Voltage (5V)";
+    case RawNetlistVertexInfo::V_NEG:
+        return "Negative Voltage (-5V)";
     }
 }
 
 static inline RawNetlistVertexInfo::NetValue get_net_kind(auto &net_name) {
-    return _get_net_kind(net_name, std::pair{IRL_INPUT_NET_NAMES, RawNetlistVertexInfo::INPUT},
-                         std::pair{IRL_OUTPUT_NET_NAMES, RawNetlistVertexInfo::OUTPUT},
-                         std::pair{IRL_V_GROUND_NET_NAMES, RawNetlistVertexInfo::V_GND},
-                         std::pair{IRL_V_HIGH_NET_NAMES, RawNetlistVertexInfo::V_HIGH},
-                         std::pair{IRL_V_NEG_NET_NAMES, RawNetlistVertexInfo::V_NEG});
+    for (auto opt : RECOGNIZED_NETS) {
+        if (std::find(opt.first.begin(), opt.first.end(), net_name) != opt.first.end()) {
+            return opt.second;
+        }
+    }
+    return RawNetlistVertexInfo::NetValue::WIRE;
 };
 
 typedef enum NetlistEdgeKind {
@@ -154,9 +160,6 @@ typedef struct _AssignedNetList {
 // =========================================
 // I really should not have done this, but I realllly wanted it comptime w/o manually naming the
 // arrays Static members of constexpr lambdas being c++23 sucks :(
-
-template <typename T> consteval std::array<T, 0> arrify() { return std::array<T, 0>(); }
-template <typename... Ts> consteval auto arrify(Ts... elems) { return std::to_array({elems...}); }
 
 #define COMPONENT(KIND, NAME, NUMERIC, PFXS, VALS, PINS)                                           \
     static constexpr auto _##KIND##_pfxs = PFXS;                                                   \

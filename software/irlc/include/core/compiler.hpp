@@ -37,6 +37,7 @@ typedef enum unspecified_t { UNSPECIFIED } unspecified_t;
     TYPED_OPT(INFILE_OPT, "", std::optional<std::string>, std::nullopt,                            \
               "Input spice file to compile", GENERAL)                                              \
     FLAG_OPT(show_components, "", "List the references + values of recognized components", INFO)   \
+    FLAG_OPT(show_nets, "", "List special nets and their recognized names", INFO)                  \
     FLAG_OPT(verbose, "v", "Enable verbose output", GENERAL)
 
 struct IrlCompilerOptions {

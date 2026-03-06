@@ -63,8 +63,11 @@ int IrlCompiler::invoke() {
     uint32_t violations = verifier.check_netlist_violations(*netlist);
 
     if (violations > 0) {
-        log_error("Raw netlist failes validation rules");
+        log_error("Raw netlist fail validation rules");
+        return -1;
     }
+
+    try_assign(netlist);
 
     return 0;
 }
@@ -86,7 +89,6 @@ int IrlCompiler::print_info() {
     if (this->opts.show_components) {
         if (printed)
             cout << "\n===COMPONENTS===\n";
-
         printed++;
 
         int i = 0;
@@ -112,6 +114,30 @@ int IrlCompiler::print_info() {
                 cout << "\n  }\n";
             else
                 cout << "\n  },\n";
+        }
+        cout << "}\n";
+    }
+
+    if (this->opts.show_nets) {
+        if (printed)
+            cout << "\n===NETS===\n";
+        printed++;
+
+        cout << "{\n";
+        int i = 0;
+        for (auto &net : RECOGNIZED_NETS) {
+            cout << "  \"" << net_name(net.second) << "\": [ ";
+
+            cout << '"' << net.first[0] << '"';
+            for (int i = 1; i < net.first.size(); i++) {
+                cout << ", \"" << net.first[i] << '"';
+            }
+
+            i++;
+            if (i == (sizeof(RECOGNIZED_NETS) / sizeof(RECOGNIZED_NETS[0])))
+                cout << " ]\n";
+            else
+                cout << " ],\n";
         }
         cout << "}\n";
     }
