@@ -12,6 +12,7 @@ hardware/**/**-backups/**
 hardware/**/*.lck
 hardware/**/*auto_saved*
 hardware/**/**bak
+hardware/**/fp-info-cache
 
 # ========
 # Software
