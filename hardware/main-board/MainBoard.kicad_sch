@@ -3748,6 +3748,17 @@
 		)
 		(uuid "6b72234c-e980-45e0-a88b-8ec713eb01cc")
 	)
+	(hierarchical_label "WallAdpt"
+		(shape input)
+		(at 182.88 113.03 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "de06ab67-3cc0-485a-b305-3ea5ca4a960a")
+	)
 	(symbol
 		(lib_id "Amplifier_Operational:TL071")
 		(at 251.46 41.91 0)
@@ -5678,72 +5689,6 @@
 			(project "MainBoard"
 				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130"
 					(reference "J3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+5V")
-		(at 182.88 113.03 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "c48409f5-bb94-4b76-8d62-f791213f745d")
-		(property "Reference" "#PWR03"
-			(at 182.88 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+5V"
-			(at 182.88 107.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 182.88 113.03 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 182.88 113.03 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 182.88 113.03 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "5497f814-59d3-472c-9825-378a1ec5c93b")
-		)
-		(instances
-			(project ""
-				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130"
-					(reference "#PWR03")
 					(unit 1)
 				)
 			)
