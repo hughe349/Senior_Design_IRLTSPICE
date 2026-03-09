@@ -5210,7 +5210,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Fuse:Fuse_0603_1608Metric_Pad1.05x0.95mm_HandSolder"
 			(at 213.868 132.08 90)
 			(effects
 				(font
@@ -5722,7 +5722,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Fuse:Fuse_0603_1608Metric_Pad1.05x0.95mm_HandSolder"
 			(at 213.868 114.3 90)
 			(effects
 				(font
