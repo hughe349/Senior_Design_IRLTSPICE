@@ -1,7 +1,9 @@
 #include "boost/graph/breadth_first_search.hpp"
 #include "core/netlist.hpp"
+#include "util/boost_util.hpp"
 #include <core/route.hpp>
 #include <iostream>
+#include <memory>
 #include <ranges>
 #include <utility>
 
@@ -12,7 +14,7 @@ void prune_unconnected_nets(RawNetlist &netlist) {
     pair verts = boost::vertices(netlist);
     auto current = verts.first;
     while (current != verts.second) {
-        RawNetlist::vertex_descriptor prev = *current;
+        RawVert prev = *current;
         current++;
 
         if (netlist[prev].kind == NET &&
@@ -24,33 +26,28 @@ void prune_unconnected_nets(RawNetlist &netlist) {
     }
 }
 
+/* clang-format off */
 // Cells start white, get marked gray when in queue, then balck once finished
 //
 // The concept/intercae this needs to conform to
 // https://www.boost.org/doc/libs/latest/libs/graph/doc/BFSVisitor.html
-// Initialize Vertex 	vis.initialize_vertex(s, g) 	void 	This is invoked on every vertex of
-// the graph before the start of the graph search. Discover Vertex 	vis.discover_vertex(u, g)
-// void 	This is invoked when a vertex is encountered for the first time. Examine Vertex
-// vis.examine_vertex(u, g) 	void 	This is invoked on a vertex as it is popped from the queue.
-// This happens immediately before examine_edge() is invoked on each of the out-edges of vertex u.
-// Examine Edge 	vis.examine_edge(e, g) 	void 	This is invoked on every out-edge of each
-// vertex after it is discovered. Tree Edge 	vis.tree_edge(e, g) 	void 	This is invoked on
-// each edge as it becomes a member of the edges that form the search tree. Non-Tree Edge
-// vis.non_tree_edge(e, g) 	void 	This is invoked on back or cross edges for directed graphs
-// and cross edges for undirected graphs. Gray Target 	vis.gray_target(e, g) 	void 	This is
-// invoked on the subset of non-tree edges whose target vertex is colored gray at the time of
-// examination. The color gray indicates that the vertex is currently in the queue. Black Target
-// vis.black_target(e, g) 	void 	This is invoked on the subset of non-tree edges whose target
-// vertex is colored black at the time of examination. The color black indicates that the vertex has
-// been removed from the queue. Finish Vertex 	vis.finish_vertex(u, g) 	void 	This invoked
-// on a vertex after all of its out edges have been added to the search tree and all of the adjacent
-// vertices have been discovered (but before the out-edges of the adjacent vertices have been
-// examined).
+// Described here
+// ==============
+// Initialize Vertex 	vis.initialize_vertex(s, g) 	void 	This is invoked on every vertex of the graph before the start of the graph search.
+// Discover Vertex 	vis.discover_vertex(u, g) 	void 	This is invoked when a vertex is encountered for the first time.
+// Examine Vertex 	vis.examine_vertex(u, g) 	void 	This is invoked on a vertex as it is popped from the queue. This happens immediately before examine_edge() is invoked on each of the out-edges of vertex u.
+// Examine Edge 	vis.examine_edge(e, g)  	void 	This is invoked on every out-edge of each vertex after it is discovered.
+// Tree Edge    	vis.tree_edge(e, g)     	void 	This is invoked on each edge as it becomes a member of the edges that form the search tree.
+// Non-Tree Edge 	vis.non_tree_edge(e, g) 	void 	This is invoked on back or cross edges for directed graphs and cross edges for undirected graphs.
+// Gray Target  	vis.gray_target(e, g)   	void 	This is invoked on the subset of non-tree edges whose target vertex is colored gray at the time of examination. The color gray indicates that the vertex is currently in the queue. 
+// Black Target 	vis.black_target(e, g)  	void 	This is invoked on the subset of non-tree edges whose target vertex is colored black at the time of examination. The color black indicates that the vertex has been removed from the queue.
+// Finish Vertex 	vis.finish_vertex(u, g) 	void 	This invoked on a vertex after all of its out edges have been added to the search tree and all of the adjacent vertices have been discovered (but before the out-edges of the adjacent vertices have been examined).
+/* clang-format on */
 class CellAssigningVisitor : public boost::bfs_visitor<> {
   public:
-    RawNetlist::vertex_descriptor out_buff;
-    vector<RawNetlist::vertex_descriptor> &members;
-    using colormap = std::map<RawNetlist::vertex_descriptor, boost::default_color_type>;
+    RawVert out_buff;
+    vector<RawVert> &members;
+    using colormap = std::map<RawVert, boost::default_color_type>;
     colormap &vertex_coloring;
 
     CellAssigningVisitor(auto out_buff, auto &members, auto &colormap)
@@ -118,16 +115,21 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
     }
 };
 
-void try_assign(unique_ptr<RawNetlist> &raw) {
+unique_ptr<AssignedNetlist> try_assign(unique_ptr<RawNetlist> &raw) {
+
+    unique_ptr<AssignedNetlist> assigned(new AssignedNetlist);
 
     // Iterater over vertex_descriptors
     auto verts = boost::vertices(*raw);
 
     //                              .first = begin, .second = end
-    for (auto buff : ranges::subrange(verts.first, verts.second) |
-                         views::filter([&](auto x) { return (*raw)[x].kind == CELL_BUFFER; })) {
+    for (RawVert buff : pair_to_iter(verts) | views::filter([&](auto x) {
+                            return (*raw)[x].kind == CELL_BUFFER ||
+                                   ((*raw)[x].kind == NET &&
+                                    (*raw)[x].value.net_value == RawNetlistVertexInfo::OUTPUT);
+                        })) {
 
-        auto members = vector<RawNetlist::vertex_descriptor>{};
+        auto members = vector<RawVert>{};
 
         CellAssigningVisitor::colormap cmap{};
 
@@ -146,4 +148,6 @@ void try_assign(unique_ptr<RawNetlist> &raw) {
         }
         cout << "\n\n";
     }
+
+    return assigned;
 }

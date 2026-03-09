@@ -172,7 +172,7 @@ struct Tokenizer {
 
 // WARN:
 // If you move this out of this file it can't be string views they don't own.
-typedef unordered_map<string_view, RawNetlist::vertex_descriptor> NetNameMap;
+typedef unordered_map<string_view, RawVert> NetNameMap;
 typedef unordered_map<string_view, string_view> ModelMap;
 
 static inline void assert_net_count(int num, string_view reference, const string &filename,
@@ -201,8 +201,8 @@ static inline float get_component_value(string_view reference, const string &fil
     return value;
 }
 
-static inline RawNetlist::vertex_descriptor
-get_or_add_net(RawNetlist &netlist, NetNameMap &netnames, string_view net_name) {
+static inline RawVert get_or_add_net(RawNetlist &netlist, NetNameMap &netnames,
+                                     string_view net_name) {
 
     if (netnames.contains(net_name)) {
         return netnames[net_name];
@@ -283,7 +283,7 @@ void add_element(RawNetlist &netlist, NetNameMap &netnames, ModelMap &models,
         found_match = true;
 
         assert_net_count(recognized.pins.size(), reference, filename, line);
-        RawNetlist::vertex_descriptor vert;
+        RawVert vert;
         if (recognized.numeric_value) {
             float val = get_component_value(reference, filename, line);
             vert = boost::add_vertex(RawNetlistVertexInfo{.kind = recognized.component_kind,
