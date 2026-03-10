@@ -4070,7 +4070,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_1.00mm:PinHeader_1x32_P1.00mm_Horizontal"
+		(property "Footprint" "Connector_PinHeader_1.00mm:PinHeader_1x03_P1.00mm_Horizontal"
 			(at 49.53 111.76 0)
 			(effects
 				(font
@@ -4274,7 +4274,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_1.00mm:PinHeader_1x32_P1.00mm_Horizontal"
+		(property "Footprint" "Connector_PinHeader_1.00mm:PinHeader_1x03_P1.00mm_Horizontal"
 			(at 49.53 97.79 0)
 			(effects
 				(font
@@ -4781,7 +4781,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_1.00mm:PinHeader_1x32_P1.00mm_Horizontal"
+		(property "Footprint" "Connector_PinHeader_1.00mm:PinHeader_1x03_P1.00mm_Horizontal"
 			(at 81.28 166.37 0)
 			(effects
 				(font
@@ -4917,7 +4917,7 @@
 				)
 			)
 		)
-		(property "Footprint" "MT8816AF1:QFP80P1200X1200X120-44N"
+		(property "Footprint" "SeniorDesignFP:QFP80P1200X1200X120-44N"
 			(at 82.804 88.392 0)
 			(effects
 				(font
@@ -5649,7 +5649,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_1.00mm:PinHeader_1x32_P1.00mm_Horizontal"
+		(property "Footprint" "Connector_PinHeader_1.00mm:PinHeader_1x03_P1.00mm_Horizontal"
 			(at 81.28 156.21 0)
 			(effects
 				(font

@@ -14238,7 +14238,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MT8816AF1:QFP80P1200X1200X120-44N"
+		(property "Footprint" "SeniorDesignFP:QFP80P1200X1200X120-44N"
 			(at 272.034 115.062 0)
 			(effects
 				(font
@@ -15678,7 +15678,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MT8816AF1:QFP80P1200X1200X120-44N"
+		(property "Footprint" "SeniorDesignFP:QFP80P1200X1200X120-44N"
 			(at 358.394 115.062 0)
 			(effects
 				(font
@@ -16694,7 +16694,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MT8816AF1:QFP80P1200X1200X120-44N"
+		(property "Footprint" "SeniorDesignFP:QFP80P1200X1200X120-44N"
 			(at 315.214 87.122 0)
 			(effects
 				(font
@@ -18129,7 +18129,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MT8816AF1:QFP80P1200X1200X120-44N"
+		(property "Footprint" "SeniorDesignFP:QFP80P1200X1200X120-44N"
 			(at 358.394 143.002 0)
 			(effects
 				(font
@@ -19911,7 +19911,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MT8816AF1:QFP80P1200X1200X120-44N"
+		(property "Footprint" "SeniorDesignFP:QFP80P1200X1200X120-44N"
 			(at 272.034 87.122 0)
 			(effects
 				(font
@@ -21346,7 +21346,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MT8816AF1:QFP80P1200X1200X120-44N"
+		(property "Footprint" "SeniorDesignFP:QFP80P1200X1200X120-44N"
 			(at 315.214 115.062 0)
 			(effects
 				(font
@@ -21936,7 +21936,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MT8816AF1:QFP80P1200X1200X120-44N"
+		(property "Footprint" "SeniorDesignFP:QFP80P1200X1200X120-44N"
 			(at 315.214 143.002 0)
 			(effects
 				(font
@@ -25622,7 +25622,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MT8816AF1:QFP80P1200X1200X120-44N"
+		(property "Footprint" "SeniorDesignFP:QFP80P1200X1200X120-44N"
 			(at 358.394 87.122 0)
 			(effects
 				(font
@@ -27470,7 +27470,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "MT8816AF1:QFP80P1200X1200X120-44N"
+		(property "Footprint" "SeniorDesignFP:QFP80P1200X1200X120-44N"
 			(at 272.034 143.002 0)
 			(effects
 				(font

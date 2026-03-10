@@ -3944,7 +3944,7 @@
 				)
 			)
 		)
-		(property "Footprint" "MT8816AF1:QFP80P1200X1200X120-44N"
+		(property "Footprint" "SeniorDesignFP:QFP80P1200X1200X120-44N"
 			(at 140.716 172.212 0)
 			(effects
 				(font
@@ -7083,7 +7083,7 @@
 				)
 			)
 		)
-		(property "Footprint" "MT8816AF1:QFP80P1200X1200X120-44N"
+		(property "Footprint" "SeniorDesignFP:QFP80P1200X1200X120-44N"
 			(at 239.014 172.212 0)
 			(effects
 				(font
