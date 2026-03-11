@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core/compiler.hpp"
 #include "core/netlist.hpp"
 #include <variant>
 #include <vector>
@@ -35,9 +36,17 @@ typedef struct _AssignedNetList {
     StdCell const &get_cell(RawVert v);
 } AssignedNetlist;
 
-// Remove nets that are unconnected.
-void prune_unconnected_nets(RawNetlist &netlist);
+class TspiceRouter {
+  private:
+    IrlCompiler const &compiler;
 
-// Either returns null, and raw remains a valid pointer, or returns a real pointer and raw is
-// invalidated (moved to the returned AssignedNetlist).
-std::unique_ptr<AssignedNetlist> try_assign(std::unique_ptr<RawNetlist> &raw);
+  public:
+    TspiceRouter(IrlCompiler const &compiler) : compiler(compiler) {};
+
+    // Remove nets that are unconnected.
+    void prune_unconnected_nets(RawNetlist &netlist);
+
+    // Either returns null, and raw remains a valid pointer, or returns a real pointer and raw is
+    // invalidated (moved to the returned AssignedNetlist).
+    std::unique_ptr<AssignedNetlist> try_assign(std::unique_ptr<RawNetlist> &raw);
+};

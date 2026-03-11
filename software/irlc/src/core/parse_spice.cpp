@@ -1,23 +1,15 @@
-#include "boost/graph/breadth_first_search.hpp"
-#include "boost/graph/filtered_graph.hpp"
-#include "boost/graph/graph_traits.hpp"
-#include "boost/graph/named_function_params.hpp"
-#include "boost/graph/properties.hpp"
 #include "core/debug.hpp"
 #include "core/netlist.hpp"
 #include "core/parse.hpp"
-#include "util/macros.hpp"
 #include <cassert>
 #include <cctype>
 #include <charconv>
 #include <cstdint>
 #include <iostream>
 #include <memory>
-#include <ranges>
 #include <string>
 #include <string_view>
 #include <unordered_map>
-#include <utility>
 #include <vector>
 
 using namespace std;
@@ -79,7 +71,7 @@ struct Tokenizer {
         next_is_first_of_line = false;
         is_continuation = false;
 
-        this->skip_to_newline();
+        skip_to_newline();
     }
 
     // Next deref will give us a newline
@@ -214,7 +206,6 @@ static inline RawVert get_or_add_net(RawNetlist &netlist, NetNameMap &netnames,
         netlist);
 
     netnames[net_name] = net;
-    // cout << "Added string_view\n";
     return net;
 }
 
@@ -337,11 +328,11 @@ unique_ptr<RawNetlist> SpiceParser::try_parse(const string &filename, string_vie
         tokens.push_back(token);
     } while (token.kind != END_OF_FILE);
 
-    // TODO:
-    // If print array
-    for (Token &tok : tokens) {
-        std::cout << "Kind: " << tok.kind << ", Line: " << tok.line_number << ", Val: ["
-                  << tok.underlying << "]\n";
+    if (compiler.opts.should_verbose_lex()) {
+        for (Token &tok : tokens) {
+            compiler.log_fd << "Kind: " << tok.kind << ", Line: " << tok.line_number << ", Val: ["
+                            << tok.underlying << "]\n";
+        }
     }
 
     NetNameMap netnames{};
@@ -377,28 +368,35 @@ unique_ptr<RawNetlist> SpiceParser::try_parse(const string &filename, string_vie
             }
         } while (should_continue);
 
-        cout << "Line contains: [ ";
-        for (const Token *t : line) {
-            cout << '\'' << t->underlying << "', ";
+        if (compiler.opts.should_verbose_parse()) {
+            compiler.log_fd << "Line contains: [ ";
+            for (const Token *t : line) {
+                compiler.log_fd << '\'' << t->underlying << "', ";
+            }
+            compiler.log_fd << " ]\n";
         }
-        cout << " ]\n";
 
         if (line[0]->underlying[0] == '.') {
             string_view cmd = string_view(&line[0]->underlying[1], line[0]->underlying.size() - 1);
-            cout << "Line is a dot cmd: " << cmd << "\n";
+            if (compiler.opts.should_verbose_parse())
+                compiler.log_fd << "Line is a dot cmd: " << cmd << "\n";
             if (cmd == "model" && line.size() == 3) {
-                cout << "    Model command!\n";
+                if (compiler.opts.should_verbose_parse())
+                    compiler.log_fd << "    Model command!\n";
                 models[line[1]->underlying] = line[2]->underlying;
             } else {
-                cout << "    Unknown command. Skipping.\n";
+                if (compiler.opts.should_verbose_parse())
+                    compiler.log_fd << "    Unknown command. Skipping.\n";
             }
         } else {
             add_element(*netlist, netnames, models, line, filename);
-            cout << " Added!\n";
+            if (compiler.opts.should_verbose_parse())
+                compiler.log_fd << " Added!\n";
         }
     }
 
-    debug_print_netlist(cout, *netlist);
+    if (compiler.opts.should_verbose_parse())
+        debug_print_netlist(compiler.log_fd, *netlist);
 
     return netlist;
 }

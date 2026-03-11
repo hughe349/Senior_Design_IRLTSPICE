@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core/compiler.hpp"
 #include "core/netlist.hpp"
 #include <array>
 #include <iostream>
@@ -12,7 +13,8 @@
 // An interface for a parser that can take an input circuit into a raw netlist
 class INetlistParser {
   protected:
-    INetlistParser() {}
+    IrlCompiler const &compiler;
+    INetlistParser(IrlCompiler const &compiler) : compiler(compiler) {}
 
   public:
     virtual const char *parser_name() const = 0;
@@ -45,7 +47,7 @@ class ParseException : public std::runtime_error {
 // Simple spice netlist format parser
 class SpiceParser : public INetlistParser {
   public:
-    SpiceParser() {}
+    SpiceParser(IrlCompiler const &compiler) : INetlistParser(compiler) {}
 
     static bool matches_filename(const std::string &filename);
 
@@ -58,7 +60,7 @@ class SpiceParser : public INetlistParser {
 // KiCad eeschema xml parser
 class EeschemaParser : public INetlistParser {
   public:
-    EeschemaParser() {}
+    EeschemaParser(IrlCompiler const &compiler) : INetlistParser(compiler) {}
 
     static bool matches_filename(const std::string &filename);
 
@@ -74,7 +76,7 @@ template <typename... Parsers> class ParserFactory {
     // Gets the parsers in a prioritized list based on the terrible filename heuristic
     // Parser 0 is best, parser 1 second best, etc
     static std::array<INetlistParser *, sizeof...(Parsers)>
-    make_parsers_prioritized(const std::string &filename) {
+    make_parsers_prioritized(const std::string &filename, IrlCompiler const &compiler) {
         std::array<INetlistParser *, sizeof...(Parsers)> all{};
 
         INetlistParser **good_ind = &all[0];
@@ -84,12 +86,10 @@ template <typename... Parsers> class ParserFactory {
             [&]() {
                 bool parser_good = Parsers::matches_filename(filename);
                 if (parser_good) {
-                    std::cout << "good\n";
-                    *good_ind = new Parsers();
+                    *good_ind = new Parsers(compiler);
                     good_ind++;
                 } else {
-                    std::cout << "bad\n";
-                    *bad_ind = new Parsers();
+                    *bad_ind = new Parsers(compiler);
                     bad_ind--;
                 }
             }(),

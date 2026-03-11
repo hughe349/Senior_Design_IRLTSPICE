@@ -1,3 +1,4 @@
+#include "core/compiler.hpp"
 #include "core/parse.hpp"
 #include <catch2/catch_test_macros.hpp>
 #include <fstream>
@@ -10,19 +11,22 @@
 
 TEST_CASE("Factory Identifies Parsers", "[parse]") {
 
+    std::ostringstream dummy_out{};
+    auto c = IrlCompiler(IrlCompilerOptions{0}, dummy_out);
+
     std::string filename1 = "fakefile.cir";
     std::string filename2 = "fakefile.xml";
 
     std::stringstream filecontents;
     filecontents.str("Blah Blah Blah");
 
-    auto spiceparsers = AllParsersFactory::make_parsers_prioritized(filename1);
+    auto spiceparsers = AllParsersFactory::make_parsers_prioritized(filename1, c);
 
     REQUIRE(spiceparsers.size() == 2);
     REQUIRE(dynamic_cast<SpiceParser *>(spiceparsers[0]) != nullptr);
     REQUIRE(dynamic_cast<EeschemaParser *>(spiceparsers[1]) != nullptr);
 
-    auto eeschemaparsers = AllParsersFactory::make_parsers_prioritized(filename2);
+    auto eeschemaparsers = AllParsersFactory::make_parsers_prioritized(filename2, c);
 
     REQUIRE(eeschemaparsers.size() == 2);
     REQUIRE(dynamic_cast<EeschemaParser *>(eeschemaparsers[0]) != nullptr);
@@ -30,6 +34,8 @@ TEST_CASE("Factory Identifies Parsers", "[parse]") {
 }
 
 TEST_CASE("Parsing Tokenizes", "[parse]") {
+    std::ostringstream dummy_out{};
+    auto c = IrlCompiler(IrlCompilerOptions{0}, dummy_out);
 
     std::string filename1 = "../../tests/data/User_BJT.cir";
 
@@ -43,7 +49,7 @@ TEST_CASE("Parsing Tokenizes", "[parse]") {
 
     std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
 
-    auto spiceparsers = AllParsersFactory::make_parsers_prioritized(filename1);
+    auto spiceparsers = AllParsersFactory::make_parsers_prioritized(filename1, c);
 
     spiceparsers[0]->try_parse(filename1, content);
 

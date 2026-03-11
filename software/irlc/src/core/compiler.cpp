@@ -14,33 +14,33 @@ using namespace std;
 
 int IrlCompiler::invoke() {
 
-    int info_count = this->print_info();
+    int info_count = print_info();
     if (info_count != 0) {
         return 0;
     }
 
-    if (!this->opts.input_file) {
+    if (!opts.input_file) {
         log_error("Input file not specified");
         return -1;
     }
 
-    ifstream in_file(*(this->opts.input_file));
+    ifstream in_file(*opts.input_file);
     if (!in_file.is_open()) {
-        log_error("Could not open input file: " + *(this->opts.input_file));
+        log_error("Could not open input file: " + *opts.input_file);
         return -1;
     }
 
     std::string in_content(istreambuf_iterator<char>{in_file}, istreambuf_iterator<char>{});
 
-    auto parsers = AllParsersFactory().make_parsers_prioritized(*(this->opts.input_file));
+    auto parsers = AllParsersFactory().make_parsers_prioritized(*opts.input_file, *this);
 
     unique_ptr<RawNetlist> netlist(nullptr);
     for (const INetlistParser *parser : parsers) {
-        if (this->verbose()) {
-            cout << "Attempting parser: " << parser->parser_name() << "\n";
+        if (opts.should_verbose_parse()) {
+            log_fd << "Attempting parser: " << parser->parser_name() << "\n";
         }
         try {
-            netlist = std::move(parser->try_parse(*(this->opts.input_file), in_content));
+            netlist = std::move(parser->try_parse(*opts.input_file, in_content));
             break;
         } catch (ParseException e) {
             log_error(e.what());
@@ -50,13 +50,17 @@ int IrlCompiler::invoke() {
     }
 
     if (netlist == nullptr) {
-        log_error("Failed to parse input file: " + *(this->opts.input_file));
+        log_error("Failed to parse input file: " + *opts.input_file);
         return -1;
     }
 
-    prune_unconnected_nets(*netlist);
+    TspiceRouter router(*this);
 
-    debug_print_netlist(cout, *netlist);
+    router.prune_unconnected_nets(*netlist);
+
+    if (opts.should_verbose_final_netlist()) {
+        debug_print_netlist(log_fd, *netlist);
+    }
 
     IrlVerifier verifier(*this);
 
@@ -67,7 +71,7 @@ int IrlCompiler::invoke() {
         return -1;
     }
 
-    try_assign(netlist);
+    router.try_assign(netlist);
 
     return 0;
 }
@@ -76,17 +80,17 @@ int IrlCompiler::print_info() {
     int printed = 0;
 
     // Printed by main
-    if (this->opts.help)
+    if (opts.help)
         printed++;
 
-    if (this->opts.version) {
+    if (opts.version) {
         if (printed)
             cout << "\n===VERSION===\n";
         cout << "TODO, get a real version\n";
         printed++;
     }
 
-    if (this->opts.show_components) {
+    if (opts.show_components) {
         if (printed)
             cout << "\n===COMPONENTS===\n";
         printed++;
@@ -118,7 +122,7 @@ int IrlCompiler::print_info() {
         cout << "}\n";
     }
 
-    if (this->opts.show_nets) {
+    if (opts.show_nets) {
         if (printed)
             cout << "\n===NETS===\n";
         printed++;

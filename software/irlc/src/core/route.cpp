@@ -4,6 +4,7 @@
 #include "boost/graph/filtered_graph.hpp"
 #include "boost/graph/properties.hpp"
 #include "boost/unordered/unordered_map_fwd.hpp"
+#include "core/compiler.hpp"
 #include "core/netlist.hpp"
 #include "core/verify.hpp"
 #include "util/boost_util.hpp"
@@ -26,7 +27,7 @@
 using namespace std;
 using namespace boost;
 
-void prune_unconnected_nets(RawNetlist &netlist) {
+void TspiceRouter::prune_unconnected_nets(RawNetlist &netlist) {
     pair verts = boost::vertices(netlist);
     auto current = verts.first;
     while (current != verts.second) {
@@ -71,7 +72,7 @@ void StdCell::to_str(std::ostream &ostream, RawNetlist const raw) {
 StdCell const &AssignedNetlist::get_cell(RawVert v) {
     // NOTE:
     // Could just make this an unordered_map but I like saving memory :)
-    for (auto &cell : this->cells) {
+    for (auto &cell : cells) {
         if (cell.buffer == v) {
             return cell;
         }
@@ -108,10 +109,12 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
     colormap &vertex_coloring;
     prevmap &previous_map;
     idmap const &buffer_outputs;
+    IrlCompiler const &compiler;
 
-    CellAssigningVisitor(StdCell &cell, auto &colormap, auto &buffer_outputs, auto &previous_map)
+    CellAssigningVisitor(StdCell &cell, auto &colormap, auto &buffer_outputs, auto &previous_map,
+                         IrlCompiler const &compiler)
         : cell(cell), vertex_coloring(colormap), buffer_outputs(buffer_outputs),
-          previous_map(previous_map) {}
+          previous_map(previous_map), compiler(compiler) {}
 
     // This gets called right before the target's color is checked, so here
     // we can make all the other buffers black, and if we are going into a buffer's input we can
@@ -121,7 +124,8 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
         auto edge = g[e];
         auto u = boost::source(e, g);
         auto v = boost::target(e, g);
-        std::cout << "Edge from [" << g[u].name << "] to [" << g[v].name << "]\n";
+        if (compiler.opts.should_verbose_cell_assign())
+            compiler.log_fd << "Edge from [" << g[u].name << "] to [" << g[v].name << "]\n";
 
         // If we are starting...
         //   if we're leaving out the input of the buffer we want to do normal stuff.
@@ -138,7 +142,8 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
             switch (g[v].value.net_value) {
             case RawNetlistVertexInfo::V_HIGH:
             case RawNetlistVertexInfo::V_NEG: {
-                cout << "  V\n";
+                if (compiler.opts.should_verbose_cell_assign())
+                    compiler.log_fd << "  V\n";
                 if (buffer_outputs.contains(v)) {
                     rule_failed<"Buffer must not drive voltage">();
                 }
@@ -160,6 +165,8 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
                 }
             } break;
             case RawNetlistVertexInfo::V_GND:
+                if (compiler.opts.should_verbose_cell_assign())
+                    compiler.log_fd << "  GND\n";
                 if (buffer_outputs.contains(v)) {
                     rule_failed<"Buffer must not drive voltage">();
                 }
@@ -172,6 +179,8 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
                 vertex_coloring[v] = boost::black_color;
                 break;
             case RawNetlistVertexInfo::INPUT:
+                if (compiler.opts.should_verbose_cell_assign())
+                    compiler.log_fd << "  INPUT\n";
                 if (buffer_outputs.contains(v)) {
                     rule_failed<"Buffer must not drive voltage">();
                 }
@@ -277,7 +286,7 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
     void tree_edge(RawEdge e, const RawNetlist &g) { previous_map[target(e, g)] = source(e, g); }
 };
 
-unique_ptr<AssignedNetlist> try_assign(unique_ptr<RawNetlist> &raw) {
+unique_ptr<AssignedNetlist> TspiceRouter::try_assign(unique_ptr<RawNetlist> &raw) {
 
     unique_ptr<AssignedNetlist> assigned(new AssignedNetlist);
     assigned->cells = vector<StdCell>{};
@@ -319,20 +328,22 @@ unique_ptr<AssignedNetlist> try_assign(unique_ptr<RawNetlist> &raw) {
 
     for (StdCell &cell : assigned->cells) {
 
-        cout << "Assigning cell: " << cell.id << ", which starts at: " << (*raw)[cell.buffer].name
-             << "\n";
+        if (compiler.opts.should_verbose_cell_assign())
+            compiler.log_fd << "Assigning cell: " << cell.id
+                            << ", which starts at: " << (*raw)[cell.buffer].name << "\n";
 
         cell.nets = vector<RawVert>{};
         cell.components = vector<RawVert>{};
 
         pmap.clear();
         cmap.clear();
-        CellAssigningVisitor vis = CellAssigningVisitor(cell, cmap, buffer_outputs, pmap);
+        CellAssigningVisitor vis = CellAssigningVisitor(cell, cmap, buffer_outputs, pmap, compiler);
 
         boost::breadth_first_search(
             *raw, cell.buffer, boost::visitor(vis).color_map(boost::make_assoc_property_map(cmap)));
 
-        cell.to_str(cout, *raw);
+        if (compiler.opts.should_verbose_cell_assign())
+            cell.to_str(compiler.log_fd, *raw);
     }
 
     // Only after success can we take ownership of raw

@@ -13,19 +13,18 @@ uint32_t IrlVerifier::check_netlist_violations(RawNetlist const &netlist) {
     for (auto const &rule : RAW_GRAPH_RULES) {
         auto result = rule.rule(netlist);
         visit(overloads{[&](no_violation_t const &_) {
-                            if (this->compiler.verbose()) {
-                                this->compiler.log_fd << "Rule " << rule.rule_name << " PASSED!"
-                                                      << "\n";
+                            if (compiler.opts.should_verbose_verify()) {
+                                compiler.log_fd << "Rule " << rule.rule_name << " PASSED!"
+                                                << "\n";
                             }
                         },
                         [&](string msg) {
                             violation_count++;
-                            this->compiler.log_fd << "VIOLATION of graph rule [" << rule.rule_name
-                                                  << "]";
+                            compiler.log_fd << "VIOLATION of graph rule [" << rule.rule_name << "]";
                             if (msg.size() > 0) {
-                                this->compiler.log_fd << ":\n    " << msg << "\n";
+                                compiler.log_fd << ":\n    " << msg << "\n";
                             } else {
-                                this->compiler.log_fd << "\n";
+                                compiler.log_fd << "\n";
                             }
                         }},
               result);
@@ -36,20 +35,19 @@ uint32_t IrlVerifier::check_netlist_violations(RawNetlist const &netlist) {
         for (auto const &rule : RAW_VERTEX_RULES) {
             auto result = rule.rule(netlist, v);
             visit(overloads{[&](no_violation_t const &_) {
-                                if (this->compiler.verbose()) {
-                                    this->compiler.log_fd << "Rule " << rule.rule_name
-                                                          << " PASSED by: " << netlist[v].name
-                                                          << "\n";
+                                if (compiler.opts.should_verbose_verify()) {
+                                    compiler.log_fd << "Rule " << rule.rule_name
+                                                    << " PASSED by: " << netlist[v].name << "\n";
                                 }
                             },
                             [&](string msg) {
                                 violation_count++;
-                                this->compiler.log_fd << "VIOLATION at [" << netlist[v].name
-                                                      << "] of rule [" << rule.rule_name << "]";
+                                compiler.log_fd << "VIOLATION at [" << netlist[v].name
+                                                << "] of rule [" << rule.rule_name << "]";
                                 if (msg.size() > 0) {
-                                    this->compiler.log_fd << ":\n    " << msg << "\n";
+                                    compiler.log_fd << ":\n    " << msg << "\n";
                                 } else {
-                                    this->compiler.log_fd << "\n";
+                                    compiler.log_fd << "\n";
                                 }
                             }},
                   result);
