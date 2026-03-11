@@ -5,16 +5,24 @@
 #include <vector>
 
 typedef enum circuit_input_t { CIRCUIT_INPUT } circuit_input_t;
-typedef std::variant<circuit_input_t, uint32_t> CellInputId;
+typedef enum ground_input_t { GROUND_INPUT } ground_input_t;
+typedef std::variant<circuit_input_t, ground_input_t, uint32_t> CellInputId;
 
 typedef struct _StdCell {
+    // This cell's arbitrary id. Must be the same as index in AssignedNetList->cells vec
     uint32_t id;
+    // This cell's output buffer
+    RawVert buffer;
+    // Nets in this cell including inputs and output
     std::vector<RawVert> nets;
+    // Components in this cell. Not counting output buffer
     std::vector<RawVert> components;
     // The net right before the output buffer. Element of nets field
-    RawVert output_net;
+    RawVert pre_buffer_output_net;
     // input nets and which std cell the come from. Subset of nets field
     std::vector<std::pair<RawVert, CellInputId>> input_nets;
+
+    void to_str(std::ostream &ostream, RawNetlist const raw);
 } StdCell;
 
 // An AssignedNetList has assigned each component (not each net) to std cells
@@ -22,6 +30,9 @@ typedef struct _StdCell {
 typedef struct _AssignedNetList {
     std::unique_ptr<const RawNetlist> raw_list;
     std::vector<StdCell> cells;
+
+    // Maps a vert for a cell's buffer to a cell reference.
+    StdCell const &get_cell(RawVert v);
 } AssignedNetlist;
 
 // Remove nets that are unconnected.

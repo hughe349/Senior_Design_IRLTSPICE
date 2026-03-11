@@ -148,6 +148,7 @@ typedef boost::adjacency_list<boost::vecS, boost::listS, boost::undirectedS, Raw
     RawNetlist;
 
 typedef RawNetlist::vertex_descriptor RawVert;
+typedef RawNetlist::edge_descriptor RawEdge;
 
 // Bullshit for listing parseable components
 // =========================================

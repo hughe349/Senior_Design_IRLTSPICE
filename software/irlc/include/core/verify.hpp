@@ -5,8 +5,11 @@
 #include "core/compiler.hpp"
 #include "core/netlist.hpp"
 #include "util/boost_util.hpp"
+#include "util/macros.hpp"
 #include <cstdint>
+#include <cstring>
 #include <ranges>
+#include <stdexcept>
 #include <string>
 #include <variant>
 
@@ -30,6 +33,8 @@ struct RawNetlistGraphRule {
     const char *rule_name;
     GraphRuleViolates_t rule;
 };
+
+typedef std::variant<const RawNetlistGraphRule *, const RawNetlistVertexRule *> RawNetlistRuleRef;
 
 class IrlVerifier {
     IrlCompiler const &compiler;
@@ -108,15 +113,16 @@ constexpr std::array RAW_VERTEX_RULES = {
         },
     },
     RawNetlistVertexRule{
-        .rule_name = "Passive components should not be bypassed",
+        .rule_name = "Components should not be bypassed",
         .rule = [](RawNetlist const &netlist, RawVert v) -> RuleViolationResult {
-            if (netlist[v].kind == R || netlist[v].kind == C || netlist[v].kind == DIODE) {
+            if (netlist[v].kind == R || netlist[v].kind == C || netlist[v].kind == DIODE ||
+                netlist[v].kind == CELL_BUFFER) {
             } else {
                 return NO_VIOLATION;
             }
 
             if (boost::out_degree(v, netlist) != 2) {
-                return "Passive component must be connected to 2 nets";
+                return "Component must be connected to 2 nets";
             }
 
             std::pair edges = boost::out_edges(v, netlist);
@@ -171,4 +177,62 @@ constexpr std::array RAW_VERTEX_RULES = {
 
             return NO_VIOLATION;
         },
-    }};
+    },
+    RawNetlistVertexRule{
+        .rule_name = "Buffer must not drive voltage",
+        .rule = [](RawNetlist const &netlist, RawVert v) -> RuleViolationResult {
+            if (netlist[v].kind != CELL_BUFFER)
+                return NO_VIOLATION;
+
+            for (auto e : pair_to_iter(boost::out_edges(v, netlist))) {
+
+                RawNetlistVertexInfo const &target_info = netlist[boost::target(e, netlist)];
+                assert(target_info.kind == NET);
+
+                if (netlist[e].kind == PIN_CELL_BUFFER_OUT) {
+                    if (target_info.value.net_value == RawNetlistVertexInfo::V_GND ||
+                        target_info.value.net_value == RawNetlistVertexInfo::V_HIGH ||
+                        target_info.value.net_value == RawNetlistVertexInfo::V_NEG ||
+                        target_info.value.net_value == RawNetlistVertexInfo::INPUT) {
+                        return "";
+                    }
+                }
+            }
+
+            return NO_VIOLATION;
+        },
+    },
+};
+
+consteval RawNetlistRuleRef get_rule(const char *rule_name) {
+    RawNetlistRuleRef value;
+    bool found_value = false;
+    for (RawNetlistVertexRule const &vert_rule : RAW_VERTEX_RULES) {
+        if (std::string(vert_rule.rule_name).compare(rule_name) == 0) {
+            return &vert_rule;
+            // found_value = true;
+        }
+    }
+    for (RawNetlistGraphRule const &graph_rule : RAW_GRAPH_RULES) {
+        if (std::string(graph_rule.rule_name).compare(rule_name) == 0) {
+            return &graph_rule;
+            // found_value = true;
+        }
+    }
+
+    throw std::string("No rule matching name ") + rule_name;
+}
+
+// Asserts that a rule has been violated, so somehow the rule checker has failed or a rule was
+// improperly written.
+template <StringLiteral rule_name> void rule_failed() {
+    auto rule = get_rule(rule_name.value);
+    std::visit(
+        [](auto r) {
+            throw std::runtime_error(std::string("An assupmtion protected by rule \"") +
+                                     rule_name.value +
+                                     "\" has been violated, indicating a problem with irlc's "
+                                     "implementation. Please report this bug");
+        },
+        rule);
+}

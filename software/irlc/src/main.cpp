@@ -87,9 +87,9 @@ IrlCompilerOptions build_compiler_options(std::map<std::string, po::variable_val
     // #undef TYPED_OPT
 
 #define FLAG_OPT(LONG_N, SHORT_N, MSG, CATEGORY)                                                   \
-    .LONG_N = vm.count(flagify(QUOTE(LONG_N)).c_str()) > 0,
+    .LONG_N = vm.contains(flagify(QUOTE(LONG_N)).c_str()),
 #define TYPED_OPT(LONG_N, SHORT_N, TYPE, DEFAULT, MSG, CATEGORY)                                   \
-    .LONG_N = vm.count(flagify(QUOTE(LONG_N)).c_str()) > 0                                         \
+    .LONG_N = vm.contains(flagify(QUOTE(LONG_N)).c_str())                                          \
                   ? vm[flagify(QUOTE(LONG_N)).c_str()].as<TYPE>()                                  \
                   : DEFAULT,
 
