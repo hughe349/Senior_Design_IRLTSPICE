@@ -1,4 +1,4 @@
 (fp_lib_table
   (version 7)
-  (lib (name "SeniorDesignFP")(type "KiCad")(uri "C:/Users/sklzf/OneDrive/Documents/Senior_Design_IRLTSPICE/hardware/SeniorDesignFP.pretty")(options "")(descr ""))
+  (lib (name "SeniorDesignFP")(type "KiCad")(uri "/Users/claytonhughes/Dropbox/ECE49022/Senior_Design_IRLTSPICE/hardware/SeniorDesignFP.pretty")(options "")(descr ""))
 )
