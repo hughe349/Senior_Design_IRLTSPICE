@@ -42,11 +42,11 @@ int main(void)
   // reset crossbar
   reset_crossbars();
 
-  #ifdef DEMO_DIGITAL_POT
+  // #ifdef DEMO_DIGITAL_POT
     setup_blinker();
     // enabling all connections in tcon
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
-    write_register(TCON_REG, 0x41FF, &hspi);
+    // HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
+    // write_register(1, 0x41FF, &hspi);
     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
 
   // HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0); // manually framing w/ CS is needed rn, will be done by shift registers on real board
@@ -56,18 +56,20 @@ int main(void)
 
   while (1)
   {
-    HAL_Delay(3000);
+    // for (uint8_t i = 0; i < 128; i++) {
+    HAL_Delay(100);
     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
-    set_resistance(V_WIPER_0, MAX_RES, &hspi);
+    set_resistance(0, MIN_RES + 1, &hspi);
     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
 
-    HAL_Delay(3000);
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
-    set_resistance(V_WIPER_0, MIN_RES, &hspi);
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
+    // HAL_Delay(3000);
+    // HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
+    // set_resistance(0, MIN_RES, &hspi);
+    // HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
+    // }
   }
 
-  #endif
+  // #endif
 
   #ifdef DEMO_LOW_PASS
     enable_connection(0, 0);

@@ -23,7 +23,7 @@ void setup_spi(SPI_HandleTypeDef *hspi)
   hspi->Instance                = SPI1;
   hspi->Init.Mode               = SPI_MODE_MASTER;
   hspi->Init.Direction          = SPI_DIRECTION_2LINES;
-  hspi->Init.DataSize           = SPI_DATASIZE_8BIT;
+  hspi->Init.DataSize           = SPI_DATASIZE_10BIT;
   hspi->Init.CLKPolarity        = SPI_POLARITY_LOW;
   hspi->Init.CLKPhase           = SPI_PHASE_1EDGE;
   hspi->Init.NSS                = SPI_NSS_SOFT;
