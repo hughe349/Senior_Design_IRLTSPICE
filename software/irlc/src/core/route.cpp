@@ -4,6 +4,7 @@
 #include "boost/graph/filtered_graph.hpp"
 #include "boost/graph/properties.hpp"
 #include "boost/unordered/unordered_map_fwd.hpp"
+#include "core/board_info.hpp"
 #include "core/compiler.hpp"
 #include "core/netlist.hpp"
 #include "core/verify.hpp"
@@ -34,8 +35,7 @@ void TspiceRouter::prune_unconnected_nets(RawNetlist &netlist) {
         RawVert prev = *current;
         current++;
 
-        if (netlist[prev].kind == NET &&
-            netlist[prev].value.net_value == RawNetlistVertexInfo::WIRE &&
+        if (netlist[prev].kind == NET && netlist[prev].value.net_value == WIRE &&
             in_degree(prev, netlist) < 2) {
             clear_vertex(prev, netlist);
             remove_vertex(prev, netlist);
@@ -140,8 +140,8 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
         } else if (g[v].kind == NET) {
             // Here we are going to a net. Lots of special cases here.
             switch (g[v].value.net_value) {
-            case RawNetlistVertexInfo::V_HIGH:
-            case RawNetlistVertexInfo::V_NEG: {
+            case V_HIGH:
+            case V_NEG: {
                 if (compiler.opts.should_verbose_cell_assign())
                     compiler.log_fd << "  V\n";
                 if (buffer_outputs.contains(v)) {
@@ -164,7 +164,7 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
                                                     net_name(g[v].value.net_value)));
                 }
             } break;
-            case RawNetlistVertexInfo::V_GND:
+            case V_GND:
                 if (compiler.opts.should_verbose_cell_assign())
                     compiler.log_fd << "  GND\n";
                 if (buffer_outputs.contains(v)) {
@@ -178,7 +178,7 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
                 // But we don't want to visit it, because it leads to other cells
                 vertex_coloring[v] = boost::black_color;
                 break;
-            case RawNetlistVertexInfo::INPUT:
+            case INPUT:
                 if (compiler.opts.should_verbose_cell_assign())
                     compiler.log_fd << "  INPUT\n";
                 if (buffer_outputs.contains(v)) {
@@ -193,14 +193,14 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
                 // We don't want to visit it, though, because it leads to other cells
                 vertex_coloring[v] = boost::black_color;
                 break;
-            case RawNetlistVertexInfo::OUTPUT:
+            case OUTPUT:
                 // Since the output is driven by a cell, we treat it as just another cell output to
                 // be routed back to us through the main switch. Thus we can fall through and re-use
                 // the wire logic.
                 if (!buffer_outputs.contains(v)) {
                     rule_failed<"Circuit output must be driven by only a buffer">();
                 }
-            case RawNetlistVertexInfo::WIRE:
+            case WIRE:
                 if (vertex_coloring[v] == boost::white_color) {
                     // Add this guy to our nets!
                     cell.nets.push_back(v);
@@ -220,11 +220,12 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
             // We are coming from a net to a component
             // We should only bfs into wires. If this failed then the net branch in this big if else
             // statement is messed up and failed to mark it as black.
-            assert(g[u].value.net_value == RawNetlistVertexInfo::WIRE);
+            assert(g[u].value.net_value == WIRE);
             switch (g[v].kind) {
             case R:
             case C:
             case DIODE:
+            case CUSTOM:
                 // Simple passive. We just add and go.
                 if (vertex_coloring[v] == boost::white_color)
                     cell.components.push_back(v);
@@ -352,3 +353,5 @@ unique_ptr<AssignedNetlist> TspiceRouter::try_assign(unique_ptr<RawNetlist> &raw
 
     return assigned;
 }
+
+void TspiceRouter::make_connections(unique_ptr<AssignedNetlist> &assigned) { MAIN_BOARD; }

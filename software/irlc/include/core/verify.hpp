@@ -51,7 +51,7 @@ constexpr std::array RAW_GRAPH_RULES = {
                         .rule = [](RawNetlist const &netlist) -> RuleViolationResult {
                             for (auto v : pair_to_iter(boost::vertices(netlist))) {
                                 if (netlist[v].kind == NET &&
-                                    netlist[v].value.net_value == RawNetlistVertexInfo::OUTPUT) {
+                                    netlist[v].value.net_value == OUTPUT) {
                                     return NO_VIOLATION;
                                 }
                             }
@@ -60,8 +60,7 @@ constexpr std::array RAW_GRAPH_RULES = {
     RawNetlistGraphRule{.rule_name = "Circuit contains input",
                         .rule = [](RawNetlist const &netlist) -> RuleViolationResult {
                             for (auto v : pair_to_iter(boost::vertices(netlist))) {
-                                if (netlist[v].kind == NET &&
-                                    netlist[v].value.net_value == RawNetlistVertexInfo::INPUT) {
+                                if (netlist[v].kind == NET && netlist[v].value.net_value == INPUT) {
                                     return NO_VIOLATION;
                                 }
                             }
@@ -82,7 +81,7 @@ constexpr std::array RAW_VERTEX_RULES = {
                 assert(target_info.kind == NET);
 
                 if (netlist[e].kind == PIN_OPAMP_SUPPLY_PLUS) {
-                    if (target_info.value.net_value != RawNetlistVertexInfo::V_HIGH) {
+                    if (target_info.value.net_value != V_HIGH) {
                         return "";
                     }
                 }
@@ -103,7 +102,7 @@ constexpr std::array RAW_VERTEX_RULES = {
                 assert(target_info.kind == NET);
 
                 if (netlist[e].kind == PIN_OPAMP_SUPPLY_MINUS) {
-                    if (target_info.value.net_value != RawNetlistVertexInfo::V_NEG) {
+                    if (target_info.value.net_value != V_NEG) {
                         return "";
                     }
                 }
@@ -142,8 +141,7 @@ constexpr std::array RAW_VERTEX_RULES = {
     RawNetlistVertexRule{
         .rule_name = "Circuit output must be driven by only a buffer",
         .rule = [](RawNetlist const &netlist, RawVert v) -> RuleViolationResult {
-            if (netlist[v].kind != NET ||
-                netlist[v].value.net_value != RawNetlistVertexInfo::OUTPUT) {
+            if (netlist[v].kind != NET || netlist[v].value.net_value != OUTPUT) {
                 return NO_VIOLATION;
             }
 
@@ -163,8 +161,7 @@ constexpr std::array RAW_VERTEX_RULES = {
                 return out;
             }
 
-            if (netlist[v].kind == NET &&
-                netlist[v].value.net_value == RawNetlistVertexInfo::OUTPUT) {
+            if (netlist[v].kind == NET && netlist[v].value.net_value == OUTPUT) {
                 auto e = *boost::in_edges(v, netlist).first;
                 auto const &edge = netlist[e];
                 auto const &src = netlist[boost::source(e, netlist)];
@@ -190,10 +187,10 @@ constexpr std::array RAW_VERTEX_RULES = {
                 assert(target_info.kind == NET);
 
                 if (netlist[e].kind == PIN_CELL_BUFFER_OUT) {
-                    if (target_info.value.net_value == RawNetlistVertexInfo::V_GND ||
-                        target_info.value.net_value == RawNetlistVertexInfo::V_HIGH ||
-                        target_info.value.net_value == RawNetlistVertexInfo::V_NEG ||
-                        target_info.value.net_value == RawNetlistVertexInfo::INPUT) {
+                    if (target_info.value.net_value == V_GND ||
+                        target_info.value.net_value == V_HIGH ||
+                        target_info.value.net_value == V_NEG ||
+                        target_info.value.net_value == INPUT) {
                         return "";
                     }
                 }

@@ -49,4 +49,6 @@ class TspiceRouter {
     // Either returns null, and raw remains a valid pointer, or returns a real pointer and raw is
     // invalidated (moved to the returned AssignedNetlist).
     std::unique_ptr<AssignedNetlist> try_assign(std::unique_ptr<RawNetlist> &raw);
+
+    void make_connections(std::unique_ptr<AssignedNetlist> &assigned);
 };
