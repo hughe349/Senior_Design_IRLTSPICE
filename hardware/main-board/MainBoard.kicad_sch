@@ -2615,16 +2615,24 @@
 		(uuid "1b912afc-3aa9-421b-872a-d273b35e4b3e")
 	)
 	(no_connect
+		(at 43.18 26.67)
+		(uuid "2d90a395-2c69-423d-a802-3473ef0db1b2")
+	)
+	(no_connect
+		(at 43.18 31.75)
+		(uuid "4449da68-31aa-4a47-935f-d6af7554d023")
+	)
+	(no_connect
+		(at 43.18 29.21)
+		(uuid "44bbd03a-a3c0-438d-a390-ed4298d0a558")
+	)
+	(no_connect
 		(at 251.46 129.54)
 		(uuid "4db520d0-634e-4093-8151-1bd1a0725790")
 	)
 	(no_connect
 		(at 251.46 76.2)
 		(uuid "62dfc7f7-8d6a-4de8-b594-4f49e692853f")
-	)
-	(no_connect
-		(at 43.18 39.37)
-		(uuid "9c5abe1f-b0f2-48d2-88d8-3d99693c1074")
 	)
 	(no_connect
 		(at 254 49.53)
@@ -2649,14 +2657,6 @@
 	(no_connect
 		(at 254 76.2)
 		(uuid "e358174c-bf85-4437-ac92-59246b8bf1a9")
-	)
-	(no_connect
-		(at 43.18 41.91)
-		(uuid "ee4267a6-d598-493a-b376-9bf6c4f1f0bc")
-	)
-	(no_connect
-		(at 43.18 44.45)
-		(uuid "f9d85be9-0f4e-428b-9dc1-2cdeb696245f")
 	)
 	(wire
 		(pts
@@ -3659,7 +3659,7 @@
 		(uuid "7319abcd-42b8-4a55-b4bc-18cdbdd9c5ba")
 	)
 	(label "Cell_2_Buff"
-		(at 43.18 34.29 180)
+		(at 43.18 44.45 180)
 		(effects
 			(font
 				(size 1.016 1.016)
@@ -3679,7 +3679,7 @@
 		(uuid "7c2ee1ab-fea4-4ac8-8532-474002374628")
 	)
 	(label "Cell_1_Buff"
-		(at 43.18 31.75 180)
+		(at 43.18 41.91 180)
 		(effects
 			(font
 				(size 1.016 1.016)
@@ -3739,7 +3739,7 @@
 		(uuid "a008048d-7c36-4373-88d9-53db652dbaa5")
 	)
 	(label "Cell_3_Buff"
-		(at 43.18 36.83 180)
+		(at 43.18 34.29 180)
 		(effects
 			(font
 				(size 1.016 1.016)
@@ -3759,7 +3759,7 @@
 		(uuid "b2ba6557-2366-43eb-b070-75397b2cf6d1")
 	)
 	(label "Cell_0_Buff"
-		(at 43.18 29.21 180)
+		(at 43.18 39.37 180)
 		(effects
 			(font
 				(size 1.016 1.016)
@@ -3819,7 +3819,7 @@
 		(uuid "daf888c1-3b50-4d11-8bfd-2b95d4c930cb")
 	)
 	(label "Signal_In"
-		(at 43.18 26.67 180)
+		(at 43.18 36.83 180)
 		(effects
 			(font
 				(size 1.27 1.27)
