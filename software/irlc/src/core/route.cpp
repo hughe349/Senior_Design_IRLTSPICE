@@ -1,4 +1,5 @@
 #include "boost/assert/source_location.hpp"
+#include "boost/graph/adjacency_list.hpp"
 #include "boost/graph/breadth_first_search.hpp"
 #include "boost/graph/compressed_sparse_row_graph.hpp"
 #include "boost/graph/filtered_graph.hpp"
@@ -10,6 +11,7 @@
 #include "core/verify.hpp"
 #include "util/boost_util.hpp"
 #include "util/macros.hpp"
+#include <algorithm>
 #include <cassert>
 #include <core/route.hpp>
 #include <cstdint>
@@ -28,7 +30,7 @@
 using namespace std;
 using namespace boost;
 
-void TspiceRouter::prune_unconnected_nets(RawNetlist &netlist) {
+void SimpleTspiceRouter::prune_unconnected_nets(RawNetlist &netlist) {
     pair verts = boost::vertices(netlist);
     auto current = verts.first;
     while (current != verts.second) {
@@ -287,9 +289,9 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
     void tree_edge(RawEdge e, const RawNetlist &g) { previous_map[target(e, g)] = source(e, g); }
 };
 
-unique_ptr<AssignedNetlist> TspiceRouter::try_assign(unique_ptr<RawNetlist> &raw) {
+unique_ptr<AssignedNetlist> SimpleTspiceRouter::try_assign(unique_ptr<RawNetlist> &raw) {
 
-    unique_ptr<AssignedNetlist> assigned(new AssignedNetlist);
+    unique_ptr<AssignedNetlist> assigned(new AssignedNetlist{});
     assigned->cells = vector<StdCell>{};
 
     auto cell_buffs_iter = pair_to_iter(boost::vertices(*raw)) |
@@ -316,6 +318,15 @@ unique_ptr<AssignedNetlist> TspiceRouter::try_assign(unique_ptr<RawNetlist> &raw
         for (RawEdge e : pair_to_iter(out_edges(buff, *raw))) {
             if ((*raw)[e].kind == PIN_CELL_BUFFER_OUT) {
                 buffer_outputs[target(e, *raw)] = i;
+                if ((*raw)[target(e, *raw)].value.net_value == OUTPUT) {
+                    if (assigned->output_cell != UINT32_MAX) {
+                        rule_failed<"Circuit output must be driven by only a buffer">();
+                    }
+                    assigned->output_cell = i;
+                    if (compiler.opts.should_verbose_cell_assign()) {
+                        compiler.log_fd << "Cell id: " << i << ", is the output cell\n";
+                    }
+                }
             } else {
                 assert((*raw)[e].kind == PIN_CELL_BUFFER_IN);
                 assigned->cells[i].pre_buffer_output_net = target(e, *raw);
@@ -354,4 +365,122 @@ unique_ptr<AssignedNetlist> TspiceRouter::try_assign(unique_ptr<RawNetlist> &raw
     return assigned;
 }
 
-void TspiceRouter::make_connections(unique_ptr<AssignedNetlist> &assigned) { MAIN_BOARD; }
+class RoutingError : public runtime_error {
+  public:
+    RoutingError(int32_t cell_id, const std::string &what)
+        : runtime_error(
+              (std::ostringstream("Error routing cell: ") << cell_id << ", message: " << what)
+                  .str()) {}
+};
+
+vector<CrossbarCon> SimpleTspiceRouter::make_connections(unique_ptr<AssignedNetlist> &assigned) {
+    vector<CrossbarCon> connections{};
+    // Step 1: Net allocation. which rows are used for which nets
+    // We first make a map of which root rows are free
+    vector<bool> free_root = vector(board.root.rows().size(), true);
+    // And one for which std cell rows are free
+    vector<vector<bool>> free_cells;
+    free_cells.resize(board.cells.size());
+    for (auto const &cell : board.cells) {
+        free_cells[cell.id] = vector(cell.crossbars.rows().size(), true);
+    }
+
+    // First, a non-optional connection is the output cell's output to the circuit output.
+    {
+        // Find the output column
+        ColConIter output_col =
+            std::find_if(board.root.cols_begin(), board.root.cols_end(), [](const ColCon &con) {
+                if (SpecialNetCon const *spnet = std::get_if<SpecialNetCon>(&con)) {
+                    if (spnet->kind == OUTPUT) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+        if (output_col == ColConIter()) {
+            throw RoutingError(-1, "Top level crossbar has no circuit output column");
+        }
+        // Find the top-level row that corresponds to the output cell's output
+        assert(assigned->output_cell != UINT32_MAX);
+        auto input_row = std::find_if(
+            board.root.rows().begin(), board.root.rows().end(), [&assigned](RowCon const &con) {
+                return std::visit(overloads{[&assigned](BufferOutputRowCon b) {
+                                                return b.id == assigned->output_cell;
+                                            },
+                                            [](auto a) { return false; }},
+                                  con);
+            });
+
+        connections.push_back(CrossbarCon{
+            .crossbar_id = output_col.get_bar_phys_id(),
+            .row = static_cast<uint8_t>(input_row - board.root.rows().begin()),
+            .col = output_col.get_bar_col(),
+        });
+        if (compiler.opts.should_verbose_connections()) {
+            // Dumbass language needs a cast or gets formatted as ascii
+            compiler.log_fd << "Output connection is Bar: " << (size_t)output_col.get_bar_phys_id()
+                            << ", Row: " << input_row - board.root.rows().begin()
+                            << ", Col: " << (size_t)output_col.get_bar_col() << "\n";
+        }
+    }
+
+    // Now we need to make the map of where nets are actually physically located
+    // This map is a temporary for each cell.
+    // We populate it with nets, then go thru the components and connect them to their nets
+    std::unordered_map<RawVert, size_t> netmap{};
+    size_t i = -1;
+    for (auto const &cell : assigned->cells) {
+        i++;
+        auto const &phy_cell = board.cells[i];
+        netmap.clear();
+        // Priority 1 is the output. Locate it on the standard cell
+        for (RowCon const &row : phy_cell.crossbars.rows()) {
+            int row_i = &row - &phy_cell.crossbars.rows()[0];
+            if (std::holds_alternative<BufferInputRowCon>(row)) {
+                // No for-else in c++ hence goto. Also no enumerate hence the pointer arithmetic.
+                // dogshit language.
+                assert(free_cells[i][row_i]);
+                netmap[cell.pre_buffer_output_net] = row_i;
+                free_cells[i][row_i] = false;
+                goto found_output;
+            }
+        }
+        throw RoutingError(i, "No output row on crossbar");
+    found_output:
+        // Priority 2 is cell inputs.
+        for (pair<RawVert, CellInputId> const &input : cell.input_nets) {
+            bool we_good = std::visit(overloads{
+                                          [&](ground_input_t _) {
+                                              // If this is a ground input, just find the special
+                                              // ground in the crossbars
+                                              for (RowCon const &row : phy_cell.crossbars.rows()) {
+                                                  int row_i = &row - &phy_cell.crossbars.rows()[0];
+                                                  if (SpecialNetCon const *con =
+                                                          std::get_if<SpecialNetCon>(&row);
+                                                      con && con->kind == V_GND) {
+                                                      assert(free_cells[i][row_i]);
+                                                      netmap[cell.pre_buffer_output_net] = row_i;
+                                                      free_cells[i][row_i] = false;
+                                                      return true;
+                                                  }
+                                              }
+                                              return false;
+                                          },
+
+                                          // If it ain't a ground input we're in big trouble. We
+                                          // gotta find where it enters the top level crossbar and
+                                          // then route that to this place by pushing a connection
+
+                                          [&](circuit_input_t _) { return false; },
+                                          [&](uint32_t input_cell) { return false; },
+                                      },
+                                      input.second);
+
+            if (!we_good)
+                throw RoutingError(i, "No input row compatible with input: " +
+                                          (*assigned->raw_list)[input.first].name);
+        }
+    }
+
+    return connections;
+}

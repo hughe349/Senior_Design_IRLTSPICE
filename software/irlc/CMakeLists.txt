@@ -43,6 +43,7 @@ target_sources(libirlc
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/parse_eechema.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/verify.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/debug.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/board_info.cpp
 )
 target_include_directories(libirlc 
     PUBLIC 

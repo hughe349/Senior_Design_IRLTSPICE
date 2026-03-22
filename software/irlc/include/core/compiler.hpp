@@ -47,6 +47,7 @@ typedef enum unspecified_t { UNSPECIFIED } unspecified_t;
     FLAG_OPT(verbose_final_netlist, "", "Log final parsed netlist", PARSING)                       \
     FLAG_OPT(verbose_cell_assign, "", "Enable verbose cell assignment", ROUTING)                   \
     FLAG_OPT(verbose_verify, "", "Enable verbose rule verification", ROUTING)                      \
+    FLAG_OPT(verbose_connections, "", "Enable verbose connection building", ROUTING)               \
     FLAG_OPT(verbose, "v", "SUPER VERBOSE. Enable all verbose flags", GENERAL)
 
 struct IrlCompilerOptions {
@@ -66,6 +67,7 @@ struct IrlCompilerOptions {
     SHOULD_VERBOSE(final_netlist)
     SHOULD_VERBOSE(cell_assign)
     SHOULD_VERBOSE(verify)
+    SHOULD_VERBOSE(connections)
 };
 
 class IrlCompiler {

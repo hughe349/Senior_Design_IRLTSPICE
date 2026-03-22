@@ -1,4 +1,5 @@
 #include "core/compiler.hpp"
+#include "core/board_info.hpp"
 #include "core/debug.hpp"
 #include "core/netlist.hpp"
 #include "core/parse.hpp"
@@ -54,7 +55,7 @@ int IrlCompiler::invoke() {
         return -1;
     }
 
-    TspiceRouter router(*this);
+    SimpleTspiceRouter router(*this, MAIN_BOARD);
 
     router.prune_unconnected_nets(*netlist);
 
@@ -71,7 +72,13 @@ int IrlCompiler::invoke() {
         return -1;
     }
 
-    router.try_assign(netlist);
+    unique_ptr<AssignedNetlist> assigned = router.try_assign(netlist);
+
+    if (assigned.get() == nullptr) {
+        log_error("Failed to assign to standard cells");
+    }
+
+    router.make_connections(assigned);
 
     return 0;
 }

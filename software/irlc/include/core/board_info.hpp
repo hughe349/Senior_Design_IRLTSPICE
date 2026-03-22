@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <ranges>
+#include <span>
 #include <variant>
 #include <vector>
 
@@ -13,45 +14,6 @@ typedef std::variant<struct FloatingCon, struct SpecialNetCon, struct RoutableCo
 typedef std::variant<struct FloatingCon, struct SpecialNetCon, struct RoutableRowCon,
                      struct ChainedRowCon, struct BufferOutputRowCon, struct BufferInputRowCon>
     RowCon;
-
-// A physical crossbar on the board and what it is connected to.
-// By convention "rows" are used to connect "cols" together.
-// So in a std cell rows are the nets and cols are the components
-typedef class PhysCrossbar {
-  public:
-    // This crossbar's id as recognized by the micro
-    uint8_t id;
-    std::vector<RowCon> rows;
-    std::vector<ColCon> cols;
-} PhysCrossbar;
-
-// One or more crossbars whose rows are connected together.
-// Improperly setting up the chaining leads to undefined behavior
-typedef class ChainedCrossbar {
-  public:
-    // Trivial chain (no swizzle)
-    template <typename... PCross> inline ChainedCrossbar(PCross... nbars);
-    template <size_t N_BARS, size_t N_ROWS>
-    inline ChainedCrossbar(
-        std::array<PhysCrossbar, N_BARS> bars,
-        std::array<std::array<std::pair<size_t, size_t>, N_ROWS>, N_BARS - 1> swizzles);
-
-    std::vector<PhysCrossbar> bars;
-} ChainedCrossbar;
-
-// A physical standard cell, with bar and buffer
-// Should be onle one crossbar row that has a BufferRowCon.
-typedef struct PhysStdCell {
-    // Id of this cell. Should match id of buffer in the cell as referenced by the row con
-    uint8_t id;
-    ChainedCrossbar crossbars;
-} PhysStdCell;
-
-// Every std cell is the same. All are routable to each other via a single parent chained crossbar
-typedef struct SimpleTspiceInfo {
-    ChainedCrossbar root;
-    std::vector<PhysStdCell> cells;
-} SimpleTspiceInfo;
 
 // CONNECTION KINDS
 
@@ -105,6 +67,76 @@ typedef struct ChainedRowCon {
     // Id of parent this row is (potentially) connected to
     const RowCon *sibiling;
 } ChainedRowCon;
+
+// A physical crossbar on the board and what it is connected to.
+// By convention "rows" are used to connect "cols" together.
+// So in a std cell rows are the nets and cols are the components
+typedef class PhysCrossbar {
+  public:
+    // This crossbar's id as recognized by the micro
+    uint8_t id;
+    std::vector<RowCon> rows;
+    std::vector<ColCon> cols;
+} PhysCrossbar;
+
+// Iterator over the columns of a ChainedCrossbar
+class ColConIter {
+
+    // Ptr for nullability
+    std::vector<PhysCrossbar> const *bars;
+    size_t bar_id;
+    size_t col_id;
+
+  public:
+    ColCon operator*();
+    ColCon const *operator->();
+    ColConIter &operator++();
+    ColConIter operator++(int);
+    bool operator==(ColConIter const &other) const;
+    bool operator!=(ColConIter const &other) const;
+
+    // Get's the bars physical id
+    uint8_t get_bar_phys_id();
+    uint8_t get_bar_col();
+
+    // Returns the "too far" aka end iterator
+    ColConIter();
+    // Makes a normal iterator pointing to the first elem
+    ColConIter(std::vector<PhysCrossbar> const &bars);
+};
+
+// One or more crossbars whose rows are connected together.
+// Improperly setting up the chaining leads to undefined behavior
+typedef class ChainedCrossbar {
+  public:
+    // Trivial chain (no swizzle)
+    template <typename... PCross> inline ChainedCrossbar(PCross... nbars);
+    template <size_t N_BARS, size_t N_ROWS>
+    inline ChainedCrossbar(
+        std::array<PhysCrossbar, N_BARS> bars,
+        std::array<std::array<std::pair<size_t, size_t>, N_ROWS>, N_BARS - 1> swizzles);
+
+    std::vector<PhysCrossbar> bars;
+
+    inline std::span<const RowCon> rows() const { return bars[0].rows; }
+
+    ColConIter cols_begin() const;
+    inline ColConIter cols_end() const { return ColConIter(); };
+} ChainedCrossbar;
+
+// A physical standard cell, with bar and buffer
+// Should be onle one crossbar row that has a BufferRowCon.
+typedef struct PhysStdCell {
+    // Id of this cell. Should match id of buffer in the cell as referenced by the row con
+    uint8_t id;
+    ChainedCrossbar crossbars;
+} PhysStdCell;
+
+// Every std cell is the same. All are routable to each other via a single parent chained crossbar
+typedef struct SimpleTspiceInfo {
+    ChainedCrossbar root;
+    std::vector<PhysStdCell> cells;
+} SimpleTspiceInfo;
 
 // Board defs
 
