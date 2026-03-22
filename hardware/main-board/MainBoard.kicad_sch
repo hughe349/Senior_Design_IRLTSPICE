@@ -5268,7 +5268,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Button_Switch_SMD:SW_DIP_SPSTx02_Slide_6.7x6.64mm_W6.73mm_P2.54mm_LowProfile_JPin"
+		(property "Footprint" "Button_Switch_THT:SW_Slide_SP3T_Straight_CK_OS103012MU1QP1"
 			(at 34.925 151.765 0)
 			(effects
 				(font
@@ -6341,7 +6341,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Button_Switch_SMD:SW_DIP_SPSTx02_Slide_6.7x6.64mm_W6.73mm_P2.54mm_LowProfile_JPin"
+		(property "Footprint" "Button_Switch_THT:SW_Slide_SP3T_Straight_CK_OS103012MU1QP1"
 			(at 98.425 102.235 0)
 			(effects
 				(font
