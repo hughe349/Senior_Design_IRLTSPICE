@@ -3348,7 +3348,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10u"
+		(property "Value" "10µF"
 			(at 20.32 100.7109 0)
 			(effects
 				(font
@@ -3725,7 +3725,7 @@
 				)
 			)
 		)
-		(property "Value" "1u"
+		(property "Value" "1µF"
 			(at 38.354 100.33 90)
 			(effects
 				(font
@@ -3872,7 +3872,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10u"
+		(property "Value" "10µF"
 			(at 20.32 108.3309 0)
 			(effects
 				(font
@@ -4391,7 +4391,7 @@
 				)
 			)
 		)
-		(property "Value" "10u"
+		(property "Value" "10µF"
 			(at 40.386 49.276 90)
 			(effects
 				(font
@@ -4966,7 +4966,7 @@
 				)
 			)
 		)
-		(property "Value" "100n"
+		(property "Value" "100nF"
 			(at 82.55 39.116 90)
 			(effects
 				(font
@@ -5251,7 +5251,7 @@
 				)
 			)
 		)
-		(property "Value" "100n"
+		(property "Value" "100nF"
 			(at 100.33 99.314 90)
 			(effects
 				(font
@@ -5324,7 +5324,7 @@
 				)
 			)
 		)
-		(property "Value" "10u"
+		(property "Value" "10µF"
 			(at 125.984 115.57 90)
 			(effects
 				(font
@@ -5990,7 +5990,7 @@
 				)
 			)
 		)
-		(property "Value" "1u"
+		(property "Value" "1µF"
 			(at 117.094 115.57 90)
 			(effects
 				(font
@@ -6288,7 +6288,7 @@
 				)
 			)
 		)
-		(property "Value" "1u"
+		(property "Value" "1µF"
 			(at 196.85 53.34 90)
 			(effects
 				(font
@@ -6316,6 +6316,15 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 201.93 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "C0603C105K4RACTU"
+			(at 201.93 53.34 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6361,7 +6370,7 @@
 				)
 			)
 		)
-		(property "Value" "10u"
+		(property "Value" "10µF"
 			(at 40.386 64.516 90)
 			(effects
 				(font
@@ -6510,7 +6519,7 @@
 				)
 			)
 		)
-		(property "Value" "100n"
+		(property "Value" "100nF"
 			(at 50.546 49.53 90)
 			(effects
 				(font
@@ -6982,7 +6991,7 @@
 				)
 			)
 		)
-		(property "Value" "100n"
+		(property "Value" "100nF"
 			(at 100.33 106.934 90)
 			(effects
 				(font
@@ -7131,7 +7140,7 @@
 				)
 			)
 		)
-		(property "Value" "10u"
+		(property "Value" "10µF"
 			(at 40.386 56.896 90)
 			(effects
 				(font

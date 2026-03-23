@@ -13920,7 +13920,7 @@
 				(justify right)
 			)
 		)
-		(property "Value" "D_Schottky"
+		(property "Value" "BAT60JFILM"
 			(at 61.468 54.864 90)
 			(effects
 				(font
@@ -13929,7 +13929,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Diode_SMD:D_SOD-123"
+		(property "Footprint" "Diode_SMD:D_SOD-323_HandSoldering"
 			(at 73.66 53.34 0)
 			(effects
 				(font
@@ -13949,6 +13949,15 @@
 		)
 		(property "Description" "Schottky diode"
 			(at 73.66 53.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "BAT60JFILM"
+			(at 73.66 53.34 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13981,15 +13990,15 @@
 		(dnp no)
 		(uuid "063972c3-f2cc-4eba-910f-2e36999eb387")
 		(property "Reference" "R2"
-			(at 61.214 37.084 90)
+			(at 66.04 35.56 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "5.1kΩ"
-			(at 60.96 44.196 90)
+		(property "Value" "5.1k"
+			(at 66.04 38.1 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14208,6 +14217,15 @@
 				(hide yes)
 			)
 		)
+		(property "MPN" "968-CD22M3494MQZ"
+			(at 336.55 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "d638baea-6015-4128-bbc0-9c69825ad031")
 		)
@@ -14422,6 +14440,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MPN" "968-CD22M3494MQZ"
+			(at 293.37 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -15185,6 +15212,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "LS R976-NR-1-0-20-R18"
+			(at 120.65 246.38 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "1f580d37-bd02-430c-9c28-64e29b977ef3")
 		)
@@ -15443,7 +15479,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Button_Switch_SMD:SW_SPST_B3U-1100P"
+		(property "Footprint" "Button_Switch_SMD:SW_SPST_SKQG_WithoutStem"
 			(at 95.25 57.15 0)
 			(effects
 				(font
@@ -15462,6 +15498,15 @@
 			)
 		)
 		(property "Description" "Single Pole Single Throw (SPST) switch"
+			(at 95.25 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "SKQGABE010"
 			(at 95.25 57.15 0)
 			(effects
 				(font
@@ -15545,7 +15590,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "AD5263BRUZ200"
+		(property "MPN" ""
 			(at 385.064 206.248 0)
 			(effects
 				(font
@@ -15592,6 +15637,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "AD5263BRUZ200-R7"
+			(at 270.51 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -16210,6 +16264,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MPN" "968-CD22M3494MQZ"
+			(at 336.55 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -16855,6 +16918,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MPN" "968-CD22M3494MQZ"
+			(at 293.37 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -17657,6 +17729,15 @@
 				(hide yes)
 			)
 		)
+		(property "MPN" "968-CD22M3494MQZ"
+			(at 293.37 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "d638baea-6015-4128-bbc0-9c69825ad035")
 		)
@@ -18051,6 +18132,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C0603C104K5RACTU"
+			(at 85.09 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "0d4361c1-3863-464c-9816-a007456da6ff")
 		)
@@ -18119,6 +18209,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 82.55 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "C0603C104K5RACTU"
 			(at 82.55 25.4 0)
 			(effects
 				(font
@@ -18246,7 +18345,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Button_Switch_SMD:SW_SPST_B3U-1100P"
+		(property "Footprint" "Button_Switch_SMD:SW_SPST_SKQG_WithoutStem"
 			(at 95.25 46.99 0)
 			(effects
 				(font
@@ -18265,6 +18364,15 @@
 			)
 		)
 		(property "Description" "Single Pole Single Throw (SPST) switch"
+			(at 95.25 46.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "SKQGABE010"
 			(at 95.25 46.99 0)
 			(effects
 				(font
@@ -18600,6 +18708,15 @@
 				(hide yes)
 			)
 		)
+		(property "MPN" "968-CD22M3494MQZ"
+			(at 250.19 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "d638baea-6015-4128-bbc0-9c69825ad036")
 		)
@@ -18778,6 +18895,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C0603C104K5RACTU"
+			(at 95.25 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "ae5779eb-0de9-4ce5-ae9e-dfba7c7908ff")
 		)
@@ -18926,6 +19052,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "74HC164D"
+			(at 149.86 173.99 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "dfa6f145-3f97-4236-8a36-992c26e597f0")
 		)
@@ -18993,20 +19128,19 @@
 		(dnp no)
 		(uuid "4da32591-061c-45a5-85e1-4993595ec269")
 		(property "Reference" "R3"
-			(at 60.96 46.228 90)
+			(at 60.96 46.99 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "R_US"
-			(at 66.802 47.244 90)
+		(property "Value" "5.1k"
+			(at 60.96 44.45 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(hide yes)
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder"
@@ -19255,7 +19389,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "AD5263BRUZ200"
+		(property "MPN" ""
 			(at 446.024 267.208 0)
 			(effects
 				(font
@@ -19302,6 +19436,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "AD5263BRUZ200-R7"
+			(at 331.47 220.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -19456,6 +19599,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "LS R976-NR-1-0-20-R18"
+			(at 39.37 247.65 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "f5b26bb8-8451-40be-a5f2-07280dafae69")
 		)
@@ -19518,6 +19670,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 107.95 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "C0603C104K5RACTU"
 			(at 107.95 25.4 0)
 			(effects
 				(font
@@ -19755,6 +19916,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "LG R971-KN-1-0-20-R18"
+			(at 137.16 246.38 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "4a78d567-ff16-4e60-aa7a-ce5b2c847004")
 		)
@@ -19970,6 +20140,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C0603C105K4RACTU"
+			(at 172.72 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "6d19e6ab-01b4-43eb-9f79-81acd49eaa91")
 		)
@@ -20046,6 +20225,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C0603C103K5RACTU"
+			(at 157.48 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "e498102a-5e75-4885-ac97-acd9951305a5")
 		)
@@ -20114,6 +20302,15 @@
 			)
 		)
 		(property "Description" "8-bit serial-in parallel-out shift register"
+			(at 50.8 172.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "74HC164D"
 			(at 50.8 172.72 0)
 			(effects
 				(font
@@ -20781,6 +20978,15 @@
 				(hide yes)
 			)
 		)
+		(property "MPN" "968-CD22M3494MQZ"
+			(at 250.19 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "d638baea-6015-4128-bbc0-9c69825ad037")
 		)
@@ -21325,6 +21531,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C0603C104K5RACTU"
+			(at 45.72 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "0a7809d0-0ae2-45a0-ab4b-df76ae69b9de")
 		)
@@ -21460,6 +21675,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 193.04 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "C0603C105K4RACTU"
 			(at 193.04 26.67 0)
 			(effects
 				(font
@@ -21609,7 +21833,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "AD5263BRUZ200"
+		(property "MPN" ""
 			(at 385.064 246.888 0)
 			(effects
 				(font
@@ -21656,6 +21880,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "AD5263BRUZ200-R7"
+			(at 270.51 200.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -22028,6 +22261,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "QBLP631-IB5-2897"
+			(at 101.6 246.38 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "963f134b-2725-4623-b652-15ac230ba303")
 		)
@@ -22388,6 +22630,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C0603C104K5RACTU"
+			(at 120.65 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "0bc9d953-5012-4490-b5b0-26741fad6377")
 		)
@@ -22573,6 +22824,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MPN" "968-CD22M3494MQZ"
+			(at 336.55 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -22891,6 +23151,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "BLM18PG121SN1D"
+			(at 182.88 21.59 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "af3dd0c1-006b-49e2-ad0f-aa774e039bd6")
 		)
@@ -23105,7 +23374,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "AD5263BRUZ200"
+		(property "MPN" ""
 			(at 446.024 206.248 0)
 			(effects
 				(font
@@ -23152,6 +23421,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "AD5263BRUZ200-R7"
+			(at 331.47 160.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -23289,6 +23567,15 @@
 			)
 		)
 		(property "Description" "8-bit serial-in parallel-out shift register"
+			(at 96.52 172.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "74HC164D"
 			(at 96.52 172.72 0)
 			(effects
 				(font
@@ -23656,6 +23943,15 @@
 				(hide yes)
 			)
 		)
+		(property "MPN" "968-CD22M3494MQZ"
+			(at 250.19 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "d638baea-6015-4128-bbc0-9c69825ad039")
 		)
@@ -23945,7 +24241,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "AD5263BRUZ200"
+		(property "MPN" ""
 			(at 446.024 226.568 0)
 			(effects
 				(font
@@ -23992,6 +24288,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "AD5263BRUZ200-R7"
+			(at 331.47 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -24199,6 +24504,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 73.66 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "LMK107BBJ106MALT"
 			(at 73.66 69.85 0)
 			(effects
 				(font
@@ -24498,7 +24812,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "AD5263BRUZ200"
+		(property "MPN" ""
 			(at 446.024 246.888 0)
 			(effects
 				(font
@@ -24545,6 +24859,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "AD5263BRUZ200-R7"
+			(at 331.47 200.66 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -25268,7 +25591,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "AD5263BRUZ200"
+		(property "MPN" ""
 			(at 385.064 226.568 0)
 			(effects
 				(font
@@ -25315,6 +25638,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "AD5263BRUZ200-R7"
+			(at 270.51 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -26198,6 +26530,15 @@
 			)
 		)
 		(property "Description" "USB to Serial Interface, SSOP-28"
+			(at 85.09 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "FT232RNL-TUBE"
 			(at 85.09 113.03 0)
 			(effects
 				(font
@@ -27150,6 +27491,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "LMK107BBJ106MALT"
+			(at 68.58 25.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "7401cc60-327a-4652-93ee-3b91156dbf04")
 		)
@@ -27228,6 +27578,15 @@
 		)
 		(property "Sim.Pins" "1=K 2=A"
 			(at 66.04 247.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "LG R971-KN-1-0-20-R18"
+			(at 66.04 247.65 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -27377,7 +27736,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "AD5263BRUZ200"
+		(property "MPN" ""
 			(at 385.064 267.208 0)
 			(effects
 				(font
@@ -27424,6 +27783,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "AD5263BRUZ200-R7"
+			(at 270.51 220.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -27632,6 +28000,15 @@
 			)
 		)
 		(property "Description" "STMicroelectronics Arm Cortex-M0 MCU, 256KB flash, 32KB RAM, 48 MHz, 2.0-3.6V, 52 GPIO, LQFP64"
+			(at 139.7 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "STM32F091RC"
 			(at 139.7 87.63 0)
 			(effects
 				(font

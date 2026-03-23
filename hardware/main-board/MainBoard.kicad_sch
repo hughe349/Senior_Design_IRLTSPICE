@@ -3970,6 +3970,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "TL071HIDR"
+			(at 251.46 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "669792ab-c7a3-4611-8662-f4057e7ecf9f")
 		)
@@ -4795,6 +4804,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "TL071HIDR"
+			(at 251.46 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "fb94a015-6ff1-417d-b048-ed4f80457a35")
 		)
@@ -4873,6 +4891,15 @@
 			)
 		)
 		(property "Description" "Single Low-Noise JFET-Input Operational Amplifiers, DIP-8/SOIC-8"
+			(at 251.46 121.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "TL071HIDR"
 			(at 251.46 121.92 0)
 			(effects
 				(font
@@ -5303,6 +5330,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "OS103011MS8QP1"
+			(at 50.8 156.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "4"
 			(uuid "fe6896bb-5ed5-4077-96f3-d5c3eab4d14f")
 		)
@@ -5438,6 +5474,15 @@
 			)
 		)
 		(property "Description" "Single Low-Noise JFET-Input Operational Amplifiers, DIP-8/SOIC-8"
+			(at 251.46 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "TL071HIDR"
 			(at 251.46 95.25 0)
 			(effects
 				(font
@@ -5769,6 +5814,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MPN" "968-CD22M3494MQZ"
+			(at 60.96 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -6368,6 +6422,15 @@
 			)
 		)
 		(property "Description" "Switch, three position, single pole triple throw, 3 position switch, SP3T"
+			(at 82.55 97.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "OS103011MS8QP1"
 			(at 82.55 97.79 0)
 			(effects
 				(font

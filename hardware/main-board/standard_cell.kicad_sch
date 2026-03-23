@@ -4159,7 +4159,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "AD5263BRUZ200"
+		(property "MPN" ""
 			(at 165.354 229.108 0)
 			(effects
 				(font
@@ -4206,6 +4206,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "AD5263BRUZ200-R7"
+			(at 50.8 182.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -4379,7 +4388,7 @@
 				(hide yes)
 			)
 		)
-		(property "DKPN" "1655-1N4148WCT-ND"
+		(property "DKPN" "1N4148W"
 			(at 177.8 40.64 0)
 			(effects
 				(font
@@ -4554,7 +4563,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "AD5263BRUZ200"
+		(property "MPN" ""
 			(at 166.624 140.208 0)
 			(effects
 				(font
@@ -4601,6 +4610,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "AD5263BRUZ200-R7"
+			(at 52.07 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -4758,7 +4776,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "AD5263BRUZ200"
+		(property "MPN" ""
 			(at 166.624 199.898 0)
 			(effects
 				(font
@@ -4805,6 +4823,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "AD5263BRUZ200-R7"
+			(at 52.07 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -4960,6 +4987,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "TL071HIDR"
+			(at 115.57 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "5"
 			(uuid "d08638fe-1aa3-468e-bd58-f86bb048a4e2")
 		)
@@ -5066,6 +5102,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C0603C104K5RACTU"
+			(at 146.05 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "c176d534-3941-44ad-b1cf-f820d7ca744c")
 		)
@@ -5154,7 +5199,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "AD5263BRUZ200"
+		(property "MPN" ""
 			(at 207.264 169.418 0)
 			(effects
 				(font
@@ -5201,6 +5246,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "AD5263BRUZ200-R7"
+			(at 92.71 123.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -5358,7 +5412,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "AD5263BRUZ200"
+		(property "MPN" ""
 			(at 207.264 140.208 0)
 			(effects
 				(font
@@ -5405,6 +5459,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "AD5263BRUZ200-R7"
+			(at 92.71 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -5562,7 +5625,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "AD5263BRUZ200"
+		(property "MPN" ""
 			(at 207.264 199.898 0)
 			(effects
 				(font
@@ -5609,6 +5672,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "AD5263BRUZ200-R7"
+			(at 92.71 153.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -5850,6 +5922,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C0603C103K5RACTU"
+			(at 165.1 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "bdd002bb-5168-4d7e-9fd9-3cd255d84bb7")
 		)
@@ -5938,7 +6019,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "AD5263BRUZ200"
+		(property "MPN" ""
 			(at 207.264 227.838 0)
 			(effects
 				(font
@@ -5985,6 +6066,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "AD5263BRUZ200-R7"
+			(at 92.71 181.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -6134,6 +6224,15 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
+			(at 185.42 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "C0603C102K5RACTU"
 			(at 185.42 68.58 0)
 			(effects
 				(font
@@ -6350,6 +6449,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MPN" "968-CD22M3494MQZ"
+			(at 162.56 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -6713,7 +6821,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "AD5263BRUZ200"
+		(property "MPN" ""
 			(at 165.354 170.688 0)
 			(effects
 				(font
@@ -6760,6 +6868,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "AD5263BRUZ200-R7"
+			(at 50.8 124.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -6916,6 +7033,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C0603C105K4RACTU"
+			(at 125.73 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "ff3f091a-6bab-4e43-8db4-10586b9f4a2f")
 		)
@@ -7020,7 +7146,7 @@
 				(hide yes)
 			)
 		)
-		(property "DKPN" "1655-1N4148WCT-ND"
+		(property "DKPN" "1N4148W"
 			(at 177.8 27.94 0)
 			(effects
 				(font
@@ -7153,6 +7279,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "MPN" "968-CD22M3494MQZ"
+			(at 217.17 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
@@ -7420,6 +7555,15 @@
 			)
 		)
 		(property "Description" "Single Low-Noise JFET-Input Operational Amplifiers, DIP-8/SOIC-8"
+			(at 50.8 33.02 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "TL071HIDR"
 			(at 50.8 33.02 0)
 			(effects
 				(font
