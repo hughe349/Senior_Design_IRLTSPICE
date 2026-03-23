@@ -9,3 +9,14 @@
 # Hardware
 # ========
 hardware/**/**-backups/**
+hardware/**/*.lck
+hardware/**/*auto_saved*
+hardware/**/**bak
+hardware/**/fp-info-cache
+hardware/**/_autosave-*
+hardware/**/*.kicad_prl
+
+# ========
+# Software
+# ========
+software/**/build/**
