@@ -1624,7 +1624,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Switch:SW_SP3T"
+		(symbol "SeniorDesign:SW_SP3T_2P"
 			(pin_names
 				(offset 0)
 				(hide yes)
@@ -1632,23 +1632,23 @@
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "SW"
-				(at 0 5.08 0)
+			(property "Reference" "SW2"
+				(at 0 -8.89 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Value" "SW_SP3T"
-				(at 0 -5.08 0)
+			(property "Value" "SW_SP3T_2P"
+				(at 0 -6.35 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Footprint" ""
+			(property "Footprint" "Button_Switch_THT:SW_Slide_SP3T_Straight_CK_OS103012MU1QP1"
 				(at -15.875 4.445 0)
 				(effects
 					(font
@@ -1693,7 +1693,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "SW_SP3T_0_1"
+			(symbol "SW_SP3T_2P_0_1"
 				(circle
 					(center -2.032 0)
 					(radius 0.4572)
@@ -1751,7 +1751,7 @@
 					)
 				)
 			)
-			(symbol "SW_SP3T_1_1"
+			(symbol "SW_SP3T_2P_1_1"
 				(rectangle
 					(start -3.175 3.81)
 					(end 3.175 -3.81)
@@ -1766,14 +1766,14 @@
 				(pin passive line
 					(at -5.08 0 0)
 					(length 2.54)
-					(name "3"
+					(name "2"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "3"
+					(number "2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1802,14 +1802,14 @@
 				(pin passive line
 					(at 5.08 0 180)
 					(length 2.54)
-					(name "2"
+					(name "3"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "2"
+					(number "3"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2627,6 +2627,10 @@
 		(uuid "62dfc7f7-8d6a-4de8-b594-4f49e692853f")
 	)
 	(no_connect
+		(at 78.74 55.88)
+		(uuid "76bb95a6-9a3f-49c3-81c6-6dc71304d313")
+	)
+	(no_connect
 		(at 254 49.53)
 		(uuid "9fc61c81-92dd-40f3-bf78-a0ea66702315")
 	)
@@ -2641,6 +2645,10 @@
 	(no_connect
 		(at 251.46 102.87)
 		(uuid "af8e204d-b351-4ca8-ad7f-6232fe4b6927")
+	)
+	(no_connect
+		(at 78.74 53.34)
+		(uuid "cf398c26-a248-4646-a80e-e1a99b890843")
 	)
 	(no_connect
 		(at 251.46 49.53)
@@ -5243,7 +5251,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Switch:SW_SP3T")
+		(lib_id "SeniorDesign:SW_SP3T_2P")
 		(at 50.8 156.21 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6316,7 +6324,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Switch:SW_SP3T")
+		(lib_id "SeniorDesign:SW_SP3T_2P")
 		(at 82.55 97.79 180)
 		(unit 1)
 		(exclude_from_sim no)
