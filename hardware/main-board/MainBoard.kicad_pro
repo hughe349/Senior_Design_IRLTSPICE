@@ -521,7 +521,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "",
+      "plot": "../../../IRLTSPICE_GERBER/",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
