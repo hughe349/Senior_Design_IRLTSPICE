@@ -13743,6 +13743,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "ESR03EZPF1002"
+			(at 109.22 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "cebfb705-27a8-403f-bde9-864844277a0d")
 		)
@@ -13997,7 +14006,7 @@
 				)
 			)
 		)
-		(property "Value" "5.1k"
+		(property "Value" "10k"
 			(at 66.04 38.1 90)
 			(effects
 				(font
@@ -14025,6 +14034,15 @@
 		)
 		(property "Description" "Resistor, US symbol"
 			(at 60.96 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "ESR03EZPF1002"
+			(at 60.96 39.37 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14218,6 +14236,15 @@
 			)
 		)
 		(property "MPN" "968-CD22M3494MQZ"
+			(at 336.55 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "CD22M3494MQZ"
 			(at 336.55 116.84 0)
 			(effects
 				(font
@@ -14444,6 +14471,15 @@
 			)
 		)
 		(property "MPN" "968-CD22M3494MQZ"
+			(at 293.37 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "CD22M3494MQZ"
 			(at 293.37 60.96 0)
 			(effects
 				(font
@@ -16276,6 +16312,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "CD22M3494MQZ"
+			(at 336.55 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "d638baea-6015-4128-bbc0-9c69825ad033")
 		)
@@ -16746,6 +16791,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "ERA-3AEB151V"
+			(at 66.04 236.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "5aaf2cce-b3b4-48b4-8f5d-474b2f2f6f27")
 		)
@@ -16922,6 +16976,15 @@
 			)
 		)
 		(property "MPN" "968-CD22M3494MQZ"
+			(at 293.37 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "CD22M3494MQZ"
 			(at 293.37 88.9 0)
 			(effects
 				(font
@@ -17730,6 +17793,15 @@
 			)
 		)
 		(property "MPN" "968-CD22M3494MQZ"
+			(at 293.37 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "CD22M3494MQZ"
 			(at 293.37 116.84 0)
 			(effects
 				(font
@@ -18717,6 +18789,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "CD22M3494MQZ"
+			(at 250.19 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "d638baea-6015-4128-bbc0-9c69825ad036")
 		)
@@ -19135,7 +19216,7 @@
 				)
 			)
 		)
-		(property "Value" "5.1k"
+		(property "Value" "10k"
 			(at 60.96 44.45 90)
 			(effects
 				(font
@@ -19163,6 +19244,15 @@
 		)
 		(property "Description" "Resistor, US symbol"
 			(at 60.96 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "ESR03EZPF1002"
+			(at 60.96 41.91 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -20987,6 +21077,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "CD22M3494MQZ"
+			(at 250.19 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "d638baea-6015-4128-bbc0-9c69825ad037")
 		)
@@ -21375,6 +21474,15 @@
 			)
 		)
 		(property "Description" "Resistor, US symbol"
+			(at 101.6 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "ESR03EZPF1002"
 			(at 101.6 63.5 0)
 			(effects
 				(font
@@ -22836,6 +22944,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "CD22M3494MQZ"
+			(at 336.55 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "d638baea-6015-4128-bbc0-9c69825ad038")
 		)
@@ -23696,6 +23813,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "ERA-3AEB151V"
+			(at 39.37 236.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "f07d94cd-4af6-49c1-a3b6-261e17c5975e")
 		)
@@ -23952,6 +24078,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "CD22M3494MQZ"
+			(at 250.19 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "6"
 			(uuid "d638baea-6015-4128-bbc0-9c69825ad039")
 		)
@@ -24127,6 +24262,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "1003-030-01210-TR"
+			(at 39.37 49.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "S1"
 			(uuid "b2bf2492-6793-4460-83c1-c4df484a99c3")
 		)
@@ -24174,6 +24318,10 @@
 		)
 		(instances
 			(project ""
+				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
+					(reference "J10")
+					(unit 1)
+				)
 				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/72af25e1-7cdc-412a-8304-78174a178e92"
 					(reference "J10")
 					(unit 1)
@@ -24589,6 +24737,15 @@
 			)
 		)
 		(property "Description" "Resistor, US symbol"
+			(at 101.6 234.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "ERA-3AEB151V"
 			(at 101.6 234.95 0)
 			(effects
 				(font
@@ -26035,6 +26192,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "ESR03EZPF1002"
+			(at 105.41 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "4fc0ca78-43a8-46e7-9274-54b3cc88759f")
 		)
@@ -26392,6 +26558,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C2Q500"
+			(at 58.42 34.29 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "cd73667d-7327-47f2-a3e5-9d3bb67c9f86")
 		)
@@ -26687,6 +26862,15 @@
 			)
 		)
 		(property "Description" "Resistor, US symbol"
+			(at 137.16 234.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "ERA-3AEB151V"
 			(at 137.16 234.95 0)
 			(effects
 				(font
@@ -27191,6 +27375,15 @@
 			)
 		)
 		(property "Description" "Resistor, US symbol"
+			(at 120.65 234.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "ERA-3AEB151V"
 			(at 120.65 234.95 0)
 			(effects
 				(font

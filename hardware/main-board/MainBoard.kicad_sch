@@ -5415,6 +5415,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C2Q500"
+			(at 212.09 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "ddcd5c5f-06ec-42fb-ac39-d07c046075a0")
 		)
@@ -5826,6 +5835,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "CD22M3494MQZ"
+			(at 60.96 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "30"
 			(uuid "b66ea6d5-ccd2-4a1b-818d-98a9cda5061d")
 		)
@@ -5967,7 +5985,7 @@
 				)
 			)
 		)
-		(property "Value" "TL081"
+		(property "Value" "LM7321MAX/NOPB"
 			(at 198.12 38.0298 0)
 			(effects
 				(font
@@ -5984,7 +6002,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/tl081.pdf"
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/lm7321.pdf?HQS=dis-dk-null-digikeymode-dsf-pf-null-wwe&ts=1774276721362&ref_url=https%253A%252F%252Fwww.ti.com%252Fgeneral%252Fdocs%252Fsuppproductinfo.tsp%253FdistId%253D10%2526gotoUrl%253Dhttps%253A%252F%252Fwww.ti.com%252Flit%252Fgpn%252Flm7321"
 			(at 193.04 38.1 0)
 			(effects
 				(font
@@ -5993,7 +6011,16 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Single JFET-Input Operational Amplifiers, DIP-8/SOIC-8"
+		(property "Description" ""
+			(at 189.23 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "LM7321MAX/NOPB"
 			(at 189.23 41.91 0)
 			(effects
 				(font
@@ -6362,6 +6389,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C2Q500"
+			(at 214.63 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "e5868f33-1f20-470e-9fd9-a0953964edec")
 		)
@@ -6506,6 +6542,15 @@
 			)
 		)
 		(property "Description" "Fuse"
+			(at 208.28 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "C2Q500"
 			(at 208.28 107.95 0)
 			(effects
 				(font

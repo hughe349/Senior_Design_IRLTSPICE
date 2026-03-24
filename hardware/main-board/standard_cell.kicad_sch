@@ -6461,6 +6461,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "CD22M3494MQZ"
+			(at 162.56 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "13"
 			(uuid "1c9475ff-d855-464d-880a-455d8f7ceb71")
 		)
@@ -7283,6 +7292,15 @@
 			)
 		)
 		(property "MPN" "968-CD22M3494MQZ"
+			(at 217.17 146.05 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "CD22M3494MQZ"
 			(at 217.17 146.05 0)
 			(effects
 				(font
