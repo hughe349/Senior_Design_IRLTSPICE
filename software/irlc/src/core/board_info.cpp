@@ -1,4 +1,5 @@
 #include "core/board_info.hpp"
+#include "core/numbers.hpp"
 #include "util/macros.hpp"
 #include <iostream>
 #include <unordered_map>
@@ -69,6 +70,7 @@ uint8_t ColConIter::get_bar_col() { return col_id; }
 // Should prolly not really be used for production
 bool validate_simple_tspice(SimpleTspiceInfo const &board) {
     unordered_map<uint8_t, PhysCrossbar const *> mappy;
+    unordered_map<int32_t, val_pico_t> val_mappy;
     for (auto &bar : board.root.bars) {
         mappy[bar.id] = &bar;
     }
@@ -108,6 +110,18 @@ bool validate_simple_tspice(SimpleTspiceInfo const &board) {
                                               RoutableRowCon rc = get<RoutableRowCon>(child);
                                               return rc.parent_id == id_barptr_pair.first &&
                                                      (rc.parent_col == colid);
+                                          },
+                                          [&](ComponentColConn cc) {
+                                              if (val_mappy.contains(cc.id)) {
+                                                  if (val_mappy[cc.id] != cc.val) {
+                                                      return false;
+                                                  } else {
+                                                      return true;
+                                                  }
+                                              } else {
+                                                  val_mappy[cc.id] = cc.val;
+                                                  return true;
+                                              }
                                           },
                                           [](auto &other) { return true; }},
                                 colcon);

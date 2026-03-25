@@ -44,7 +44,7 @@ int IrlCompiler::invoke() {
         try {
             netlist = std::move(parser->try_parse(*opts.input_file, in_content));
             break;
-        } catch (ParseException e) {
+        } catch (runtime_error &e) {
             log_error(e.what());
         } catch (...) {
             log_error("Unknown error occured parsing.");

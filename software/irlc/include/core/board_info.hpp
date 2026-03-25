@@ -1,5 +1,6 @@
 #pragma once
 #include "core/netlist.hpp"
+#include "core/numbers.hpp"
 #include <array>
 #include <cstddef>
 #include <cstdint>
@@ -34,9 +35,11 @@ typedef struct ComponentColConn {
     // What pin kind of the component this column goes to
     NetlistEdgeKind pin_kind;
     // Id of the component this column goes to.
-    // For programmable components (resistors) this must be what the micro recognizes, for everythin
-    // else this just must be unique.
+    // For programmable components (resistors) this must be what the micro recognizes, for
+    // everything else this just must be unique.
     int32_t id;
+    // Value of the component if it is a fixed value component (e.g. a cap)
+    val_pico_t val = val_pico_t(0);
 } ComponentColConn;
 
 // A connection from this child crossbar to a parent crossbar, allowing routing
@@ -152,8 +155,8 @@ bool validate_simple_tspice(SimpleTspiceInfo const &board);
 // Board defs
 
 const SimpleTspiceInfo MAIN_BOARD = []() {
-    uint8_t i = -1;
-    auto uniquie = [&i]() { return i--; };
+    uint8_t i = 0;
+    auto uniquie = [&i]() { return --i; };
     auto prev = [&i]() { return i; };
 
     const auto ROOT_BAR = 0;
@@ -204,22 +207,34 @@ const SimpleTspiceInfo MAIN_BOARD = []() {
                                            .kind = DIODE, .pin_kind = PIN_D_K, .id = uniquie()},   \
                                        ComponentColConn{                                           \
                                            .kind = DIODE, .pin_kind = PIN_D_A, .id = prev()},      \
-                                       ComponentColConn{                                           \
-                                           .kind = C, .pin_kind = PIN_C, .id = uniquie()},         \
-                                       ComponentColConn{                                           \
-                                           .kind = C, .pin_kind = PIN_C, .id = prev()},            \
-                                       ComponentColConn{                                           \
-                                           .kind = C, .pin_kind = PIN_C, .id = uniquie()},         \
-                                       ComponentColConn{                                           \
-                                           .kind = C, .pin_kind = PIN_C, .id = prev()},            \
-                                       ComponentColConn{                                           \
-                                           .kind = C, .pin_kind = PIN_C, .id = uniquie()},         \
-                                       ComponentColConn{                                           \
-                                           .kind = C, .pin_kind = PIN_C, .id = prev()},            \
+                                       ComponentColConn{.kind = C,                                 \
+                                                        .pin_kind = PIN_C,                         \
+                                                        .id = uniquie(),                           \
+                                                        .val = 1_n},                               \
+                                       ComponentColConn{.kind = C,                                 \
+                                                        .pin_kind = PIN_C,                         \
+                                                        .id = prev(),                              \
+                                                        .val = 1_n},                               \
+                                       ComponentColConn{.kind = C,                                 \
+                                                        .pin_kind = PIN_C,                         \
+                                                        .id = uniquie(),                           \
+                                                        .val = 10_n},                              \
+                                       ComponentColConn{.kind = C,                                 \
+                                                        .pin_kind = PIN_C,                         \
+                                                        .id = prev(),                              \
+                                                        .val = 10_n},                              \
                                        ComponentColConn{                                           \
                                            .kind = DIODE, .pin_kind = PIN_D_K, .id = uniquie()},   \
                                        ComponentColConn{                                           \
                                            .kind = DIODE, .pin_kind = PIN_D_A, .id = prev()},      \
+                                       ComponentColConn{.kind = C,                                 \
+                                                        .pin_kind = PIN_C,                         \
+                                                        .id = uniquie(),                           \
+                                                        .val = 100_n},                             \
+                                       ComponentColConn{.kind = C,                                 \
+                                                        .pin_kind = PIN_C,                         \
+                                                        .id = prev(),                              \
+                                                        .val = 100_n},                             \
                                    },                                                              \
                            },                                                                      \
                            PhysCrossbar{                                                           \
@@ -257,6 +272,14 @@ const SimpleTspiceInfo MAIN_BOARD = []() {
                                            .kind = R, .pin_kind = PIN_R, .id = FIRST_R + 4},       \
                                        ComponentColConn{                                           \
                                            .kind = R, .pin_kind = PIN_R, .id = FIRST_R + 4},       \
+                                       ComponentColConn{.kind = C,                                 \
+                                                        .pin_kind = PIN_C,                         \
+                                                        .id = uniquie(),                           \
+                                                        .val = 1_u},                               \
+                                       ComponentColConn{.kind = C,                                 \
+                                                        .pin_kind = PIN_C,                         \
+                                                        .id = prev(),                              \
+                                                        .val = 1_u},                               \
                                        ComponentColConn{                                           \
                                            .kind = R, .pin_kind = PIN_R, .id = FIRST_R + 3},       \
                                        ComponentColConn{                                           \

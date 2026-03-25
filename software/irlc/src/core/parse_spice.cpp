@@ -1,5 +1,6 @@
 #include "core/debug.hpp"
 #include "core/netlist.hpp"
+#include "core/numbers.hpp"
 #include "core/parse.hpp"
 #include <cassert>
 #include <cctype>
@@ -7,6 +8,7 @@
 #include <cstdint>
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -178,18 +180,20 @@ static inline void assert_net_count(int num, string_view reference, const string
     }
 }
 
-static inline float get_component_value(string_view reference, const string &filename,
-                                        const vector<Token *> &line) {
+static inline val_pico_t get_component_value(string_view reference, const string &filename,
+                                             const vector<Token *> &line) {
     Token *val_token = line[line.size() - 1];
-    const char *end = val_token->underlying.end();
-    float value = std::strtof(val_token->underlying.begin(), const_cast<char **>(&end));
-    if (end != val_token->underlying.end()) {
-        throw ParseException::create(
-            ParseException::PARSE_ERROR,
-            string("Component: ") + string(reference) +
-                " , has non-numeric value: " + string(val_token->underlying),
-            filename, val_token->line_number);
+
+    val_pico_t value;
+    try {
+        value = val_pico_t::from_str(val_token->underlying);
+    } catch (runtime_error &e) {
+        throw ParseException::create(ParseException::PARSE_ERROR,
+                                     string("Component: ") + string(reference) +
+                                         " , has bad value. Details: " + e.what(),
+                                     filename, val_token->line_number);
     }
+
     return value;
 }
 
@@ -276,7 +280,7 @@ void add_element(RawNetlist &netlist, NetNameMap &netnames, ModelMap &models,
         assert_net_count(recognized.pins.size(), reference, filename, line);
         RawVert vert;
         if (recognized.numeric_value) {
-            float val = get_component_value(reference, filename, line);
+            val_pico_t val = get_component_value(reference, filename, line);
             vert = boost::add_vertex(RawNetlistVertexInfo{.kind = recognized.component_kind,
                                                           .name = string(reference),
                                                           .value =

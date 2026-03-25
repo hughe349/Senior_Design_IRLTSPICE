@@ -3,6 +3,7 @@
 // Master docs:
 // https://www.boost.org/doc/libs/latest/libs/graph/doc/table_of_contents.html
 
+#include "core/numbers.hpp"
 #include "util/macros.hpp"
 #include <array>
 #include <boost/graph/adjacency_list.hpp>
@@ -49,7 +50,7 @@ struct RawNetlistVertexInfo {
     NetlistVertexKind kind;
     std::string name;
     union RawNetlistVertexValue {
-        float numeric_value;
+        val_pico_t numeric_value;
         NetKind net_value;
         struct NoVal {
         } no_val;

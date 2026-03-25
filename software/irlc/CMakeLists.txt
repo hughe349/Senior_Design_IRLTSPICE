@@ -44,6 +44,7 @@ target_sources(libirlc
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/verify.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/debug.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/board_info.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/numbers.cpp
 )
 target_include_directories(libirlc 
     PUBLIC 
