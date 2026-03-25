@@ -2072,12 +2072,6 @@
 		(uuid "0931c64e-6c66-4cf2-9cc4-c5408243345f")
 	)
 	(junction
-		(at 226.06 111.76)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "0aafb507-eec4-4cc0-a540-7d044a51d263")
-	)
-	(junction
 		(at 55.88 124.46)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2120,12 +2114,6 @@
 		(uuid "44a0cffd-72d6-4271-839a-289ecf740049")
 	)
 	(junction
-		(at 123.19 48.26)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "5932b2ac-a6cc-4783-b4b5-c131419024a8")
-	)
-	(junction
 		(at 43.18 45.72)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2162,12 +2150,6 @@
 		(uuid "7b10d81a-95ad-4f24-a296-681f98397587")
 	)
 	(junction
-		(at 16.51 111.76)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "7c502b02-9216-4278-b6e0-502d04be00e6")
-	)
-	(junction
 		(at 123.19 133.35)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2184,12 +2166,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "969ce2fe-c8a6-4137-86a2-e513ed7433fa")
-	)
-	(junction
-		(at 53.34 45.72)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "a472a4d0-bb2b-41db-b131-fb804703ccc2")
 	)
 	(junction
 		(at 227.33 106.68)
@@ -2232,6 +2208,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "d8059e1d-1ae5-4bbe-9e86-7d48bda888ed")
+	)
+	(junction
+		(at 16.51 111.76)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e312396f-98e7-4f73-a784-98d73708fb0e")
 	)
 	(junction
 		(at 96.52 48.26)
@@ -2342,6 +2324,16 @@
 			(type default)
 		)
 		(uuid "16aa2e8d-4087-4b51-8317-332496574161")
+	)
+	(wire
+		(pts
+			(xy 171.45 107.95) (xy 179.07 107.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1db1c1b7-056a-4b7f-a832-c68549f03901")
 	)
 	(wire
 		(pts
@@ -2715,7 +2707,7 @@
 	)
 	(wire
 		(pts
-			(xy 43.18 45.72) (xy 53.34 45.72)
+			(xy 43.18 45.72) (xy 57.15 45.72)
 		)
 		(stroke
 			(width 0)
@@ -2765,6 +2757,16 @@
 	)
 	(wire
 		(pts
+			(xy 16.51 104.14) (xy 16.51 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "993fa2dc-d786-43a9-ae27-7c1024e3b94a")
+	)
+	(wire
+		(pts
 			(xy 77.47 41.91) (xy 78.74 41.91)
 		)
 		(stroke
@@ -2772,16 +2774,6 @@
 			(type default)
 		)
 		(uuid "995df0fd-d5a7-48c9-a3e8-cab159983879")
-	)
-	(wire
-		(pts
-			(xy 123.19 55.88) (xy 123.19 57.15)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9aec3f19-90c2-41ed-b56d-12d0953695bc")
 	)
 	(wire
 		(pts
@@ -2865,7 +2857,7 @@
 	)
 	(wire
 		(pts
-			(xy 115.57 48.26) (xy 123.19 48.26)
+			(xy 115.57 48.26) (xy 127 48.26)
 		)
 		(stroke
 			(width 0)
@@ -2882,16 +2874,6 @@
 			(type default)
 		)
 		(uuid "c529a999-72c9-4b80-8738-fcbedbdf5a80")
-	)
-	(wire
-		(pts
-			(xy 53.34 45.72) (xy 57.15 45.72)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d1a58bb6-c643-45c2-8359-212cbfa094d7")
 	)
 	(wire
 		(pts
@@ -2972,16 +2954,6 @@
 			(type default)
 		)
 		(uuid "ef908315-2e7d-4207-b163-6174f10bd6e8")
-	)
-	(wire
-		(pts
-			(xy 123.19 48.26) (xy 127 48.26)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f1ad5595-651d-46c5-a9d4-c692e860ac22")
 	)
 	(wire
 		(pts
@@ -3095,7 +3067,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "2.15k"
+		(property "Value" "8.87k"
 			(at 58.42 129.5399 0)
 			(effects
 				(font
@@ -3123,6 +3095,15 @@
 			)
 		)
 		(property "Description" "Resistor, US symbol"
+			(at 55.88 128.27 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "CRCW04028K87FKED"
 			(at 55.88 128.27 0)
 			(effects
 				(font
@@ -3198,6 +3179,15 @@
 			)
 		)
 		(property "Description" "Switched capacitor inverter, inverts positive voltage +2.7 to +5.5V to negative, 200mA, SOT-23-6"
+			(at 218.44 49.53 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "LM2776DBVR"
 			(at 218.44 49.53 0)
 			(effects
 				(font
@@ -3292,6 +3282,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "TPS54202DDCR"
+			(at 67.31 48.26 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "47d1921b-ea44-40a6-80bb-59969b38fb0b")
 		)
@@ -3344,7 +3343,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10u"
+		(property "Value" "22u"
 			(at 20.32 100.7109 0)
 			(effects
 				(font
@@ -3381,6 +3380,15 @@
 			)
 		)
 		(property "ESR" "700m"
+			(at 16.51 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "35SVPF22M"
 			(at 16.51 100.33 0)
 			(effects
 				(font
@@ -3457,6 +3465,15 @@
 			)
 		)
 		(property "Description" "Resistor, US symbol"
+			(at 105.41 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "CRCW0402102KFKED"
 			(at 105.41 115.57 0)
 			(effects
 				(font
@@ -3575,7 +3592,7 @@
 				)
 			)
 		)
-		(property "Value" "22u"
+		(property "Value" "47u"
 			(at 114.046 54.864 90)
 			(effects
 				(font
@@ -3610,6 +3627,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" " GRM32ER61C476KE15L"
+			(at 115.57 52.07 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "6f519d9e-fcc0-4645-82db-017bd7984e3b")
 		)
@@ -3633,79 +3659,6 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 115.57 59.69 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "3bce5fd8-7db9-4e5d-85cd-61fcc1ffe3a4")
-		(property "Reference" "Cout2"
-			(at 111.76 62.738 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "22u"
-			(at 113.284 62.738 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
-			(at 114.6048 55.88 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 115.57 59.69 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 115.57 59.69 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "c167668b-f631-42a3-aaaa-40f37255fd2f")
-		)
-		(pin "2"
-			(uuid "045a0da4-2211-44a1-b28d-66c082957570")
-		)
-		(instances
-			(project "PowerCircuit"
-				(path "/16b93b8d-b102-45c8-ac68-70e2e928c0fa"
-					(reference "Cout?")
-					(unit 1)
-				)
-			)
-			(project "MainBoard"
-				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
-					(reference "Cout2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
 		(at 35.56 100.33 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -3721,7 +3674,7 @@
 				)
 			)
 		)
-		(property "Value" "1u"
+		(property "Value" "1µF"
 			(at 38.354 100.33 90)
 			(effects
 				(font
@@ -3756,6 +3709,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C1005X5R1V105K050BC"
+			(at 35.56 100.33 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "a3bce01c-fc6f-433c-9b88-b7961f9521a6")
 		)
@@ -3772,163 +3734,6 @@
 			(project "MainBoard"
 				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
 					(reference "Cinx2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GNDPWR")
-		(at 115.57 63.5 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "4204fd53-49c4-4e3e-85f8-32b9002a026e")
-		(property "Reference" "#PWR047"
-			(at 115.57 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GNDPWR"
-			(at 115.443 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 115.57 64.77 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 115.57 64.77 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GNDPWR\" , global ground"
-			(at 115.57 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "18bc129b-bfd5-4989-93f2-59f1ce0a75a0")
-		)
-		(instances
-			(project "PowerCircuit"
-				(path "/16b93b8d-b102-45c8-ac68-70e2e928c0fa"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
-			(project "MainBoard"
-				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
-					(reference "#PWR047")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C_Polarized")
-		(at 16.51 107.95 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "4e47358d-d5eb-4524-8cce-d0b8aae80547")
-		(property "Reference" "Cin2"
-			(at 20.32 105.7909 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "10u"
-			(at 20.32 108.3309 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "SeniorDesignFP:CAP_EEFK_C_PAN"
-			(at 17.4752 111.76 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 16.51 107.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Polarized capacitor"
-			(at 16.51 107.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "ESR" "700m"
-			(at 16.51 107.95 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "e813d802-f0f9-4886-ba06-e479d82b7b38")
-		)
-		(pin "2"
-			(uuid "6bf2b843-abb6-4f9d-ba57-9709f096c586")
-		)
-		(instances
-			(project "PowerCircuit"
-				(path "/16b93b8d-b102-45c8-ac68-70e2e928c0fa"
-					(reference "Cin2")
-					(unit 1)
-				)
-			)
-			(project "MainBoard"
-				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
-					(reference "Cin2")
 					(unit 1)
 				)
 			)
@@ -3989,6 +3794,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "CRCW0402100KFKED"
+			(at 41.91 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "32b8a202-0ea6-4ef8-b03b-ef5c9a90585d")
 		)
@@ -4005,79 +3819,6 @@
 			(project "MainBoard"
 				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
 					(reference "Renb1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 123.19 52.07 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "50b05c5d-c742-489c-967c-efbd1d15e34c")
-		(property "Reference" "Coutx2"
-			(at 119.888 55.118 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "56p"
-			(at 121.666 55.118 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder"
-			(at 122.2248 48.26 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 123.19 52.07 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 123.19 52.07 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "9511d007-58c1-4d59-9d20-924cf5f5b2eb")
-		)
-		(pin "2"
-			(uuid "20a5077a-7c39-4e1a-b290-179dd2dbee15")
-		)
-		(instances
-			(project "PowerCircuit"
-				(path "/16b93b8d-b102-45c8-ac68-70e2e928c0fa"
-					(reference "Coutx?")
-					(unit 1)
-				)
-			)
-			(project "MainBoard"
-				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
-					(reference "Coutx2")
 					(unit 1)
 				)
 			)
@@ -4130,6 +3871,15 @@
 			)
 		)
 		(property "Description" "Resistor, US symbol"
+			(at 102.87 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" " CRCW0402100KFKED"
 			(at 102.87 52.07 0)
 			(effects
 				(font
@@ -4204,6 +3954,15 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 53.34 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "C1608X5R1C475K080AC"
+			(at 53.34 104.14 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4387,7 +4146,7 @@
 				)
 			)
 		)
-		(property "Value" "10u"
+		(property "Value" "3.3µF"
 			(at 40.386 49.276 90)
 			(effects
 				(font
@@ -4422,6 +4181,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" " C1608X5R1V335K080AC"
+			(at 43.18 49.53 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "3eed7289-3ae8-4af2-aa28-08ec9225d7ee")
 		)
@@ -4438,6 +4206,72 @@
 			(project ""
 				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
 					(reference "Cin3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GNDPWR")
+		(at 179.07 107.95 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "62920fca-935e-46ba-a61d-9d2933619988")
+		(property "Reference" "#PWR030"
+			(at 179.07 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GNDPWR"
+			(at 178.943 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 179.07 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 179.07 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GNDPWR\" , global ground"
+			(at 179.07 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "30ba5464-b17a-49ed-abc7-9333820534e1")
+		)
+		(instances
+			(project "MainBoard"
+				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
+					(reference "#PWR030")
 					(unit 1)
 				)
 			)
@@ -4510,6 +4344,72 @@
 			(project ""
 				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
 					(reference "#PWR043")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GNDPWR")
+		(at 115.57 55.88 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "69c1b030-7607-4722-ad30-008840d66a61")
+		(property "Reference" "#PWR041"
+			(at 115.57 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GNDPWR"
+			(at 115.443 59.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 115.57 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 115.57 57.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GNDPWR\" , global ground"
+			(at 115.57 55.88 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ec7fc32e-1028-44c9-9f25-c4e2ee3771ee")
+		)
+		(instances
+			(project "MainBoard"
+				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
+					(reference "#PWR041")
 					(unit 1)
 				)
 			)
@@ -4640,6 +4540,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "PJ-063AH"
+			(at 218.44 109.22 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "aab65520-0386-4957-b860-bd3d23616131")
 		)
@@ -4678,7 +4587,7 @@
 				)
 			)
 		)
-		(property "Value" "33n"
+		(property "Value" "15n"
 			(at 58.674 135.89 90)
 			(effects
 				(font
@@ -4706,6 +4615,15 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 55.88 135.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "GRM155R71C153KA01D"
+			(at 55.88 135.89 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4779,6 +4697,15 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 26.67 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "MSASU32MSB7475MPNA01"
+			(at 26.67 100.33 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4896,7 +4823,7 @@
 				)
 			)
 		)
-		(property "Value" "100n"
+		(property "Value" "100nF"
 			(at 82.55 39.116 90)
 			(effects
 				(font
@@ -4904,7 +4831,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
 			(at 86.36 40.9448 0)
 			(effects
 				(font
@@ -4924,6 +4851,15 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 82.55 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "C0805C104M5RACTU"
+			(at 82.55 41.91 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5143,6 +5079,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "GRM0335C1E560JA01D"
+			(at 96.52 52.07 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "911781f0-6c51-415b-b3dd-19b57383b93d")
 		)
@@ -5181,7 +5126,7 @@
 				)
 			)
 		)
-		(property "Value" "100n"
+		(property "Value" "100nF"
 			(at 100.33 99.314 90)
 			(effects
 				(font
@@ -5209,6 +5154,15 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 100.33 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "GRM155R71C104KA88D"
+			(at 100.33 96.52 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5254,7 +5208,7 @@
 				)
 			)
 		)
-		(property "Value" "10u"
+		(property "Value" "10µF"
 			(at 125.984 115.57 90)
 			(effects
 				(font
@@ -5282,6 +5236,15 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 123.19 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "C3225X7R1H106M250AC"
+			(at 123.19 115.57 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5509,6 +5472,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "CRCW04026K04FKED"
+			(at 105.41 123.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "9e8ca9f4-eb70-4f7d-b06f-0b68aa3b3be0")
 		)
@@ -5726,6 +5698,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "CL10B225KP8NNNC"
+			(at 238.76 50.8 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "8be609e8-2157-46c5-918a-d8ec3e89b2b2")
 		)
@@ -5799,6 +5780,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "CL10B225KP8NNNC"
+			(at 212.09 38.1 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "d9a06fd4-7fc5-4397-9ff3-469a73deb64f")
 		)
@@ -5838,7 +5828,7 @@
 				)
 			)
 		)
-		(property "Value" "10u"
+		(property "Value" "12u"
 			(at 92.71 45.72 90)
 			(effects
 				(font
@@ -5846,7 +5836,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_Bourns-SRU1028_10.0x10.0mm"
+		(property "Footprint" "SeniorDesignFP:IND_4532-WE-PD2_WRE-L"
 			(at 92.71 48.26 0)
 			(effects
 				(font
@@ -5874,6 +5864,15 @@
 			)
 		)
 		(property "Comment" "SRU 1048 but package is same"
+			(at 92.71 48.26 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "NPI43C120MTRF "
 			(at 92.71 48.26 90)
 			(effects
 				(font
@@ -5920,7 +5919,7 @@
 				)
 			)
 		)
-		(property "Value" "1u"
+		(property "Value" "1µF"
 			(at 117.094 115.57 90)
 			(effects
 				(font
@@ -5955,6 +5954,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C0603C105Z8VACTU"
+			(at 114.3 115.57 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "c627f3ca-a23e-4612-951b-f77b680d8276")
 		)
@@ -5971,79 +5979,6 @@
 			(project "MainBoard"
 				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
 					(reference "Coutx1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GNDPWR")
-		(at 53.34 53.34 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "a3bc59bf-530f-47ad-ab59-eb0bcf66510b")
-		(property "Reference" "#PWR041"
-			(at 53.34 58.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GNDPWR"
-			(at 55.88 54.4067 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 53.34 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 53.34 54.61 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GNDPWR\" , global ground"
-			(at 53.34 53.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "e45672a6-6d14-4b89-b6f2-8e1d089b0f43")
-		)
-		(instances
-			(project "PowerCircuit"
-				(path "/16b93b8d-b102-45c8-ac68-70e2e928c0fa"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
-			(project "MainBoard"
-				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
-					(reference "#PWR041")
 					(unit 1)
 				)
 			)
@@ -6068,7 +6003,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "22k"
+		(property "Value" "22.1k"
 			(at 105.41 60.9599 0)
 			(effects
 				(font
@@ -6077,7 +6012,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0201_0603Metric_Pad0.64x0.40mm_HandSolder"
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder"
 			(at 103.886 59.944 90)
 			(effects
 				(font
@@ -6096,6 +6031,15 @@
 			)
 		)
 		(property "Description" "Resistor, US symbol"
+			(at 102.87 59.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "CRCW040222K1FKED"
 			(at 102.87 59.69 0)
 			(effects
 				(font
@@ -6180,6 +6124,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "CRCW0402261KFKED"
+			(at 41.91 102.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "1add8cba-aec1-48dd-b116-17ab96908f58")
 		)
@@ -6218,7 +6171,7 @@
 				)
 			)
 		)
-		(property "Value" "1u"
+		(property "Value" "1µF"
 			(at 196.85 53.34 90)
 			(effects
 				(font
@@ -6253,6 +6206,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C0603C105K4RACTU"
+			(at 201.93 53.34 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "69be8960-ae92-4000-80b1-94ad10bdd2dd")
 		)
@@ -6269,79 +6231,6 @@
 			(project "MainBoard"
 				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
 					(reference "C17")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 43.18 64.77 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "ac02376f-eec9-4f42-b9b3-0bc1fd4f5f3b")
-		(property "Reference" "Cin5"
-			(at 37.846 64.516 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "10u"
-			(at 40.386 64.516 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_1210_3225Metric_Pad1.33x2.70mm_HandSolder"
-			(at 42.2148 60.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 43.18 64.77 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 43.18 64.77 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "3b23a303-8012-461f-b146-5c9fc24e8466")
-		)
-		(pin "2"
-			(uuid "24c13790-4751-437d-92d2-3bd8513d9c91")
-		)
-		(instances
-			(project "PowerCircuit"
-				(path "/16b93b8d-b102-45c8-ac68-70e2e928c0fa"
-					(reference "Cin5")
-					(unit 1)
-				)
-			)
-			(project "MainBoard"
-				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
-					(reference "Cin5")
 					(unit 1)
 				)
 			)
@@ -6375,7 +6264,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_Bourns_SDR0604"
+		(property "Footprint" "Inductor_SMD:L_Bourns_SRN6045TA"
 			(at 106.68 100.33 0)
 			(effects
 				(font
@@ -6394,6 +6283,15 @@
 			)
 		)
 		(property "Description" "Inductor"
+			(at 106.68 100.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "SRN6045-100M"
 			(at 106.68 100.33 0)
 			(effects
 				(font
@@ -6425,79 +6323,6 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 53.34 49.53 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "ac8b393d-82bd-495d-adcc-b124800ff657")
-		(property "Reference" "Cinx3"
-			(at 48.26 49.53 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "100n"
-			(at 50.546 49.53 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder"
-			(at 52.3748 45.72 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 53.34 49.53 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 53.34 49.53 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "c68713ee-0cef-472a-9c5a-6af77e511fdb")
-		)
-		(pin "2"
-			(uuid "84d17c3e-3210-4f87-99df-05ace805441d")
-		)
-		(instances
-			(project "PowerCircuit"
-				(path "/16b93b8d-b102-45c8-ac68-70e2e928c0fa"
-					(reference "Cinx?")
-					(unit 1)
-				)
-			)
-			(project "MainBoard"
-				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
-					(reference "Cinx3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
 		(at 132.08 115.57 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6513,7 +6338,7 @@
 				)
 			)
 		)
-		(property "Value" "4.7u"
+		(property "Value" "33u"
 			(at 134.874 115.57 90)
 			(effects
 				(font
@@ -6521,7 +6346,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder"
+		(property "Footprint" "Capacitor_Tantalum_SMD:CP_EIA-3528-21_Kemet-B_HandSolder"
 			(at 133.0452 119.38 0)
 			(effects
 				(font
@@ -6541,6 +6366,15 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 132.08 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "TPSB336K016R0350"
+			(at 132.08 115.57 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6614,6 +6448,15 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 46.99 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "GRM1555C1H241JA01D"
+			(at 46.99 133.35 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6755,6 +6598,15 @@
 			)
 		)
 		(property "Description" ""
+			(at 55.88 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "XTPS55285VALR"
 			(at 55.88 96.52 0)
 			(effects
 				(font
@@ -6912,7 +6764,7 @@
 				)
 			)
 		)
-		(property "Value" "100n"
+		(property "Value" "100nF"
 			(at 100.33 106.934 90)
 			(effects
 				(font
@@ -6940,6 +6792,15 @@
 		)
 		(property "Description" "Unpolarized capacitor"
 			(at 100.33 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "GRM155R71C104KA88D"
+			(at 100.33 104.14 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7023,6 +6884,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "CRCW040224K9FKED"
+			(at 33.02 123.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "5687075c-e1ec-466c-9e0c-1c4e7bc7a993")
 		)
@@ -7039,79 +6909,6 @@
 			(project "MainBoard"
 				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
 					(reference "Rmode1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 43.18 57.15 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "d5d4c897-2d38-4325-9c85-4f65778896ba")
-		(property "Reference" "Cin4"
-			(at 37.846 56.896 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "10u"
-			(at 40.386 56.896 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_1210_3225Metric_Pad1.33x2.70mm_HandSolder"
-			(at 42.2148 53.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 43.18 57.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 43.18 57.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "04afe1e3-ab80-4f8e-b13b-7332ac85c9b8")
-		)
-		(pin "2"
-			(uuid "b18bd098-0dfd-4e7f-9860-463ddaa47f70")
-		)
-		(instances
-			(project "PowerCircuit"
-				(path "/16b93b8d-b102-45c8-ac68-70e2e928c0fa"
-					(reference "Cin4")
-					(unit 1)
-				)
-			)
-			(project "MainBoard"
-				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
-					(reference "Cin4")
 					(unit 1)
 				)
 			)
@@ -7191,7 +6988,7 @@
 	)
 	(symbol
 		(lib_id "power:GNDPWR")
-		(at 43.18 68.58 0)
+		(at 43.18 53.34 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -7200,7 +6997,7 @@
 		(fields_autoplaced yes)
 		(uuid "e45b3c61-50d0-4228-ac58-3e6bcd056617")
 		(property "Reference" "#PWR039"
-			(at 43.18 73.66 0)
+			(at 43.18 58.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7209,7 +7006,7 @@
 			)
 		)
 		(property "Value" "GNDPWR"
-			(at 45.72 69.6467 0)
+			(at 45.72 54.4067 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7218,7 +7015,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 43.18 69.85 0)
+			(at 43.18 54.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7227,7 +7024,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 43.18 69.85 0)
+			(at 43.18 54.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7236,7 +7033,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GNDPWR\" , global ground"
-			(at 43.18 68.58 0)
+			(at 43.18 53.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7257,6 +7054,72 @@
 			(project "MainBoard"
 				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
 					(reference "#PWR039")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 171.45 107.95 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e8a542f5-7dca-4c65-8910-a23a9588d272")
+		(property "Reference" "#PWR035"
+			(at 171.45 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 171.45 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 171.45 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 171.45 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 171.45 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "10bceb45-262f-43e2-b733-c62b96ad2e45")
+		)
+		(instances
+			(project "MainBoard"
+				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
+					(reference "#PWR035")
 					(unit 1)
 				)
 			)
@@ -7329,144 +7192,6 @@
 			(project "MainBoard"
 				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
 					(reference "#PWR053")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:PWR_FLAG")
-		(at 226.06 111.76 180)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "f25d4ff6-47d2-4b6a-a3de-6fce78d8b87f")
-		(property "Reference" "#FLG05"
-			(at 226.06 113.665 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "PWR_FLAG"
-			(at 226.06 116.84 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 226.06 111.76 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 226.06 111.76 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Special symbol for telling ERC where power comes from"
-			(at 226.06 111.76 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "dff4c55c-e225-4905-85a2-8091994b636f")
-		)
-		(instances
-			(project ""
-				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
-					(reference "#FLG05")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:GNDPWR")
-		(at 123.19 57.15 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "fe8a9101-1734-4540-b6ed-96b1b923ffc7")
-		(property "Reference" "#PWR049"
-			(at 123.19 62.23 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "GNDPWR"
-			(at 123.063 60.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 123.19 58.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 123.19 58.42 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"GNDPWR\" , global ground"
-			(at 123.19 57.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "862eb815-e592-4ab3-81c8-1502d86a8729")
-		)
-		(instances
-			(project "PowerCircuit"
-				(path "/16b93b8d-b102-45c8-ac68-70e2e928c0fa"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
-			(project "MainBoard"
-				(path "/5dd933ff-bc57-4741-8957-85d8c6e75130/534f316e-b737-411c-8d6f-20e6ab703659"
-					(reference "#PWR049")
 					(unit 1)
 				)
 			)

@@ -1624,7 +1624,7 @@
 			)
 			(embedded_fonts no)
 		)
-		(symbol "Switch:SW_SP3T"
+		(symbol "SeniorDesign:SW_SP3T_2P"
 			(pin_names
 				(offset 0)
 				(hide yes)
@@ -1632,23 +1632,23 @@
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "SW"
-				(at 0 5.08 0)
+			(property "Reference" "SW2"
+				(at 0 -8.89 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Value" "SW_SP3T"
-				(at 0 -5.08 0)
+			(property "Value" "SW_SP3T_2P"
+				(at 0 -6.35 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Footprint" ""
+			(property "Footprint" "Button_Switch_THT:SW_Slide_SP3T_Straight_CK_OS103012MU1QP1"
 				(at -15.875 4.445 0)
 				(effects
 					(font
@@ -1693,7 +1693,7 @@
 					(hide yes)
 				)
 			)
-			(symbol "SW_SP3T_0_1"
+			(symbol "SW_SP3T_2P_0_1"
 				(circle
 					(center -2.032 0)
 					(radius 0.4572)
@@ -1751,7 +1751,7 @@
 					)
 				)
 			)
-			(symbol "SW_SP3T_1_1"
+			(symbol "SW_SP3T_2P_1_1"
 				(rectangle
 					(start -3.175 3.81)
 					(end 3.175 -3.81)
@@ -1766,14 +1766,14 @@
 				(pin passive line
 					(at -5.08 0 0)
 					(length 2.54)
-					(name "3"
+					(name "2"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "3"
+					(number "2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1802,14 +1802,14 @@
 				(pin passive line
 					(at 5.08 0 180)
 					(length 2.54)
-					(name "2"
+					(name "3"
 						(effects
 							(font
 								(size 1.27 1.27)
 							)
 						)
 					)
-					(number "2"
+					(number "3"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2627,6 +2627,10 @@
 		(uuid "62dfc7f7-8d6a-4de8-b594-4f49e692853f")
 	)
 	(no_connect
+		(at 78.74 55.88)
+		(uuid "76bb95a6-9a3f-49c3-81c6-6dc71304d313")
+	)
+	(no_connect
 		(at 254 49.53)
 		(uuid "9fc61c81-92dd-40f3-bf78-a0ea66702315")
 	)
@@ -2641,6 +2645,10 @@
 	(no_connect
 		(at 251.46 102.87)
 		(uuid "af8e204d-b351-4ca8-ad7f-6232fe4b6927")
+	)
+	(no_connect
+		(at 78.74 53.34)
+		(uuid "cf398c26-a248-4646-a80e-e1a99b890843")
 	)
 	(no_connect
 		(at 251.46 49.53)
@@ -3962,6 +3970,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "TL071HIDR"
+			(at 251.46 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "669792ab-c7a3-4611-8662-f4057e7ecf9f")
 		)
@@ -4787,6 +4804,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "TL071HIDR"
+			(at 251.46 68.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "fb94a015-6ff1-417d-b048-ed4f80457a35")
 		)
@@ -4865,6 +4891,15 @@
 			)
 		)
 		(property "Description" "Single Low-Noise JFET-Input Operational Amplifiers, DIP-8/SOIC-8"
+			(at 251.46 121.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "TL071HIDR"
 			(at 251.46 121.92 0)
 			(effects
 				(font
@@ -5243,7 +5278,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Switch:SW_SP3T")
+		(lib_id "SeniorDesign:SW_SP3T_2P")
 		(at 50.8 156.21 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -5287,6 +5322,15 @@
 			)
 		)
 		(property "Description" "Switch, three position, single pole triple throw, 3 position switch, SP3T"
+			(at 50.8 156.21 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "OS103011MS8QP1"
 			(at 50.8 156.21 0)
 			(effects
 				(font
@@ -5371,6 +5415,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C2Q500"
+			(at 212.09 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "ddcd5c5f-06ec-42fb-ac39-d07c046075a0")
 		)
@@ -5430,6 +5483,15 @@
 			)
 		)
 		(property "Description" "Single Low-Noise JFET-Input Operational Amplifiers, DIP-8/SOIC-8"
+			(at 251.46 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "TL071HIDR"
 			(at 251.46 95.25 0)
 			(effects
 				(font
@@ -5764,6 +5826,24 @@
 				(hide yes)
 			)
 		)
+		(property "MPN" "968-CD22M3494MQZ"
+			(at 60.96 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "CD22M3494MQZ"
+			(at 60.96 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "30"
 			(uuid "b66ea6d5-ccd2-4a1b-818d-98a9cda5061d")
 		)
@@ -5905,7 +5985,7 @@
 				)
 			)
 		)
-		(property "Value" "TL081"
+		(property "Value" "LM7321MAX/NOPB"
 			(at 198.12 38.0298 0)
 			(effects
 				(font
@@ -5922,7 +6002,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "http://www.ti.com/lit/ds/symlink/tl081.pdf"
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/lm7321.pdf?HQS=dis-dk-null-digikeymode-dsf-pf-null-wwe&ts=1774276721362&ref_url=https%253A%252F%252Fwww.ti.com%252Fgeneral%252Fdocs%252Fsuppproductinfo.tsp%253FdistId%253D10%2526gotoUrl%253Dhttps%253A%252F%252Fwww.ti.com%252Flit%252Fgpn%252Flm7321"
 			(at 193.04 38.1 0)
 			(effects
 				(font
@@ -5931,7 +6011,16 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Single JFET-Input Operational Amplifiers, DIP-8/SOIC-8"
+		(property "Description" ""
+			(at 189.23 41.91 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "LM7321MAX/NOPB"
 			(at 189.23 41.91 0)
 			(effects
 				(font
@@ -6300,6 +6389,15 @@
 				(hide yes)
 			)
 		)
+		(property "DKPN" "C2Q500"
+			(at 214.63 114.3 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "e5868f33-1f20-470e-9fd9-a0953964edec")
 		)
@@ -6316,7 +6414,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Switch:SW_SP3T")
+		(lib_id "SeniorDesign:SW_SP3T_2P")
 		(at 82.55 97.79 180)
 		(unit 1)
 		(exclude_from_sim no)
@@ -6360,6 +6458,15 @@
 			)
 		)
 		(property "Description" "Switch, three position, single pole triple throw, 3 position switch, SP3T"
+			(at 82.55 97.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "OS103011MS8QP1"
 			(at 82.55 97.79 0)
 			(effects
 				(font
@@ -6435,6 +6542,15 @@
 			)
 		)
 		(property "Description" "Fuse"
+			(at 208.28 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "DKPN" "C2Q500"
 			(at 208.28 107.95 0)
 			(effects
 				(font
