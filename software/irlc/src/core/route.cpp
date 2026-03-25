@@ -4,6 +4,9 @@
 #include "boost/graph/compressed_sparse_row_graph.hpp"
 #include "boost/graph/filtered_graph.hpp"
 #include "boost/graph/properties.hpp"
+#include "boost/range/adaptor/indexed.hpp"
+#include "boost/range/const_iterator.hpp"
+#include "boost/range/iterator_range_core.hpp"
 #include "boost/unordered/unordered_map_fwd.hpp"
 #include "core/board_info.hpp"
 #include "core/compiler.hpp"
@@ -17,6 +20,7 @@
 #include <cstdint>
 #include <format>
 #include <iostream>
+#include <iterator>
 #include <memory>
 #include <ostream>
 #include <ranges>
@@ -62,8 +66,7 @@ void StdCell::to_str(std::ostream &ostream, RawNetlist const raw) {
         ostream << "(" << raw[v.first].name << " = ";
         visit(overloads{
                   [&](uint32_t cid) { ostream << "Cell " << cid; },
-                  [&](circuit_input_t _) { ostream << "Circuit Input"; },
-                  [&](ground_input_t _) { ostream << "Ground"; },
+                  [&](NetKind special) { ostream << "Special net: " << net_name(special); },
               },
               v.second);
         ostream << "), ";
@@ -143,54 +146,19 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
             // Here we are going to a net. Lots of special cases here.
             switch (g[v].value.net_value) {
             case V_HIGH:
-            case V_NEG: {
-                if (compiler.opts.should_verbose_cell_assign())
-                    compiler.log_fd << "  V\n";
-                if (buffer_outputs.contains(v)) {
-                    rule_failed<"Buffer must not drive voltage">();
-                }
-                // Power is illegal in the user's circuit
-                // No matter what, we don't want to visit it as that could breach to other cells
-                vertex_coloring[v] = boost::black_color;
-                // Edges allowed to be connected to power
-                constexpr NetlistEdgeKind power_edges[] = {PIN_OPAMP_SUPPLY_PLUS,
-                                                           PIN_OPAMP_SUPPLY_MINUS};
-                if (ranges::find(power_edges, g[e].kind) != ranges::end(power_edges)) {
-                    // A power edge. We chill.
-                    return;
-                } else {
-                    // Not a power edge. Very illegal
-                    throw runtime_error(std::format("cell {} has component: \"{}\" connected to "
-                                                    "{}. Illegal connection to power",
-                                                    cell.id, g[u].name,
-                                                    net_name(g[v].value.net_value)));
-                }
-            } break;
+            case V_NEG:
             case V_GND:
-                if (compiler.opts.should_verbose_cell_assign())
-                    compiler.log_fd << "  GND\n";
-                if (buffer_outputs.contains(v)) {
-                    rule_failed<"Buffer must not drive voltage">();
-                }
-                // We do want ground as a net, because it is a valid row in the crossbars
-                if (vertex_coloring[v] == boost::white_color) {
-                    cell.nets.push_back(v);
-                    cell.input_nets.push_back(pair{v, GROUND_INPUT});
-                }
-                // But we don't want to visit it, because it leads to other cells
-                vertex_coloring[v] = boost::black_color;
-                break;
             case INPUT:
                 if (compiler.opts.should_verbose_cell_assign())
-                    compiler.log_fd << "  INPUT\n";
+                    compiler.log_fd << "  " << net_name(g[v].value.net_value) << "\n";
                 if (buffer_outputs.contains(v)) {
                     rule_failed<"Buffer must not drive voltage">();
                 }
-                // But we do want input as a net, because it is a valid row in the crossbars
-                // And we need it to be in input_nets, so we can route it in the top level switch
+                // We do want this special net as a net
+                // it could be routable from top top-level or built right into the cell
                 if (vertex_coloring[v] == boost::white_color) {
                     cell.nets.push_back(v);
-                    cell.input_nets.push_back(pair{v, CIRCUIT_INPUT});
+                    cell.input_nets.push_back(pair{v, g[v].value.net_value});
                 }
                 // We don't want to visit it, though, because it leads to other cells
                 vertex_coloring[v] = boost::black_color;
@@ -202,6 +170,7 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
                 if (!buffer_outputs.contains(v)) {
                     rule_failed<"Circuit output must be driven by only a buffer">();
                 }
+                // Intentionally fall through. NO BREAK
             case WIRE:
                 if (vertex_coloring[v] == boost::white_color) {
                     // Add this guy to our nets!
@@ -365,21 +334,84 @@ unique_ptr<AssignedNetlist> SimpleTspiceRouter::try_assign(unique_ptr<RawNetlist
     return assigned;
 }
 
-class RoutingError : public runtime_error {
-  public:
-    RoutingError(int32_t cell_id, const std::string &what)
-        : runtime_error(
-              (std::ostringstream("Error routing cell: ") << cell_id << ", message: " << what)
-                  .str()) {}
-};
+// Attempts to make a connection from a toplvl row satisfying toplvl_predicate to a cell row in
+// phy/design_cell
+bool SimpleTspiceRouter::make_routing_connection(
+    std::vector<CrossbarCon> &connections, netmap_t &netmap, free_cells_t &free_cells,
+    PhysStdCell const &phy_cell, StdCell const &design_cell,
+    std::function<bool(boost::range::index_value<const RowCon &>)> toplvl_predicate,
+    std::function<std::string(void)> err_msg_gen) {
+    auto cell_id = design_cell.id;
+    auto phy_cell_crossbar_id = phy_cell.crossbars.bars[0].id;
+    // Step one is make sure we have a routable row in the cell that's free
+    auto cell_row = phy_cell.crossbars.rows();
+    auto cell_row_enumed =
+        boost::make_iterator_range(cell_row.begin(), cell_row.end()) | boost::adaptors::indexed(0);
+    auto cell_routable_row =
+        std::find_if(cell_row_enumed.begin(), cell_row_enumed.end(), [&](auto c) {
+            // Assume all routable conns are the same
+            auto row_i = c.index();
+            return std::holds_alternative<RoutableRowCon>(c.value()) && free_cells[cell_id][row_i];
+        });
+    if (cell_routable_row == cell_row_enumed.end()) {
+        throw RoutingError(cell_id,
+                           "Cell has too many special nets for its number of routable rows");
+    }
+
+    // Now we allocate the row in the cell
+    assert(free_cells[cell_id][cell_routable_row->index()]);
+    netmap[design_cell.pre_buffer_output_net] = cell_routable_row->index();
+    free_cells[cell_id][cell_routable_row->index()] = false;
+    // Now we find the special cell in the top level
+    auto toplvl_row = board.root.rows();
+    auto toplvl_row_enumed = boost::make_iterator_range(toplvl_row.begin(), toplvl_row.end()) |
+                             boost::adaptors::indexed(0);
+    auto toplvl_net_row =
+        std::find_if(toplvl_row_enumed.begin(), toplvl_row_enumed.end(), toplvl_predicate);
+    if (toplvl_net_row == toplvl_row_enumed.end()) {
+        throw RoutingError(cell_id, err_msg_gen());
+        // throw RoutingError(cell_id, (ostringstream() << "Special net :" << net_name(net_kind) <<
+        // " not routable from top level or within in cell").str());
+    }
+
+    // auto toplvl_col_enumed = boost::make_iterator_range(board.root.cols_begin(),
+    // board.root.cols_end()) | boost::adaptors::indexed(0);
+    auto toplvl_routable_col =
+        std::find_if(board.root.cols_begin(), board.root.cols_end(), [&](auto c) {
+            RoutableColCon const *t = std::get_if<RoutableColCon>(&c);
+            return t && t->child_id == phy_cell_crossbar_id &&
+                   t->child_row == cell_routable_row->index();
+        });
+    if (toplvl_routable_col == board.root.cols_end()) {
+        throw RoutingError(
+            cell_id, (ostringstream()
+                      << "Top level crossbar does not have connection to child crossbar: { id: "
+                      << (int)phy_cell_crossbar_id << ", row: " << cell_routable_row->index()
+                      << "}")
+                         .str());
+    }
+
+    // Make the actual connection let's fucking gooooo
+    connections.push_back(CrossbarCon{
+        .crossbar_id = toplvl_routable_col.get_bar_phys_id(),
+        .row = (uint8_t)toplvl_net_row->index(),
+        .col = toplvl_routable_col.get_bar_col(),
+    });
+    if (compiler.opts.should_verbose_connections()) {
+        compiler.log_fd << "Connection {" << (int)toplvl_routable_col.get_bar_phys_id()
+                        << ", r:" << (int)toplvl_net_row->index()
+                        << ", c:" << (int)toplvl_routable_col.get_bar_col() << "} made\n";
+    }
+
+    return true;
+}
 
 vector<CrossbarCon> SimpleTspiceRouter::make_connections(unique_ptr<AssignedNetlist> &assigned) {
     vector<CrossbarCon> connections{};
     // Step 1: Net allocation. which rows are used for which nets
     // We first make a map of which root rows are free
-    vector<bool> free_root = vector(board.root.rows().size(), true);
     // And one for which std cell rows are free
-    vector<vector<bool>> free_cells;
+    free_cells_t free_cells{};
     free_cells.resize(board.cells.size());
     for (auto const &cell : board.cells) {
         free_cells[cell.id] = vector(cell.crossbars.rows().size(), true);
@@ -397,7 +429,7 @@ vector<CrossbarCon> SimpleTspiceRouter::make_connections(unique_ptr<AssignedNetl
                 }
                 return false;
             });
-        if (output_col == ColConIter()) {
+        if (output_col == board.root.cols_end()) {
             throw RoutingError(-1, "Top level crossbar has no circuit output column");
         }
         // Find the top-level row that corresponds to the output cell's output
@@ -427,11 +459,12 @@ vector<CrossbarCon> SimpleTspiceRouter::make_connections(unique_ptr<AssignedNetl
     // Now we need to make the map of where nets are actually physically located
     // This map is a temporary for each cell.
     // We populate it with nets, then go thru the components and connect them to their nets
-    std::unordered_map<RawVert, size_t> netmap{};
+    netmap_t netmap{};
     size_t i = -1;
     for (auto const &cell : assigned->cells) {
         i++;
         auto const &phy_cell = board.cells[i];
+        auto phy_cell_crossbar_id = phy_cell.crossbars.bars[0].id;
         netmap.clear();
         // Priority 1 is the output. Locate it on the standard cell
         for (RowCon const &row : phy_cell.crossbars.rows()) {
@@ -449,32 +482,70 @@ vector<CrossbarCon> SimpleTspiceRouter::make_connections(unique_ptr<AssignedNetl
     found_output:
         // Priority 2 is cell inputs.
         for (pair<RawVert, CellInputId> const &input : cell.input_nets) {
-            bool we_good = std::visit(overloads{
-                                          [&](ground_input_t _) {
-                                              // If this is a ground input, just find the special
-                                              // ground in the crossbars
-                                              for (RowCon const &row : phy_cell.crossbars.rows()) {
-                                                  int row_i = &row - &phy_cell.crossbars.rows()[0];
-                                                  if (SpecialNetCon const *con =
-                                                          std::get_if<SpecialNetCon>(&row);
-                                                      con && con->kind == V_GND) {
-                                                      assert(free_cells[i][row_i]);
-                                                      netmap[cell.pre_buffer_output_net] = row_i;
-                                                      free_cells[i][row_i] = false;
-                                                      return true;
-                                                  }
-                                              }
-                                              return false;
-                                          },
+            bool we_good = std::visit(
+                overloads{
+                    [&](NetKind net_kind) {
+                        // We need to find out how to get the special net here.
+                        // 2 options:
+                        //  1. It's already hard-wired to a cell row
+                        //  2. It's routable form the top level.
+                        // Let's start by chekcing option 1:
+                        for (RowCon const &row : phy_cell.crossbars.rows()) {
+                            int row_i = &row - &phy_cell.crossbars.rows()[0];
+                            SpecialNetCon const *con = std::get_if<SpecialNetCon>(&row);
+                            if (con && con->kind == net_kind) {
+                                // Should always be free, as there's only one of each special net in
+                                // a cell (cuz like there's only one ground in the whole circuit
+                                // e.g.)
+                                assert(free_cells[i][row_i]);
+                                netmap[cell.pre_buffer_output_net] = row_i;
+                                free_cells[i][row_i] = false;
+                                return true;
+                            }
+                        }
 
-                                          // If it ain't a ground input we're in big trouble. We
-                                          // gotta find where it enters the top level crossbar and
-                                          // then route that to this place by pushing a connection
+                        if (compiler.opts.should_verbose_connections()) {
+                            compiler.log_fd << "Making connection for " << net_name(net_kind)
+                                            << "\n";
+                        }
 
-                                          [&](circuit_input_t _) { return false; },
-                                          [&](uint32_t input_cell) { return false; },
-                                      },
-                                      input.second);
+                        // Uh oh. We need to route this from the top level.
+                        return this->make_routing_connection(
+                            connections, netmap, free_cells, phy_cell, cell,
+                            [net_kind](auto c) {
+                                SpecialNetCon const *t = std::get_if<SpecialNetCon>(&c.value());
+                                return t && t->kind == net_kind;
+                            },
+                            [net_kind]() {
+                                return (ostringstream()
+                                        << "Special net: " << net_name(net_kind)
+                                        << " not routable from top level or within in cell")
+                                    .str();
+                            });
+                    },
+                    [&](uint32_t input_cell) {
+                        if (compiler.opts.should_verbose_connections()) {
+                            compiler.log_fd << "Making connection from cell " << input_cell
+                                            << " to cell " << cell.id << "\n";
+                        }
+
+                        // Need to route from top lvl
+                        return this->make_routing_connection(
+                            connections, netmap, free_cells, phy_cell, cell,
+                            [input_cell](auto c) {
+                                BufferOutputRowCon const *t =
+                                    std::get_if<BufferOutputRowCon>(&c.value());
+                                return t && t->id == input_cell;
+                            },
+                            [input_cell]() {
+                                return (ostringstream()
+                                        << "Output from cell: " << input_cell
+                                        << " not routable from top level or within in cell")
+                                    .str();
+                            });
+                    },
+                },
+                input.second);
 
             if (!we_good)
                 throw RoutingError(i, "No input row compatible with input: " +

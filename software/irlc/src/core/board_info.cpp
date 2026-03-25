@@ -1,4 +1,10 @@
 #include "core/board_info.hpp"
+#include "util/macros.hpp"
+#include <iostream>
+#include <unordered_map>
+#include <variant>
+
+using namespace std;
 
 ColConIter ChainedCrossbar::cols_begin() const { return ColConIter(this->bars); }
 
@@ -10,9 +16,9 @@ ColConIter::ColConIter(std::vector<PhysCrossbar> const &bars) {
 
 ColConIter::ColConIter() { this->bars = nullptr; }
 
-ColCon ColConIter::operator*() { return (*bars)[bar_id].cols[col_id]; }
+ColConIter::reference ColConIter::operator*() const { return (*bars)[bar_id].cols[col_id]; }
 
-ColCon const *ColConIter::operator->() { return &(*bars)[bar_id].cols[col_id]; }
+ColCon const *ColConIter::operator->() const { return &(*bars)[bar_id].cols[col_id]; }
 
 // Prefix
 ColConIter &ColConIter::operator++() {
@@ -58,3 +64,58 @@ bool ColConIter::operator!=(ColConIter const &other) const { return !(*this == o
 
 uint8_t ColConIter::get_bar_phys_id() { return (*bars)[bar_id].id; }
 uint8_t ColConIter::get_bar_col() { return col_id; }
+
+// Simple shit to double check and make sure I'm not insane
+// Should prolly not really be used for production
+bool validate_simple_tspice(SimpleTspiceInfo const &board) {
+    unordered_map<uint8_t, PhysCrossbar const *> mappy;
+    for (auto &bar : board.root.bars) {
+        mappy[bar.id] = &bar;
+    }
+    for (auto &cell : board.cells) {
+        for (auto &bar : cell.crossbars.bars) {
+            mappy[bar.id] = &bar;
+        }
+    }
+
+    for (auto &id_barptr_pair : mappy) {
+        for (auto &rowcon : id_barptr_pair.second->rows) {
+            // FUCKASS POINTER ARITHMETIC BECAUSE WE DON'T HAVE GODDAMN ENUMERATE
+            auto rowid = &rowcon - &id_barptr_pair.second->rows[0];
+            bool isgood = visit(
+                overloads{[&](RoutableRowCon rt) {
+                              ColCon parent = mappy[rt.parent_id]->cols[rt.parent_col];
+                              if (!holds_alternative<RoutableColCon>(parent)) {
+                                  return false;
+                              }
+                              RoutableColCon rc = get<RoutableColCon>(parent);
+                              return rc.child_id == id_barptr_pair.first && (rc.child_row == rowid);
+                          },
+                          [](auto &other) { return true; }},
+                rowcon);
+            if (!isgood) {
+                cout << "Bad row: " << (uint32_t)id_barptr_pair.first << ", " << rowid << "\n";
+                return false;
+            }
+        }
+        for (auto &colcon : id_barptr_pair.second->cols) {
+            auto colid = &colcon - &id_barptr_pair.second->cols[0];
+            bool isgood = visit(overloads{[&](RoutableColCon rt) {
+                                              RowCon child = mappy[rt.child_id]->rows[rt.child_row];
+                                              if (!holds_alternative<RoutableRowCon>(child)) {
+                                                  return false;
+                                              }
+                                              RoutableRowCon rc = get<RoutableRowCon>(child);
+                                              return rc.parent_id == id_barptr_pair.first &&
+                                                     (rc.parent_col == colid);
+                                          },
+                                          [](auto &other) { return true; }},
+                                colcon);
+            if (!isgood) {
+                cout << "Bad col: " << (uint32_t)id_barptr_pair.first << ", " << colid << "\n";
+                return false;
+            }
+        }
+    }
+    return true;
+}

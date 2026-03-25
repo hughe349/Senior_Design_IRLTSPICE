@@ -88,8 +88,14 @@ class ColConIter {
     size_t col_id;
 
   public:
-    ColCon operator*();
-    ColCon const *operator->();
+    using value_type = const ColCon;
+    using difference_type = std::ptrdiff_t;
+    using iterator_category = std::forward_iterator_tag;
+    using reference = ColCon const &;
+    using pointer = ColCon const *;
+
+    reference operator*() const;
+    pointer operator->() const;
     ColConIter &operator++();
     ColConIter operator++(int);
     bool operator==(ColConIter const &other) const;
@@ -101,6 +107,8 @@ class ColConIter {
 
     // Returns the "too far" aka end iterator
     ColConIter();
+    ColConIter(const ColConIter &) = default;
+    ColConIter &operator=(const ColConIter &) = default;
     // Makes a normal iterator pointing to the first elem
     ColConIter(std::vector<PhysCrossbar> const &bars);
 };
@@ -138,6 +146,9 @@ typedef struct SimpleTspiceInfo {
     std::vector<PhysStdCell> cells;
 } SimpleTspiceInfo;
 
+// Checks that all the routable connections line up.
+bool validate_simple_tspice(SimpleTspiceInfo const &board);
+
 // Board defs
 
 const SimpleTspiceInfo MAIN_BOARD = []() {
@@ -145,16 +156,17 @@ const SimpleTspiceInfo MAIN_BOARD = []() {
     auto uniquie = [&i]() { return i--; };
     auto prev = [&i]() { return i; };
 
-    const auto ROOT_BAR = 1;
+    const auto ROOT_BAR = 0;
     const auto CELL_0_BAR_0 = 2;
     const auto CELL_0_BAR_1 = 3;
-    const auto CELL_1_BAR_0 = 3;
-    const auto CELL_1_BAR_1 = 4;
-    const auto CELL_2_BAR_0 = 4;
-    const auto CELL_2_BAR_1 = 5;
-    const auto CELL_3_BAR_0 = 5;
-    const auto CELL_3_BAR_1 = 6;
+    const auto CELL_1_BAR_0 = 4;
+    const auto CELL_1_BAR_1 = 5;
+    const auto CELL_2_BAR_0 = 6;
+    const auto CELL_2_BAR_1 = 7;
+    const auto CELL_3_BAR_0 = 8;
+    const auto CELL_3_BAR_1 = 9;
 
+    // One of the macros of all time
 #define STD_CELL(CELL_ID, FIRST_R, C1, C2, C3)                                                     \
     PhysStdCell {                                                                                  \
         .id = CELL_ID,                                                                             \
@@ -167,8 +179,8 @@ const SimpleTspiceInfo MAIN_BOARD = []() {
                                        RoutableRowCon{.parent_id = ROOT_BAR, .parent_col = C2},    \
                                        RoutableRowCon{.parent_id = ROOT_BAR, .parent_col = C3},    \
                                        BufferInputRowCon{},                                        \
-                                       FloatingCon{},                                              \
                                        SpecialNetCon{.kind = V_GND},                               \
+                                       FloatingCon{},                                              \
                                        FloatingCon{},                                              \
                                        FloatingCon{},                                              \
                                    },                                                              \
@@ -262,33 +274,33 @@ const SimpleTspiceInfo MAIN_BOARD = []() {
             .id = ROOT_BAR,
             .rows =
                 std::vector<RowCon>{
+                    SpecialNetCon{.kind = V_HIGH},
+                    FloatingCon{},
+                    SpecialNetCon{.kind = V_NEG},
+                    BufferOutputRowCon{.id = 3},
                     SpecialNetCon{.kind = INPUT},
                     BufferOutputRowCon{.id = 0},
                     BufferOutputRowCon{.id = 1},
                     BufferOutputRowCon{.id = 2},
-                    BufferOutputRowCon{.id = 3},
-                    FloatingCon{},
-                    FloatingCon{},
-                    FloatingCon{},
                 },
             .cols =
                 std::vector<ColCon>{
-                    RoutableColCon{.child_id = CELL_0_BAR_0, .child_row = 0},
-                    RoutableColCon{.child_id = CELL_0_BAR_0, .child_row = 1},
                     RoutableColCon{.child_id = CELL_0_BAR_0, .child_row = 2},
-                    RoutableColCon{.child_id = CELL_1_BAR_0, .child_row = 0},
-                    RoutableColCon{.child_id = CELL_1_BAR_0, .child_row = 1},
+                    RoutableColCon{.child_id = CELL_0_BAR_0, .child_row = 1},
+                    RoutableColCon{.child_id = CELL_0_BAR_0, .child_row = 0},
                     RoutableColCon{.child_id = CELL_1_BAR_0, .child_row = 2},
-                    SpecialNetCon{.kind = OUTPUT},
-                    RoutableColCon{.child_id = CELL_2_BAR_0, .child_row = 0},
-                    RoutableColCon{.child_id = CELL_2_BAR_0, .child_row = 1},
+                    RoutableColCon{.child_id = CELL_1_BAR_0, .child_row = 1},
+                    RoutableColCon{.child_id = CELL_1_BAR_0, .child_row = 0},
                     RoutableColCon{.child_id = CELL_2_BAR_0, .child_row = 2},
                     RoutableColCon{.child_id = CELL_3_BAR_0, .child_row = 0},
                     RoutableColCon{.child_id = CELL_3_BAR_0, .child_row = 1},
                     RoutableColCon{.child_id = CELL_3_BAR_0, .child_row = 2},
+                    SpecialNetCon{.kind = OUTPUT},
                     FloatingCon{},
                     FloatingCon{},
                     FloatingCon{},
+                    RoutableColCon{.child_id = CELL_2_BAR_0, .child_row = 0},
+                    RoutableColCon{.child_id = CELL_2_BAR_0, .child_row = 1},
                 },
         }),
         .cells = std::vector<PhysStdCell>{STD_CELL(0, 100, 2, 1, 0), STD_CELL(1, 200, 5, 4, 3),

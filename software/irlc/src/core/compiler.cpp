@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <string>
 
 using namespace std;
@@ -55,6 +56,9 @@ int IrlCompiler::invoke() {
         return -1;
     }
 
+    if (!validate_simple_tspice(MAIN_BOARD)) {
+        throw runtime_error("Bro we fucked up so bad oh jeez man this is bad :(");
+    }
     SimpleTspiceRouter router(*this, MAIN_BOARD);
 
     router.prune_unconnected_nets(*netlist);
@@ -72,13 +76,30 @@ int IrlCompiler::invoke() {
         return -1;
     }
 
-    unique_ptr<AssignedNetlist> assigned = router.try_assign(netlist);
+    unique_ptr<AssignedNetlist> assigned;
+    if (opts.should_verbose_cell_assign()) {
+        log_fd << "Attempting assignment";
+    }
+
+    try {
+        assigned = router.try_assign(netlist);
+    } catch (runtime_error &e) {
+        log_error(e.what());
+    } catch (...) {
+        log_error("Unknown error occured parsing.");
+    }
 
     if (assigned.get() == nullptr) {
         log_error("Failed to assign to standard cells");
     }
 
-    router.make_connections(assigned);
+    try {
+        router.make_connections(assigned);
+    } catch (runtime_error &e) {
+        log_error(e.what());
+    } catch (...) {
+        log_error("Unknown error occured parsing.");
+    }
 
     return 0;
 }

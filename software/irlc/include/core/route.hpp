@@ -1,16 +1,16 @@
 #pragma once
 
+#include "boost/range/adaptor/indexed.hpp"
 #include "core/board_info.hpp"
 #include "core/compiler.hpp"
 #include "core/netlist.hpp"
 #include <cstddef>
 #include <cstdint>
+#include <stdexcept>
 #include <variant>
 #include <vector>
 
-typedef enum circuit_input_t { CIRCUIT_INPUT } circuit_input_t;
-typedef enum ground_input_t { GROUND_INPUT } ground_input_t;
-typedef std::variant<circuit_input_t, ground_input_t, uint32_t> CellInputId;
+typedef std::variant<NetKind, uint32_t> CellInputId;
 
 typedef struct StdCell {
     // This cell's arbitrary id. Must be the same as index in AssignedNetList->cells vec
@@ -47,6 +47,17 @@ typedef struct _AssignedNetList {
     StdCell const &get_cell(RawVert v);
 } AssignedNetlist;
 
+class RoutingError : public std::runtime_error {
+  public:
+    RoutingError(int32_t cell_id, const std::string &what)
+        : runtime_error(
+              (std::ostringstream() << "Error routing cell: " << cell_id << ", message: " << what)
+                  .str()) {}
+};
+
+typedef std::unordered_map<RawVert, size_t> netmap_t;
+typedef std::vector<std::vector<bool>> free_cells_t;
+
 // This guy makes a couple big assumptions that highly couple it to our specific board design:
 //   1. The only constant voltage cells have access to is ground.
 //   2. Cells follow a tree-like structure where all can be routed to through a single root crossbar
@@ -54,6 +65,12 @@ class SimpleTspiceRouter {
   private:
     IrlCompiler const &compiler;
     SimpleTspiceInfo const &board;
+
+    bool make_routing_connection(
+        std::vector<CrossbarCon> &connections, netmap_t &netmap, free_cells_t &free_cells,
+        PhysStdCell const &phy_cell, StdCell const &design_cell,
+        std::function<bool(boost::range::index_value<const RowCon &>)> toplvl_predicate,
+        std::function<std::string(void)> err_msg_gen);
 
   public:
     SimpleTspiceRouter(IrlCompiler const &compiler, auto const &board)
