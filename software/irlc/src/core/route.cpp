@@ -553,5 +553,8 @@ vector<CrossbarCon> SimpleTspiceRouter::make_connections(unique_ptr<AssignedNetl
         }
     }
 
+    // =====
+    // PHASE
+
     return connections;
 }

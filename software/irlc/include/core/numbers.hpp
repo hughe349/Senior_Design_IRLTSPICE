@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <ostream>
 #include <string_view>
 
 // The value of a component in pico-somethings
@@ -20,7 +21,16 @@ typedef struct val_pico {
     bool operator>(val_pico const &other) const;
     bool operator<=(val_pico const &other) const;
     bool operator>=(val_pico const &other) const;
+
+    val_pico operator+(val_pico const &other) const;
+    val_pico operator-(val_pico const &other) const;
+    val_pico operator*(val_pico const &other) const;
+    val_pico operator/(val_pico const &other) const;
+    val_pico operator%(val_pico const &other) const;
+
 } val_pico_t;
+
+std::ostream &operator<<(std::ostream &os, val_pico_t const &val);
 
 static inline val_pico_t operator""_p(uint64_t n) { return val_pico_t(n); }
 

@@ -68,6 +68,30 @@ bool val_pico_t::operator==(val_pico const &other) const { return v == other.v; 
 bool val_pico_t::operator!=(val_pico const &other) const { return v != other.v; }
 bool val_pico_t::operator<(val_pico const &other) const { return v < other.v; }
 bool val_pico_t::operator>(val_pico const &other) const { return v > other.v; }
+val_pico_t val_pico_t::operator+(val_pico const &other) const { return (v + other.v); };
+val_pico_t val_pico_t::operator-(val_pico const &other) const { return (v - other.v); };
+val_pico_t val_pico_t::operator*(val_pico const &other) const { return (v * other.v); };
+val_pico_t val_pico_t::operator/(val_pico const &other) const { return (v / other.v); };
+val_pico_t val_pico_t::operator%(val_pico const &other) const { return (v % other.v); };
 
 bool val_pico_t::operator<=(val_pico const &other) const { return v <= other.v; }
 bool val_pico_t::operator>=(val_pico const &other) const { return v >= other.v; }
+
+std::ostream &operator<<(std::ostream &os, val_pico_t const &val) {
+    if (val >= 1_M && val % 1_M == 0) {
+        os << (val / 1_M).v << "M";
+    } else if (val >= 1_k && val % 1_k == 0) {
+        os << (val / 1_k).v << "k";
+    } else if (val >= val_pico_t::no_scaling(1) && val % val_pico_t::no_scaling(1) == 0) {
+        os << (val / val_pico_t::no_scaling(1)).v;
+    } else if (val >= 1_m && val % 1_m == 0) {
+        os << (val / 1_m).v << "m";
+    } else if (val >= 1_u && val % 1_u == 0) {
+        os << (val / 1_u).v << "u";
+    } else if (val >= 1_n && val % 1_n == 0) {
+        os << (val / 1_n).v << "n";
+    } else {
+        os << val.v << "p";
+    }
+    return os;
+}

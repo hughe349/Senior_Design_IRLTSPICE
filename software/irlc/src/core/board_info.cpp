@@ -112,6 +112,11 @@ bool validate_simple_tspice(SimpleTspiceInfo const &board) {
                                                      (rc.parent_col == colid);
                                           },
                                           [&](ComponentColConn cc) {
+                                              if (cc.kind == C) {
+                                                  if (!board.valid_caps.contains(cc.val)) {
+                                                      return false;
+                                                  }
+                                              }
                                               if (val_mappy.contains(cc.id)) {
                                                   if (val_mappy[cc.id] != cc.val) {
                                                       return false;

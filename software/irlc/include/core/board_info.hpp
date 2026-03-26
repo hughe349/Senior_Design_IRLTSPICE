@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <ranges>
+#include <set>
 #include <span>
 #include <variant>
 #include <vector>
@@ -147,6 +148,7 @@ typedef struct PhysStdCell {
 typedef struct SimpleTspiceInfo {
     ChainedCrossbar root;
     std::vector<PhysStdCell> cells;
+    std::set<val_pico_t> valid_caps;
 } SimpleTspiceInfo;
 
 // Checks that all the routable connections line up.
@@ -328,7 +330,7 @@ const SimpleTspiceInfo MAIN_BOARD = []() {
         }),
         .cells = std::vector<PhysStdCell>{STD_CELL(0, 100, 2, 1, 0), STD_CELL(1, 200, 5, 4, 3),
                                           STD_CELL(2, 300, 14, 15, 6), STD_CELL(3, 400, 7, 8, 9)},
-    };
+        .valid_caps = std::set{1_n, 10_n, 100_n, 1_u}};
 }();
 
 template <size_t N_BARS, size_t N_ROWS>

@@ -2,6 +2,7 @@
 
 #include "boost/graph/filtered_graph.hpp"
 #include "boost/graph/graph_concepts.hpp"
+#include "core/board_info.hpp"
 #include "core/compiler.hpp"
 #include "core/netlist.hpp"
 #include "util/boost_util.hpp"
@@ -9,6 +10,7 @@
 #include <cstdint>
 #include <cstring>
 #include <ranges>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <variant>
@@ -194,6 +196,26 @@ constexpr std::array RAW_VERTEX_RULES = {
                         return "";
                     }
                 }
+            }
+
+            return NO_VIOLATION;
+        },
+    },
+    RawNetlistVertexRule{
+        .rule_name = "Capacitors must be supported values",
+        .rule = [](RawNetlist const &netlist, RawVert v) -> RuleViolationResult {
+            if (netlist[v].kind != C)
+                return NO_VIOLATION;
+
+            if (!MAIN_BOARD.valid_caps.contains(netlist[v].value.numeric_value)) {
+                auto o = std::ostringstream() << "Value must be one of: ";
+                auto i = MAIN_BOARD.valid_caps.begin();
+                o << *i;
+                i++;
+                for (; i != MAIN_BOARD.valid_caps.end(); i++) {
+                    o << ", " << *i;
+                }
+                return o.str();
             }
 
             return NO_VIOLATION;
