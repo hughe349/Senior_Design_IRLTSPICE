@@ -11,6 +11,7 @@
 #include "core/board_info.hpp"
 #include "core/compiler.hpp"
 #include "core/netlist.hpp"
+#include "core/numbers.hpp"
 #include "core/parse.hpp"
 #include "core/verify.hpp"
 #include "util/boost_util.hpp"
@@ -18,7 +19,9 @@
 #include <algorithm>
 #include <cassert>
 #include <core/route.hpp>
+#include <cstddef>
 #include <cstdint>
+#include <cstdlib>
 #include <format>
 #include <iostream>
 #include <iterator>
@@ -411,8 +414,9 @@ bool SimpleTspiceRouter::make_routing_connection(
     return true;
 }
 
-vector<CrossbarCon> SimpleTspiceRouter::make_connections(unique_ptr<AssignedNetlist> &assigned) {
+ProgrammingInfo SimpleTspiceRouter::do_routing(unique_ptr<AssignedNetlist> &assigned) {
     vector<CrossbarCon> connections{};
+    vector<ResistorMapping> resistances{};
     // Step 1: Net allocation. which rows are used for which nets
     // We first make a map of which root rows are free
     // And one for which std cell rows are free
@@ -628,6 +632,17 @@ vector<CrossbarCon> SimpleTspiceRouter::make_connections(unique_ptr<AssignedNetl
 
             taken_components.insert(phy_component_id);
 
+            if (component.kind == R) {
+                resistances.push_back(ResistorMapping{
+                    .resistor_id = (uint8_t)phy_component_id,
+                    .desired_val = component.value.numeric_value,
+                });
+                if (compiler.opts.should_verbose_connections()) {
+                    compiler.log_fd << "Design resistor: " << component.name
+                                    << ", mapped to physical id: " << phy_component_id << "\n";
+                }
+            }
+
             // Now take the design edges, find their corresponding physical edges, and make those
             // connections! Yeah!
             auto design_edges = out_edges(component_vert, *assigned->raw_list);
@@ -675,8 +690,45 @@ vector<CrossbarCon> SimpleTspiceRouter::make_connections(unique_ptr<AssignedNetl
         }
     }
 
-    // =====
-    // PHASE
+    return {
+        .connections = connections,
+        .resistances = resistances,
+    };
+}
 
-    return connections;
+constexpr size_t max_quant = (1 << RESOLUTION_BITS) - 1;
+constexpr val_pico_t step_size = MAX_R.v / (1 << RESOLUTION_BITS);
+
+constexpr val_pico_t un_quant(size_t const &quant) { return val_pico_t((quant + 1) * step_size.v); }
+constexpr size_t quant(val_pico_t const &r) {
+    if (r < val_pico_t(step_size.v / 2)) {
+        return 0;
+    }
+    size_t q = ((r - val_pico_t(step_size.v / 2)) / step_size).v;
+    if (q >= max_quant) {
+        return max_quant;
+    } else {
+        return q;
+    }
+}
+
+std::vector<QuantizedResistance>
+SimpleTspiceRouter::quantize_resistors(std::vector<ResistorMapping> const &resistances) {
+    auto quantized_iter =
+        resistances | views::transform([](auto const &r) {
+            return QuantizedResistance{.resistor_id = r.resistor_id,
+                                       .value = static_cast<uint8_t>(quant(r.desired_val))};
+        });
+    std::vector<QuantizedResistance> quantized(quantized_iter.begin(), quantized_iter.end());
+    if (compiler.opts.should_verbose_connections()) {
+        for (auto r : quantized | adaptors::indexed(0)) {
+            auto const &i = r.index();
+            auto desired = resistances[i].desired_val;
+            auto actual = un_quant(r.value().value);
+            double percent_error = (abs((double)actual.v - desired.v) / desired.v) * 100;
+            compiler.log_fd << "Resistor: " << desired << " -> " << actual << " (" << percent_error
+                            << "% error)\n";
+        }
+    }
+    return quantized;
 }

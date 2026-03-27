@@ -4,6 +4,7 @@
 #include "core/board_info.hpp"
 #include "core/compiler.hpp"
 #include "core/netlist.hpp"
+#include "core/numbers.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <stdexcept>
@@ -35,7 +36,25 @@ typedef struct CrossbarCon {
     uint8_t col;
 } CrossbarCon;
 
+typedef struct ResistorMapping {
+    uint8_t resistor_id;
+    val_pico_t const &desired_val;
+} ResistorMapping;
+
+typedef struct QuantizedResistance {
+    uint8_t resistor_id;
+    uint8_t value;
+} QuantizedResistance;
+
+typedef struct ProgrammingInfo {
+    std::vector<CrossbarCon> connections;
+    std::vector<ResistorMapping> resistances;
+} ProgrammingInfo;
+
 std::ostream &operator<<(std::ostream &os, CrossbarCon const &val);
+
+constexpr val_pico_t MAX_R = 200_k;
+constexpr size_t RESOLUTION_BITS = 8;
 
 // An AssignedNetList has assigned each component (not each net) to std cells
 // The raw_list should not be modified, as this struct may hold references to it.
@@ -84,5 +103,8 @@ class SimpleTspiceRouter {
     // invalidated (moved to the returned AssignedNetlist).
     std::unique_ptr<AssignedNetlist> try_assign(std::unique_ptr<RawNetlist> &raw);
 
-    std::vector<CrossbarCon> make_connections(std::unique_ptr<AssignedNetlist> &assigned);
+    ProgrammingInfo do_routing(std::unique_ptr<AssignedNetlist> &assigned);
+
+    std::vector<QuantizedResistance>
+    quantize_resistors(std::vector<ResistorMapping> const &resistances);
 };

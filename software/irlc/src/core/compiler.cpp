@@ -93,8 +93,10 @@ int IrlCompiler::invoke() {
         log_error("Failed to assign to standard cells");
     }
 
+    ProgrammingInfo prog_info;
     try {
-        router.make_connections(assigned);
+        prog_info = router.do_routing(assigned);
+        auto rs = router.quantize_resistors(prog_info.resistances);
     } catch (runtime_error &e) {
         log_error(e.what());
     } catch (...) {
