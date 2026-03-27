@@ -53,8 +53,7 @@ class RoutingError : public std::runtime_error {
   public:
     RoutingError(int32_t cell_id, const std::string &what)
         : runtime_error(
-              (std::ostringstream() << "Error routing cell: " << cell_id << ", message: " << what)
-                  .str()) {}
+              (std::ostringstream() << "<Error routing cell: " << cell_id << "> " << what).str()) {}
 };
 
 typedef std::unordered_map<RawVert, size_t> netmap_t;

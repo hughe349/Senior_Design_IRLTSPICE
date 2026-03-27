@@ -174,8 +174,8 @@ struct RCStorage {
     COMPONENT(C, "Capacitor", true, arrify("C"), arrify<const char *>(), arrify(PIN_C, PIN_C))
     COMPONENT(OPAMP, "Operational Amplifier", false, arrify("U", "XU"),
               arrify("opamp", "kicad_builtin_opamp"),
-              arrify(PIN_OPAMP_MINUS, PIN_OPAMP_MINUS, PIN_OPAMP_SUPPLY_PLUS,
-                     PIN_OPAMP_SUPPLY_MINUS, PIN_OPAMP_OUT))
+              arrify(PIN_OPAMP_PLUS, PIN_OPAMP_MINUS, PIN_OPAMP_SUPPLY_PLUS, PIN_OPAMP_SUPPLY_MINUS,
+                     PIN_OPAMP_OUT))
     COMPONENT(DIODE, "Diode", false, arrify("D"), arrify<const char *>(), arrify(PIN_D_A, PIN_D_K))
     COMPONENT(Q_PNP, "BJT (PNP)", false, arrify("Q"), arrify("PNP"),
               arrify(PIN_Q_PNP_COLLECTOR, PIN_Q_PNP_BASE, PIN_Q_PNP_EMITTER))

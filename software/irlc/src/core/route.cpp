@@ -596,31 +596,20 @@ vector<CrossbarCon> SimpleTspiceRouter::make_connections(unique_ptr<AssignedNetl
         for (auto const &component_vert : cell.components) {
             RawNetlistVertexInfo const &component = (*assigned->raw_list)[component_vert];
 
-            // TODO:
-            // Gotta put better filters on here for the capacitors
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-            //
-
             // Find a valid physcial component
             ColConIter phy_component_pin_1 =
                 std::find_if(phy_cell.crossbars.cols_begin(), phy_cell.crossbars.cols_end(),
                              [&component, &taken_components](ColCon const &col) {
                                  ComponentColCon const *comp_con =
                                      std::get_if<ComponentColCon>(&col);
-                                 return comp_con && comp_con->kind == component.kind &&
-                                        !taken_components.contains(comp_con->id);
+                                 if (comp_con && comp_con->kind == component.kind) {
+                                     bool good = true;
+                                     if (comp_con->kind == C) {
+                                         good = comp_con->val == component.value.numeric_value;
+                                     }
+                                     return good && !taken_components.contains(comp_con->id);
+                                 }
+                                 return false;
                              });
             if (phy_component_pin_1 == phy_cell.crossbars.cols_end()) {
                 throw RoutingError(
