@@ -2,10 +2,50 @@
 #include "core/numbers.hpp"
 #include "util/macros.hpp"
 #include <iostream>
+#include <sstream>
+#include <stdexcept>
 #include <unordered_map>
 #include <variant>
 
 using namespace std;
+
+size_t ChainedCrossbar::base_row_ind(RowCon const &row) const {
+    ChainedRowCon const *chained_ptr = get_if<ChainedRowCon>(&row);
+    if (chained_ptr) {
+        // Follow the chain
+        return chained_ptr->sibiling;
+    } else {
+        // Not chained must be in first row or we should freak out
+        // Thou shalt not fear pointer arithmetic
+        RowCon const *addr = &row;
+        RowCon const *base = &bars[0].rows[0];
+        if (addr < base || addr >= base + bars[0].rows.size()) {
+            throw runtime_error("Passed a RowCon not in this crossbar.");
+        } else {
+            return addr - base;
+        }
+    }
+}
+
+size_t ChainedCrossbar::chained_row_ind(uint8_t phys_xbar_id, size_t base_row_ind) const {
+    auto const &bar =
+        std::find_if(bars.begin(), bars.end(), [&](auto const &x) { return x.id == phys_xbar_id; });
+    if (bar == bars.end()) {
+        throw runtime_error("Bad xbar id in chained_row_ind");
+    }
+
+    size_t i = 0;
+    for (auto const &row : bar->rows) {
+        auto r = this->base_row_ind(row);
+        if (r == base_row_ind) {
+            return i;
+        }
+        i++;
+    }
+    throw runtime_error(
+        (ostringstream() << "No row in physical bar mapping to base row id: " << base_row_ind)
+            .str());
+};
 
 ColConIter ChainedCrossbar::cols_begin() const { return ColConIter(this->bars); }
 
@@ -111,7 +151,7 @@ bool validate_simple_tspice(SimpleTspiceInfo const &board) {
                                               return rc.parent_id == id_barptr_pair.first &&
                                                      (rc.parent_col == colid);
                                           },
-                                          [&](ComponentColConn cc) {
+                                          [&](ComponentColCon cc) {
                                               if (cc.kind == C) {
                                                   if (!board.valid_caps.contains(cc.val)) {
                                                       return false;

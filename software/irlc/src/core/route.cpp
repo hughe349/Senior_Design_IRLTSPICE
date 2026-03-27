@@ -11,6 +11,7 @@
 #include "core/board_info.hpp"
 #include "core/compiler.hpp"
 #include "core/netlist.hpp"
+#include "core/parse.hpp"
 #include "core/verify.hpp"
 #include "util/boost_util.hpp"
 #include "util/macros.hpp"
@@ -33,6 +34,12 @@
 
 using namespace std;
 using namespace boost;
+
+std::ostream &operator<<(std::ostream &os, CrossbarCon const &val) {
+    os << "Connection {" << (int)val.crossbar_id << ", r:" << (int)val.row << ", c:" << (int)val.col
+       << "}";
+    return os;
+}
 
 void SimpleTspiceRouter::prune_unconnected_nets(RawNetlist &netlist) {
     pair verts = boost::vertices(netlist);
@@ -338,7 +345,7 @@ unique_ptr<AssignedNetlist> SimpleTspiceRouter::try_assign(unique_ptr<RawNetlist
 // phy/design_cell
 bool SimpleTspiceRouter::make_routing_connection(
     std::vector<CrossbarCon> &connections, netmap_t &netmap, free_cells_t &free_cells,
-    PhysStdCell const &phy_cell, StdCell const &design_cell,
+    PhysStdCell const &phy_cell, StdCell const &design_cell, RawVert net_id,
     std::function<bool(boost::range::index_value<const RowCon &>)> toplvl_predicate,
     std::function<std::string(void)> err_msg_gen) {
     auto cell_id = design_cell.id;
@@ -360,7 +367,7 @@ bool SimpleTspiceRouter::make_routing_connection(
 
     // Now we allocate the row in the cell
     assert(free_cells[cell_id][cell_routable_row->index()]);
-    netmap[design_cell.pre_buffer_output_net] = cell_routable_row->index();
+    netmap[net_id] = cell_routable_row->index();
     free_cells[cell_id][cell_routable_row->index()] = false;
     // Now we find the special cell in the top level
     auto toplvl_row = board.root.rows();
@@ -374,8 +381,6 @@ bool SimpleTspiceRouter::make_routing_connection(
         // " not routable from top level or within in cell").str());
     }
 
-    // auto toplvl_col_enumed = boost::make_iterator_range(board.root.cols_begin(),
-    // board.root.cols_end()) | boost::adaptors::indexed(0);
     auto toplvl_routable_col =
         std::find_if(board.root.cols_begin(), board.root.cols_end(), [&](auto c) {
             RoutableColCon const *t = std::get_if<RoutableColCon>(&c);
@@ -460,12 +465,14 @@ vector<CrossbarCon> SimpleTspiceRouter::make_connections(unique_ptr<AssignedNetl
     // This map is a temporary for each cell.
     // We populate it with nets, then go thru the components and connect them to their nets
     netmap_t netmap{};
+    std::set<typeof(ComponentColCon{}.id)> taken_components{};
     size_t i = -1;
     for (auto const &cell : assigned->cells) {
+        netmap.clear();
+        taken_components.clear();
         i++;
         auto const &phy_cell = board.cells[i];
         auto phy_cell_crossbar_id = phy_cell.crossbars.bars[0].id;
-        netmap.clear();
         // Priority 1 is the output. Locate it on the standard cell
         for (RowCon const &row : phy_cell.crossbars.rows()) {
             int row_i = &row - &phy_cell.crossbars.rows()[0];
@@ -498,8 +505,12 @@ vector<CrossbarCon> SimpleTspiceRouter::make_connections(unique_ptr<AssignedNetl
                                 // a cell (cuz like there's only one ground in the whole circuit
                                 // e.g.)
                                 assert(free_cells[i][row_i]);
-                                netmap[cell.pre_buffer_output_net] = row_i;
+                                netmap[input.first] = row_i;
                                 free_cells[i][row_i] = false;
+                                if (compiler.opts.should_verbose_connections()) {
+                                    compiler.log_fd << "Special net : " << net_name(net_kind)
+                                                    << " allocated to row: " << row_i << "\n";
+                                }
                                 return true;
                             }
                         }
@@ -511,7 +522,7 @@ vector<CrossbarCon> SimpleTspiceRouter::make_connections(unique_ptr<AssignedNetl
 
                         // Uh oh. We need to route this from the top level.
                         return this->make_routing_connection(
-                            connections, netmap, free_cells, phy_cell, cell,
+                            connections, netmap, free_cells, phy_cell, cell, input.first,
                             [net_kind](auto c) {
                                 SpecialNetCon const *t = std::get_if<SpecialNetCon>(&c.value());
                                 return t && t->kind == net_kind;
@@ -531,7 +542,7 @@ vector<CrossbarCon> SimpleTspiceRouter::make_connections(unique_ptr<AssignedNetl
 
                         // Need to route from top lvl
                         return this->make_routing_connection(
-                            connections, netmap, free_cells, phy_cell, cell,
+                            connections, netmap, free_cells, phy_cell, cell, input.first,
                             [input_cell](auto c) {
                                 BufferOutputRowCon const *t =
                                     std::get_if<BufferOutputRowCon>(&c.value());
@@ -550,6 +561,128 @@ vector<CrossbarCon> SimpleTspiceRouter::make_connections(unique_ptr<AssignedNetl
             if (!we_good)
                 throw RoutingError(i, "No input row compatible with input: " +
                                           (*assigned->raw_list)[input.first].name);
+        }
+
+        // Priority 3 is cell normal nets
+        for (RawVert net : cell.nets) {
+            // If we've already mapped the net, continue
+            if (netmap.contains(net)) {
+                continue;
+            }
+            // Else find first available row
+            for (int row_i = 0; row_i < phy_cell.crossbars.rows().size(); row_i++) {
+                auto &con = phy_cell.crossbars.rows()[0];
+                if (free_cells[i][row_i] && (std::holds_alternative<FloatingCon>(con) ||
+                                             std::holds_alternative<RoutableRowCon>(con))) {
+                    free_cells[i][row_i] = false;
+                    netmap[net] = row_i;
+                    goto found_net;
+                }
+            }
+            throw RoutingError(i, "User has requested too many nets for cell");
+        found_net:
+            continue;
+        }
+
+        if (compiler.opts.should_verbose_connections()) {
+            compiler.log_fd << "All nets allocated for cell " << i << '\n';
+            for (std::pair<RawVert, size_t> m : netmap) {
+                compiler.log_fd << "  " << (*assigned->raw_list)[m.first].name << "=" << m.second
+                                << "\n";
+            }
+        }
+
+        // Now we have allocated every net and we should route the cell's components
+        for (auto const &component_vert : cell.components) {
+            RawNetlistVertexInfo const &component = (*assigned->raw_list)[component_vert];
+
+            // TODO:
+            // Gotta put better filters on here for the capacitors
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+            //
+
+            // Find a valid physcial component
+            ColConIter phy_component_pin_1 =
+                std::find_if(phy_cell.crossbars.cols_begin(), phy_cell.crossbars.cols_end(),
+                             [&component, &taken_components](ColCon const &col) {
+                                 ComponentColCon const *comp_con =
+                                     std::get_if<ComponentColCon>(&col);
+                                 return comp_con && comp_con->kind == component.kind &&
+                                        !taken_components.contains(comp_con->id);
+                             });
+            if (phy_component_pin_1 == phy_cell.crossbars.cols_end()) {
+                throw RoutingError(
+                    i, string("Cannot find free physical component matching design component: ") +
+                           component.name);
+            }
+            // Find all its pins
+            auto phy_component_id = std::get<ComponentColCon>(*phy_component_pin_1).id;
+            auto phy_component_all_pins =
+                std::ranges::subrange(phy_component_pin_1, phy_cell.crossbars.cols_end()) |
+                views::filter([&phy_component_id](ColCon const &col) {
+                    ComponentColCon const *comp_con = std::get_if<ComponentColCon>(&col);
+                    return comp_con && comp_con->id == phy_component_id;
+                }) |
+                views::transform([](ColCon const &col) { return std::get<ComponentColCon>(col); });
+
+            taken_components.insert(phy_component_id);
+
+            // Now take the design edges, find their corresponding physical edges, and make those
+            // connections! Yeah!
+            auto design_edges = out_edges(component_vert, *assigned->raw_list);
+            auto design_edge = design_edges.first;
+            while (design_edge != design_edges.second) {
+                for (auto pin = phy_component_all_pins.begin(); pin != phy_component_all_pins.end();
+                     pin++) {
+                    RawEdge netlist_edge = *design_edge;
+                    RawNetlistEdgeInfo const &edge = (*assigned->raw_list)[netlist_edge];
+                    RawVert net_vert = target(netlist_edge, *assigned->raw_list);
+                    RawNetlistVertexInfo const &net = (*assigned->raw_list)[net_vert];
+                    ComponentColCon const &pin_info = *pin;
+                    if (pin_info.pin_kind != edge.kind) {
+                        continue;
+                    }
+                    // we have found the pin to assign. Begin assembling the connection!
+                    // This supplies col and chip
+                    ColConIter col_info = pin.base().base();
+
+                    uint8_t bar_id = col_info.get_bar_phys_id();
+                    uint8_t col = col_info.get_bar_col();
+                    // Now we just get row
+                    // Can't go straight to it bc of swizzle in chaining
+                    assert(netmap.contains(net_vert));
+                    size_t base_row_id = netmap[net_vert];
+
+                    size_t phys_row_id = phy_cell.crossbars.chained_row_ind(bar_id, base_row_id);
+
+                    CrossbarCon con{
+                        .crossbar_id = bar_id,
+                        .row = (uint8_t)phys_row_id,
+                        .col = col,
+                    };
+                    if (compiler.opts.should_verbose_connections()) {
+                        compiler.log_fd << "Connection from component: " << component.name
+                                        << " to net: " << net.name << ", is: " << con << "\n";
+                    }
+                    connections.push_back(con);
+                    design_edge++;
+                    if (design_edge == design_edges.second) {
+                        break;
+                    }
+                }
+            }
         }
     }
 

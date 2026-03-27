@@ -35,6 +35,8 @@ typedef struct CrossbarCon {
     uint8_t col;
 } CrossbarCon;
 
+std::ostream &operator<<(std::ostream &os, CrossbarCon const &val);
+
 // An AssignedNetList has assigned each component (not each net) to std cells
 // The raw_list should not be modified, as this struct may hold references to it.
 typedef struct _AssignedNetList {
@@ -68,7 +70,7 @@ class SimpleTspiceRouter {
 
     bool make_routing_connection(
         std::vector<CrossbarCon> &connections, netmap_t &netmap, free_cells_t &free_cells,
-        PhysStdCell const &phy_cell, StdCell const &design_cell,
+        PhysStdCell const &phy_cell, StdCell const &design_cell, RawVert net_id,
         std::function<bool(boost::range::index_value<const RowCon &>)> toplvl_predicate,
         std::function<std::string(void)> err_msg_gen);
 
