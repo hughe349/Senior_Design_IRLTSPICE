@@ -696,7 +696,7 @@
       "group_symbols": false,
       "include_excluded_from_bom": true,
       "name": "",
-      "sort_asc": true,
+      "sort_asc": false,
       "sort_field": "DKPN"
     },
     "connection_grid_size": 50.0,
