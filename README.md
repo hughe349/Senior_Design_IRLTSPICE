@@ -10,3 +10,4 @@ The senior design project uses a monorepo architecture with the following sub-di
 - `hardware/` Hardware schematics
 - `firmware/` Microcontroller firmware
 - `software/` On-PC software
+- `evilware/` Evil Circuits and Code
