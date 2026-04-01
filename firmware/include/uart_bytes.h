@@ -11,7 +11,6 @@ extern "C"
 // irlc -> micro
 #define START_CONFIG    0b10000000
 #define END_CONFIG      0b10000001
-#define START_CB        0b10000010
 #define START_CB        0b110  // last 5 bits are 0-8 to decide which crossbar to config
 #define END_CB          0b10000011
 #define START_POT       0b101  // last 5 bits are 0-23 to decide which pot to config
@@ -22,11 +21,25 @@ extern "C"
 #define READY_TO_START  0b10000110
 #define SUCCESS         0b10001000
 #define ERROR           0b11111111
+#define RESET_SUCCESS   0b10010101
 
 typedef struct _instruction {
   uint8_t message : 5;
   uint8_t prefix  : 3;
 } instruction_t;
+
+typedef enum {
+  IDLE,
+  ERROR_STATE,
+  STARTING0,
+  STARTING1,
+  UART_CONFIG,
+  CHOOSE_CB_CONNS,
+  CHOOSE_POS_RES,
+  POST_POT_CONFIG,
+  POST_BOARD_CONFIG,
+  ANALOG_CONFIG
+} board_state_t;
 
 #ifdef __cplusplus
 }
