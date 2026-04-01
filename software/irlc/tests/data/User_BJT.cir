@@ -1,0 +1,25 @@
+*
+
+.subckt Fake
+
+
+.include "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Simulation_SPICE.sp"
+.model __Q2 NPN
+.model __Q1 PNP
+.model __D1 D
+U100 Net-_U100-OUT_ Net-_U100-IN_ IRL_BUFFER
+R22 OUTPUT Net-_U20-+_ 124
+XU20 Net-_U20-+_ Net-_U20--_ unconnected-_U20-V+-Pad3_ unconnected-_U20-V--Pad4_ OUTPUT kicad_builtin_opamp
+R20 Net-_U100-OUT_ Net-_U20--_ 234
+C20 unconnected-_C20-Pad1_ unconnected-_C20-Pad2_ 23
+R21 unconnected-_R21-Pad1_ unconnected-_R21-Pad2_ 345
+Q2 +5V /bthing2 0 NPN
+Q1 +5V /bthing 0 PNP
+R10 INPUT Net-_D1-K_ 345
+C10 Net-_D1-K_ 0 45
+D1 0 Net-_D1-K_ __D1
+R11 +5V Net-_U10-+_ 45
+R12 Net-_U100-IN_ Net-_U10-+_ 346
+XU10 Net-_U10-+_ Net-_D1-K_ unconnected-_U10-V+-Pad3_ unconnected-_U10-V--Pad4_ Net-_U100-IN_ kicad_builtin_opamp
+
+.ends
