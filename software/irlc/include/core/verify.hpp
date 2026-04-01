@@ -16,9 +16,6 @@
 #include <variant>
 
 typedef enum no_violation_t { NO_VIOLATION } no_violation_t;
-// typedef enum no_violation_t {
-//     NO_VIOLATION
-// } no_violation_t;
 
 typedef std::variant<no_violation_t, std::string> RuleViolationResult;
 

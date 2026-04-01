@@ -9,9 +9,10 @@ enum IrlCompilerOptionGroup {
     GENERAL,
     PARSING,
     ROUTING,
+    PROGRAMMING,
     INFO,
 };
-static std::array IRL_COMPILER_OPTION_GROUPS = {GENERAL, PARSING, ROUTING, INFO};
+static std::array IRL_COMPILER_OPTION_GROUPS = {GENERAL, PARSING, ROUTING, PROGRAMMING, INFO};
 static inline const char *ilrCompilerOptionGroupName(IrlCompilerOptionGroup o) {
     switch (o) {
     case GENERAL:
@@ -22,6 +23,9 @@ static inline const char *ilrCompilerOptionGroupName(IrlCompilerOptionGroup o) {
         break;
     case ROUTING:
         return "TSPICE Routing";
+        break;
+    case PROGRAMMING:
+        return "TSPICE Programming";
         break;
     case INFO:
         return "Info Displaying";
@@ -48,6 +52,15 @@ typedef enum unspecified_t { UNSPECIFIED } unspecified_t;
     FLAG_OPT(verbose_cell_assign, "", "Enable verbose cell assignment", ROUTING)                   \
     FLAG_OPT(verbose_verify, "", "Enable verbose rule verification", ROUTING)                      \
     FLAG_OPT(verbose_connections, "", "Enable verbose connection building", ROUTING)               \
+    FLAG_OPT(verbose_program, "", "Enable verbose board progamming", PROGRAMMING)                  \
+    FLAG_OPT(do_programming, "p",                                                                  \
+             "Enable board programming. Must be used with -m and/or -s. Default is false",         \
+             PROGRAMMING)                                                                          \
+    FLAG_OPT(print_serial, "m", "Should print programming output", PROGRAMMING)                    \
+    TYPED_OPT(serial_port, "s", std::optional<std::string>, std::nullopt, "Serial port of TSPICE", \
+              PROGRAMMING)                                                                         \
+    TYPED_OPT(serial_baud, "b", size_t, 9600, "Baudrate of TSPICE (default = 9600)", PROGRAMMING)  \
+    TYPED_OPT(serial_timeout, "", size_t, 1, "Timeout (ms) for board (default = 1)", PROGRAMMING)  \
     FLAG_OPT(verbose, "v", "SUPER VERBOSE. Enable all verbose flags", GENERAL)
 
 struct IrlCompilerOptions {

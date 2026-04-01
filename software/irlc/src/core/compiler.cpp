@@ -1,6 +1,7 @@
 #include "core/compiler.hpp"
 #include "core/board_info.hpp"
 #include "core/debug.hpp"
+#include "core/emit.hpp"
 #include "core/netlist.hpp"
 #include "core/parse.hpp"
 #include "core/route.hpp"
@@ -101,6 +102,30 @@ int IrlCompiler::invoke() {
         log_error(e.what());
     } catch (...) {
         log_error("Unknown error occured parsing.");
+    }
+
+    if (opts.do_programming) {
+        std::unique_ptr<IProgramMessageWriter> writer;
+        if (opts.serial_port.has_value()) {
+            std::unique_ptr<TspiceMessageWriter> tw(new TspiceMessageWriter(
+                opts.serial_port.value(), opts.serial_baud, opts.serial_timeout));
+            writer = std::move(tw);
+        }
+        if (opts.print_serial) {
+            std::unique_ptr<FdMessageWriter> fdw(new FdMessageWriter(log_fd));
+            if (writer != nullptr) {
+                std::unique_ptr<CompositeMessageWriter<IProgramMessageWriter, FdMessageWriter>>
+                    comp(new CompositeMessageWriter(writer, fdw));
+                writer = std::move(comp);
+            }
+        }
+        if (writer == nullptr) {
+            log_error("Programming requires either a serial port or the --print-serial flag.");
+        }
+
+        TspiceProgrammer programmer(std::move(writer));
+
+        programmer.send_stream(prog_info);
     }
 
     return 0;

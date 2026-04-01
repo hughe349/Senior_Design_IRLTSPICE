@@ -64,11 +64,10 @@ int main(int argc, char *argv[]) {
 
     IrlCompiler compiler(std::move(opts), std::cout);
 
-    if (opts.help) {
-        vm["help"].as<string>();
+    if (compiler.opts.help || compiler.opts.input_file->empty()) {
         std::cout << "Usage:\n\n"
-                  << "  irlc [OPTIONS] <input-file>\n\n";
-        std::cout << "Options:" << cmdline_desc << std::endl;
+                  << "  irlc [OPTIONS] <input-file>\n";
+        std::cout << cmdline_desc << std::endl;
         return -1;
     }
 

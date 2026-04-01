@@ -20,7 +20,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # ============
 
 # Boost
-set(BOOST_INCLUDE_LIBRARIES graph program_options) 
+set(BOOST_INCLUDE_LIBRARIES graph program_options asio)
 FetchContent_Declare(
     Boost 
     GIT_REPOSITORY https://github.com/boostorg/boost.git
@@ -45,6 +45,7 @@ target_sources(libirlc
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/debug.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/board_info.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/numbers.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/emit.cpp
 )
 target_include_directories(libirlc 
     PUBLIC 
@@ -53,6 +54,7 @@ target_include_directories(libirlc
 target_link_libraries(libirlc 
     PRIVATE 
         Boost::graph
+        Boost::asio
 )
 
 # Actual compiler
