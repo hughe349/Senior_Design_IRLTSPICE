@@ -20,7 +20,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # ============
 
 # Boost
-set(BOOST_INCLUDE_LIBRARIES graph program_options asio)
+set(BOOST_INCLUDE_LIBRARIES graph program_options asio outcome)
 FetchContent_Declare(
     Boost 
     GIT_REPOSITORY https://github.com/boostorg/boost.git
@@ -55,6 +55,7 @@ target_link_libraries(libirlc
     PRIVATE 
         Boost::graph
         Boost::asio
+        Boost::outcome
 )
 
 # Actual compiler

@@ -81,6 +81,7 @@ struct IrlCompilerOptions {
     SHOULD_VERBOSE(cell_assign)
     SHOULD_VERBOSE(verify)
     SHOULD_VERBOSE(connections)
+    SHOULD_VERBOSE(program)
 };
 
 class IrlCompiler {

@@ -1,4 +1,7 @@
 #include "core/compiler.hpp"
+#include "boost/system/detail/errc.hpp"
+#include "boost/system/detail/error_code.hpp"
+#include "boost/system/system_error.hpp"
 #include "core/board_info.hpp"
 #include "core/debug.hpp"
 #include "core/emit.hpp"
@@ -105,27 +108,43 @@ int IrlCompiler::invoke() {
     }
 
     if (opts.do_programming) {
-        std::unique_ptr<IProgramMessageWriter> writer;
-        if (opts.serial_port.has_value()) {
-            std::unique_ptr<TspiceMessageWriter> tw(new TspiceMessageWriter(
-                opts.serial_port.value(), opts.serial_baud, opts.serial_timeout));
-            writer = std::move(tw);
-        }
-        if (opts.print_serial) {
-            std::unique_ptr<FdMessageWriter> fdw(new FdMessageWriter(log_fd));
-            if (writer != nullptr) {
-                std::unique_ptr<CompositeMessageWriter<IProgramMessageWriter, FdMessageWriter>>
-                    comp(new CompositeMessageWriter(writer, fdw));
-                writer = std::move(comp);
+        try {
+            if (opts.serial_port.has_value()) {
+                TspiceProgrammer programmer(*opts.serial_port, opts.serial_baud,
+                                            opts.serial_timeout, *this);
+                TspiceProgrammer::Result r = programmer.try_reset_board();
+                if (!r) {
+                    throw r.error();
+                }
             }
-        }
-        if (writer == nullptr) {
-            log_error("Programming requires either a serial port or the --print-serial flag.");
-        }
+            if (opts.print_serial) {
+                // std::unique_ptr<FdMessageWriter> fdw(new FdMessageWriter(log_fd));
+                // if (writer != nullptr) {
+                //     std::unique_ptr<CompositeMessageWriter<IProgramMessageWriter,
+                //     FdMessageWriter>>
+                //         comp(new CompositeMessageWriter(writer, fdw));
+                //     writer = std::move(comp);
+                // }
+            }
+            // if (writer == nullptr) {
+            //     log_error("Programming requires either a serial port or the --print-serial
+            //     flag.");
+            // }
 
-        TspiceProgrammer programmer(std::move(writer));
-
-        programmer.send_stream(prog_info);
+            // programmer.send_stream(prog_info);
+        } catch (const boost::system::system_error &e) {
+            log_fd << "[sys]-";
+            if (e.code() == boost::system::errc::no_such_file_or_directory) {
+                log_error("Specified serial port not found");
+            } else {
+                log_error(e.what());
+            }
+        } catch (const runtime_error &e) {
+            log_fd << "[?]-";
+            log_error(e.what());
+        } catch (...) {
+            log_error("Unknown error occured programming");
+        }
     }
 
     return 0;
