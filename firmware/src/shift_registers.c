@@ -7,7 +7,6 @@ void reset_cd22m_sr(void) {
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, 1);
 }
 
-
 void reset_bruz_sr(void) {
 
   // bruz is ~cs

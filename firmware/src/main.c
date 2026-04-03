@@ -3,20 +3,31 @@
 #include "init.h"
 #include "bruz200.h"
 #include "cd22m.h"
+#include "shift_registers.h"
 
 // c libs
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
 
+// helpers
+// static inline void to_instruction(instruction_t *instruction, uint8_t value);
+// static void mem_dump(uint8_t *cb_array, uint8_t *pot_array);
+static void send_num(uint8_t num);
+
 // temp funcs
-// void setup_blinker(void);
+void setup_blinker(void);
 void send_array(uint8_t *data, uint32_t size);
 void send_string(char *str);
-static inline void to_instruction(instruction_t *instruction, uint8_t value);
 
 #define WAIT_FOR_UART_TX while (!(USART5->ISR & USART_ISR_TXE))
-#define ERROR_DELAY 2000
+#define NUM_OF_CROSSBARS      9
+#define NUM_OF_CROSSBAR_CONS  128
+#define NUM_OF_POTS           24
+#define MAX_POT_RES           128
+// #define CROSSBAR_ARRAY_SIZE   NUM_OF_CROSSBARS * NUM_OF_CROSSBAR_CONS * sizeof(uint8_t)
+// #define POT_ARRAY_SIZE        NUM_OF_POTS * sizeof(uint8_t)
+#define ERROR_DELAY           2000
 
 // defines
 // #define START_STOP_CHAR 64
@@ -45,46 +56,52 @@ int main(void)
   setup_spi(&hspi);
   setup_gpios();
 
+  setup_blinker();
+
   // var inits for loop
-  uint8_t crossbar_cons[9][128];
-  uint8_t pot_resistances[24];
+  uint8_t crossbar_cons[NUM_OF_CROSSBARS][NUM_OF_CROSSBAR_CONS] = {0};
+  uint8_t pot_resistances[NUM_OF_POTS] = {0};
   uint8_t rx;
-  instruction_t instruction;
+  // instruction_t instruction;
 
   uint8_t cur_cb;
   uint8_t cur_pot;
+  bool error_flag_sent = 0;
 
   while (true) {  
 
-    if (state == ERROR_STATE) {
+    if ((state == ERROR_STATE) & (!error_flag_sent)) {
       WAIT_FOR_UART_TX;
       USART5->TDR = UART_ERROR;
-      HAL_Delay(ERROR_DELAY);
+      error_flag_sent = 1;
+      // HAL_Delay(ERROR_DELAY);
     }
 
 
     if ((USART5->ISR & USART_ISR_RXNE)) {
+      error_flag_sent = 0;
       rx = USART5->RDR;
-      to_instruction(&instruction, rx);
+      // to_instruction(&instruction, rx);
 
       if (rx == RESET_CONFIG) {
         state = IDLE;
         WAIT_FOR_UART_TX;
         USART5->TDR = RESET_SUCCESS;
 
-        // do analog resetting
-        memset
+        memset(crossbar_cons,   0, sizeof(crossbar_cons));
+        memset(pot_resistances, 0, sizeof(pot_resistances));
+
+        reset_crossbars();
+        reset_pots();
+        reset_bruz_sr();
+        reset_cd22m_sr();
+        continue;
       }
 
       switch (state) {
         case IDLE:
           if (rx == START_CONFIG) { state = STARTING; }
           else                    { state = ERROR_STATE; }
-          break;
-        case ERROR_STATE:
-          WAIT_FOR_UART_TX;
-          USART5->TDR = UART_ERROR;
-          HAL_Delay(ERROR_DELAY);
           break;
         case STARTING:
           if (rx == START_CONFIG) { 
@@ -94,31 +111,89 @@ int main(void)
           } else { state = ERROR_STATE; }
           break;
         case UART_CONFIG:
-          if (instruction.prefix == START_CB) { 
-            cur_cb = instruction.message;
+          if (get_prefix(rx) == START_CB) { 
+            cur_cb = get_message(rx);
             state = CHOOSE_CB_CONNS;
-          } else if (instruction.prefix == START_POT) {
-            cur_pot = instruction.message;
+          } else if (get_prefix(rx) == START_POT) {
+            cur_pot = get_message(rx);
             state = CHOOSE_POT_RES;
           } else if (rx == END_CONFIG) {
             WAIT_FOR_UART_TX;
             USART5->TDR = CONFIG_SUCCESS;
             state = POST_BOARD_CONFIG;
+            HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
+
+            for (int i = 0; i < NUM_OF_CROSSBARS; i++) {
+              WAIT_FOR_UART_TX;
+              USART5->TDR = i;
+              for (int j = 0; j < NUM_OF_CROSSBAR_CONS; j++) {
+                if (crossbar_cons[i][j]) {
+                  WAIT_FOR_UART_TX;
+                  USART5->TDR = j;
+                }
+              }
+              WAIT_FOR_UART_TX;
+              USART5->TDR = '\n';
+            }
+          
+            for (int i = 0; i < NUM_OF_POTS; i++) {
+              if (pot_resistances[i]) {
+                // send_num(i);
+                WAIT_FOR_UART_TX;
+                USART5->TDR = i;
+                // send_num(pot_resistances[i]);
+                WAIT_FOR_UART_TX;
+                USART5->TDR = pot_resistances[i];
+                WAIT_FOR_UART_TX;
+                USART5->TDR = '\n';
+              }
+            }
+            state = IDLE;
           } else { state = ERROR_STATE; }
           break;
         case CHOOSE_CB_CONNS:
-          if (rx < 128)           { crossbar_cons[cur_cb][rx] = 1; }
-          else if (rx == END_CB)  { state = UART_CONFIG; }
-          else                    { state = ERROR; }
+          if (rx < NUM_OF_CROSSBAR_CONS)  { crossbar_cons[cur_cb][rx] = 1; }
+          else if (rx == END_CB)          { 
+            state = UART_CONFIG;
+            WAIT_FOR_UART_TX;
+            USART5->TDR = RETURN_TO_CONFIG;
+          }
+          else                            { state = ERROR; }
           break;
         case CHOOSE_POT_RES: 
-          if (rx < 128) {
+          if (rx < MAX_POT_RES) {
             pot_resistances[cur_pot] = rx;
+            USART5->TDR = RETURN_TO_CONFIG;
             state = UART_CONFIG;
           } else { state = ERROR_STATE; }
         break;
         case POST_BOARD_CONFIG:
+          HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
+          
         // TODO: send config back
+        // mem_dump(crossbar_cons, pot_resistances);
+
+          // for (int i = 0; i < NUM_OF_CROSSBARS; i++) {
+          //   WAIT_FOR_UART_TX;
+          //   USART5->TDR = i + '0';
+          //   for (int j = 0; j < NUM_OF_CROSSBAR_CONS; j++) {
+          //     if (crossbar_cons[i][j]) send_num(j);
+          //   }
+          //   WAIT_FOR_UART_TX;
+          //   USART5->TDR = '\n';
+          // }
+        
+          // for (int i = 0; i < NUM_OF_POTS; i++) {
+          //   if (pot_resistances[i]) {
+          //     send_num(i);
+          //     send_num(pot_resistances[i]);
+          //     WAIT_FOR_UART_TX;
+          //     USART5->TDR = '\n';
+          //   }
+          // }
+          state = IDLE;
+        
+
         break;
         // case ANALOG_CONFIG: break;
         default: break;
@@ -256,18 +331,45 @@ void send_string(char *str)
     }
 }
 
-// void setup_blinker(void) {
-//   __HAL_RCC_GPIOC_CLK_ENABLE();
-//   GPIO_InitTypeDef GPIO_InitStruct = {0};
-//   GPIO_InitStruct.Pin = GPIO_PIN_6;
-//   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-//   GPIO_InitStruct.Pull = GPIO_NOPULL;
-//   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-//   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-//   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
+void setup_blinker(void) {
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  GPIO_InitStruct.Pin = GPIO_PIN_6;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
+}
+
+// static inline void to_instruction(instruction_t *instruction, uint8_t value) {
+//     instruction->prefix  = value >> 5 & 0x7;
+//     instruction->message = value & 0x1F;
 // }
 
-static inline void to_instruction(instruction_t *instruction, uint8_t value) {
-    instruction->prefix  = value >> 5 & 0x7;
-    instruction->message = value & 0x1F;
+// static void mem_dump(uint8_t *cb_array, uint8_t *pot_array) {
+//   for (int i = 0; i < NUM_OF_CROSSBARS; i++) {
+//     USART5->TDR = i + '0';
+//     for (int j = 0; j < NUM_OF_CROSSBAR_CONS; j++) {
+//       if (cb_array[i][j]) send_num(j);
+//     }
+//     USART5->TDR = '\n';
+//   }
+
+//   for (int i = 0; i < NUM_OF_POTS; i++) {
+//     if (pot_array[i]) {
+//       send_num(i);
+//       send_num(pot_array[i]);
+//       USART5->TDR = '\n';
+//     }
+//   }
+// }
+
+static void send_num(uint8_t num) {
+  while (num > 0) {
+    int digit = num % 10;
+    USART5->TDR = digit + '0';
+    num = num / 10;
+  }
+  USART5->TDR = ' ';
 }
