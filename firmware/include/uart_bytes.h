@@ -19,8 +19,8 @@ extern "C"
 
 // micro -> irlc
 #define READY_TO_START  0b10000110
-#define SUCCESS         0b10001000
-#define ERROR           0b11111111
+#define CONFIG_SUCCESS  0b10001000
+#define UART_ERROR      0b11111111
 #define RESET_SUCCESS   0b10010101
 
 typedef struct _instruction {
@@ -34,7 +34,7 @@ typedef enum {
   STARTING,
   UART_CONFIG,
   CHOOSE_CB_CONNS,
-  CHOOSE_POS_RES,
+  CHOOSE_POT_RES,
   POST_POT_CONFIG,
   POST_BOARD_CONFIG,
   ANALOG_CONFIG
