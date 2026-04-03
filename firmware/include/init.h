@@ -6,10 +6,10 @@ extern "C"
 {
 #endif
 
-  void internal_clock(void);
-  void setup_uart(void);
-  void setup_spi(SPI_HandleTypeDef *);
-  void setup_crossbar_gpios(void);
+void internal_clock(void);
+void setup_uart(void);
+void setup_spi(SPI_HandleTypeDef *);
+void setup_gpios(void);
 
 #ifdef __cplusplus
 }

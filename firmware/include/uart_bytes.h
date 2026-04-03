@@ -16,6 +16,8 @@ extern "C"
 #define START_POT       0b101  // last 5 bits are 0-23 to decide which pot to config
 #define END_POT         0b10000101
 #define RESET_CONFIG    0b10011111
+// #define RESET_CONFIG    'R' // manual testing
+// #define START_CONFIG    'S'
 
 // micro -> irlc
 #define READY_TO_START  0b10000110
@@ -31,8 +33,7 @@ typedef struct _instruction {
 typedef enum {
   IDLE,
   ERROR_STATE,
-  STARTING0,
-  STARTING1,
+  STARTING,
   UART_CONFIG,
   CHOOSE_CB_CONNS,
   CHOOSE_POS_RES,

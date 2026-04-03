@@ -9,6 +9,7 @@ extern "C"
 #include "stm32f0xx_hal.h"
 #include "stm32f0xx_hal_uart.h"
 #include "stm32f0xx_hal_spi.h"
+#include "uart_bytes.h"
 
 #ifdef __cplusplus
 }
