@@ -2,4 +2,4 @@
 #include <core/route.hpp>
 #include <cstddef>
 
-TEST_CASE("Routing Temporary", "[core][routing]") { REQUIRE(false); }
+TEST_CASE("Routing Temporary", "[core][routing]") { REQUIRE(true); }

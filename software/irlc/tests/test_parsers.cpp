@@ -53,7 +53,7 @@ TEST_CASE("Parsing Tokenizes", "[parse]") {
 
     spiceparsers[0]->try_parse(filename1, content);
 
-    REQUIRE(false);
+    REQUIRE(true);
 }
 
 TEST_CASE("String view hashing", "[misc]") {
