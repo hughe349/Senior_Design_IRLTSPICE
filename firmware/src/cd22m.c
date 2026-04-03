@@ -3,6 +3,10 @@
 
 uint8_t x_addr[16] = {0, 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 6, 7, 14, 15};
 
+
+// TODO: 
+// X AND Y HAVE SWAPPED CHANGE THEM!!!!!!!!!!!
+
 void enable_connection(uint8_t x_pin, uint8_t y_pin) {
   // turning off all address bits, strobe, and data
   GPIOB->ODR &= ~(0xFF80);
