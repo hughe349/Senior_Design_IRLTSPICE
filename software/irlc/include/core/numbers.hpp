@@ -4,6 +4,8 @@
 #include <ostream>
 #include <string_view>
 
+typedef unsigned long long operator_t;
+
 // The value of a component in pico-somethings
 typedef struct val_pico {
     uint64_t v;
@@ -32,16 +34,16 @@ typedef struct val_pico {
 
 std::ostream &operator<<(std::ostream &os, val_pico_t const &val);
 
-constexpr static inline val_pico_t operator""_p(uint64_t n) { return val_pico_t(n); }
+constexpr static inline val_pico_t operator""_p(operator_t n) { return val_pico_t(n); }
 
-constexpr static inline val_pico_t operator""_n(uint64_t n) { return operator""_p(n * 1000); }
+constexpr static inline val_pico_t operator""_n(operator_t n) { return operator""_p(n * 1000); }
 
-constexpr static inline val_pico_t operator""_u(uint64_t n) { return operator""_n(n * 1000); }
+constexpr static inline val_pico_t operator""_u(operator_t n) { return operator""_n(n * 1000); }
 
-constexpr static inline val_pico_t operator""_m(uint64_t n) { return operator""_u(n * 1000); }
+constexpr static inline val_pico_t operator""_m(operator_t n) { return operator""_u(n * 1000); }
 
-constexpr static inline val_pico_t operator""_k(uint64_t n) {
+constexpr static inline val_pico_t operator""_k(operator_t n) {
     return val_pico_t::no_scaling(n * 1000);
 }
 
-constexpr static inline val_pico_t operator""_M(uint64_t n) { return operator""_k(n * 1000); }
+constexpr static inline val_pico_t operator""_M(operator_t n) { return operator""_k(n * 1000); }

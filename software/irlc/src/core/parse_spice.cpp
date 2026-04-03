@@ -7,6 +7,7 @@
 #include <charconv>
 #include <cstdint>
 #include <iostream>
+#include <iterator>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -225,12 +226,13 @@ void add_element(RawNetlist &netlist, NetNameMap &netnames, ModelMap &models,
     string_view reference = line[0]->underlying;
     auto first_num = &reference[reference.find_first_of("0123456789")];
 
-    string_view reference_kind = string_view{reference.begin(), first_num};
+    string_view reference_kind = string_view{&*reference.begin(), first_num};
     int reference_num;
     // Parse reference_num
-    auto result = std::from_chars(first_num, reference.end(), reference_num);
-    if (reference_kind.length() == 0 || result.ec != std::errc{} || result.ptr != reference.end() ||
-        first_num == reference.end()) {
+    const char *end_ptr = reference.data() + reference.size();
+    auto result = std::from_chars(first_num, end_ptr, reference_num);
+    if (reference_kind.length() == 0 || result.ec != std::errc{} || result.ptr != end_ptr ||
+        first_num == end_ptr) {
         throw ParseException::create(ParseException::PARSE_ERROR,
                                      "Malformed reference designator: " + string(reference) +
                                          ". Expected to be of form TYPE1234",

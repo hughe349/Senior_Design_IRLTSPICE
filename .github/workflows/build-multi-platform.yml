@@ -91,4 +91,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: irlc-${{ matrix.os }}-${{ matrix.c_compiler }}
-        path: $${ msteps.strings.outputs.build-output-dir/irlc }
+        path: ${ steps.strings.outputs.build-output-dir }}/irlc
