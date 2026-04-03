@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 
 template <class... Ts> struct overloads : Ts... {
