@@ -33,19 +33,23 @@ TspiceProgrammer::Result TspiceProgrammer::ping_board() {
 TspiceProgrammer::Result TspiceProgrammer::try_reset_board() {
 
     if (compiler.opts.should_verbose_program()) {
-        compiler.log_fd << "Resetting...\n";
+        compiler.log_fd << "Resetting...";
+        flush(compiler.log_fd);
     }
 
     uint8_t minimal_buf = RESET_CONFIG;
 
     Result result = send(asio::buffer(&minimal_buf, 1));
     if (!result) {
-        if (compiler.opts.should_verbose_program())
+        if (compiler.opts.should_verbose_program()) {
             compiler.log_fd << "[FAILED]\n";
+        }
         return result;
     }
-    if (compiler.opts.should_verbose_program())
+    if (compiler.opts.should_verbose_program()) {
         compiler.log_fd << "sent...";
+        flush(compiler.log_fd);
+    }
 
     minimal_buf = RESET_SUCCESS;
     result = read_expecting(asio::buffer(&minimal_buf, 1));

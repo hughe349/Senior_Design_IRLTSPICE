@@ -59,8 +59,10 @@ typedef enum unspecified_t { UNSPECIFIED } unspecified_t;
     FLAG_OPT(print_serial, "m", "Should print programming output", PROGRAMMING)                    \
     TYPED_OPT(serial_port, "s", std::optional<std::string>, std::nullopt, "Serial port of TSPICE", \
               PROGRAMMING)                                                                         \
-    TYPED_OPT(serial_baud, "b", size_t, 9600, "Baudrate of TSPICE (default = 9600)", PROGRAMMING)  \
-    TYPED_OPT(serial_timeout, "", size_t, 1, "Timeout (ms) for board (default = 1)", PROGRAMMING)  \
+    TYPED_OPT(serial_baud, "b", size_t, 115200, "Baudrate of TSPICE (default = 115200)",           \
+              PROGRAMMING)                                                                         \
+    TYPED_OPT(serial_timeout, "", size_t, 100, "Timeout (ms) for board (default = 100)",           \
+              PROGRAMMING)                                                                         \
     FLAG_OPT(verbose, "v", "SUPER VERBOSE. Enable all verbose flags", GENERAL)
 
 struct IrlCompilerOptions {
