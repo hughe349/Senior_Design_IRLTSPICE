@@ -100,7 +100,6 @@ int IrlCompiler::invoke() {
     ProgrammingInfo prog_info;
     try {
         prog_info = router.do_routing(assigned);
-        auto rs = router.quantize_resistors(prog_info.resistances);
     } catch (runtime_error &e) {
         log_error(e.what());
     } catch (...) {
@@ -112,7 +111,7 @@ int IrlCompiler::invoke() {
             if (opts.serial_port.has_value()) {
                 TspiceProgrammer programmer(*opts.serial_port, opts.serial_baud,
                                             opts.serial_timeout, *this);
-                TspiceProgrammer::Result r = programmer.try_reset_board();
+                TspiceProgrammer::Result r = programmer.send_stream(prog_info);
                 if (!r) {
                     throw r.error();
                 }

@@ -54,7 +54,7 @@ typedef struct ProgrammingInfo {
 std::ostream &operator<<(std::ostream &os, CrossbarCon const &val);
 
 constexpr val_pico_t MAX_R = 200_k;
-constexpr size_t RESOLUTION_BITS = 8;
+constexpr size_t RESOLUTION_BITS = 7;
 
 // An AssignedNetList has assigned each component (not each net) to std cells
 // The raw_list should not be modified, as this struct may hold references to it.

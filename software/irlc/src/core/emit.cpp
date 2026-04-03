@@ -17,6 +17,8 @@
 using namespace boost;
 using namespace std;
 
+static inline void send_bytes(ostream &os, uint8_t const *data, size_t n);
+
 TspiceProgrammer::TspiceProgrammer(string_view serial_port, size_t baud, uint64_t timeout_ms,
                                    IrlCompiler const &compiler)
     : io(), port(asio::serial_port(io, serial_port.data())), timeout_ms(timeout_ms),
@@ -48,23 +50,42 @@ TspiceProgrammer::Result TspiceProgrammer::send_stream(ProgrammingInfo const &pr
     buffer.clear();
     buffer.push_back(READY_TO_START);
     r = read_expecting(asio::buffer(buffer));
+    buffer.clear();
     if (!r)
         return r;
 
-    buffer.clear();
     for (auto const &resistor : prog_info.resistances) {
         buffer.push_back(init_instr(START_POT, resistor.resistor_id));
         buffer.push_back(resistor.value);
+        r = send(asio::buffer(buffer));
+        if (!r)
+            return r;
+        buffer.clear();
+        buffer.push_back(RETURN_TO_CONFIG);
+        r = read_expecting(asio::buffer(buffer));
+        buffer.clear();
+        if (!r)
+            return r;
+        compiler.log_fd << "[OK]" << std::endl;
     }
 
     for (auto const &connection : prog_info.connections) {
         buffer.push_back(init_instr(START_CB, connection.crossbar_id));
         buffer.push_back(init_connetion(connection.col, connection.row));
+        buffer.push_back(END_CB);
+        r = send(asio::buffer(buffer));
+        if (!r)
+            return r;
+        buffer.clear();
+        buffer.push_back(RETURN_TO_CONFIG);
+        r = read_expecting(asio::buffer(buffer));
+        buffer.clear();
+        if (!r)
+            return r;
+        compiler.log_fd << "[OK]" << std::endl;
     }
 
-    r = send(asio::buffer(buffer));
-    if (!r)
-        return r;
+    compiler.log_fd << "END!" << std::endl;
 
     buffer.clear();
     buffer.push_back(END_CONFIG);
@@ -73,11 +94,12 @@ TspiceProgrammer::Result TspiceProgrammer::send_stream(ProgrammingInfo const &pr
         return r;
 
     buffer.clear();
-    buffer.push_back(SUCCESS);
-    for (int i = 0; i < 10; i++)
+    buffer.push_back(CONFIG_SUCCESS);
+    for (int i = 0; i < 1000; i++)
         buffer.push_back(0);
 
     r = read_expecting(asio::buffer(buffer));
+    buffer.clear();
     if (!r)
         return r;
 
@@ -122,6 +144,11 @@ TspiceProgrammer::Result TspiceProgrammer::send(boost::asio::const_buffer const 
     system::error_code error;
 
     // Sunc send
+    if (compiler.opts.should_verbose_program()) {
+        compiler.log_fd << "Sending: ";
+        send_bytes(compiler.log_fd, (uint8_t const *)buffer.data(), buffer.size());
+        compiler.log_fd << "...";
+    }
     port.write_some(buffer, error);
 
     if (error.failed()) {
@@ -137,9 +164,11 @@ TspiceProgrammer::Result TspiceProgrammer::send(boost::asio::const_buffer const 
 TspiceProgrammer::Result
 TspiceProgrammer::read_expecting(boost::asio::mutable_buffer const &buffer) {
 
+    compiler.log_fd << "Buffer size: " << buffer.size() << "\n";
+
     system::error_code error;
     bool read_complete = false;
-    size_t read_n;
+    size_t read_n = 0;
 
     uint8_t temp_buff[buffer.size()];
 
@@ -152,16 +181,20 @@ TspiceProgrammer::read_expecting(boost::asio::mutable_buffer const &buffer) {
         }
     });
     asio::async_read(port, buffer, [&](const system::error_code &ec, std::size_t n) {
+        error = ec;
+        read_n = n;
         if (ec.value() != system::errc::operation_canceled) {
-            error = ec;
             read_complete = true;
-            read_n = n;
             timer.cancel();
         }
     });
 
     io.run();
     io.restart();
+
+    compiler.log_fd << "Got (" << read_n << "): ";
+    send_bytes(compiler.log_fd, (uint8_t *)buffer.data(), read_n);
+    compiler.log_fd << std::endl;
 
     if (read_complete && !error) {
         if (read_n != buffer.size() || std::memcmp(temp_buff, buffer.data(), buffer.size())) {
