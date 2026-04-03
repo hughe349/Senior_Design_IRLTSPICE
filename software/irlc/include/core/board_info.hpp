@@ -166,14 +166,14 @@ const SimpleTspiceInfo MAIN_BOARD = []() {
     auto prev = [&i]() { return i; };
 
     const auto ROOT_BAR = 0;
-    const auto CELL_0_BAR_0 = 2;
-    const auto CELL_0_BAR_1 = 3;
-    const auto CELL_1_BAR_0 = 4;
-    const auto CELL_1_BAR_1 = 5;
-    const auto CELL_2_BAR_0 = 6;
-    const auto CELL_2_BAR_1 = 7;
-    const auto CELL_3_BAR_0 = 8;
-    const auto CELL_3_BAR_1 = 9;
+    const auto CELL_0_BAR_0 = 1;
+    const auto CELL_0_BAR_1 = 2;
+    const auto CELL_1_BAR_0 = 3;
+    const auto CELL_1_BAR_1 = 4;
+    const auto CELL_2_BAR_0 = 5;
+    const auto CELL_2_BAR_1 = 6;
+    const auto CELL_3_BAR_0 = 7;
+    const auto CELL_3_BAR_1 = 8;
 
     // One of the macros of all time
 #define STD_CELL(CELL_ID, FIRST_R, C1, C2, C3)                                                     \
@@ -316,8 +316,8 @@ const SimpleTspiceInfo MAIN_BOARD = []() {
                     RoutableColCon{.child_id = CELL_2_BAR_0, .child_row = 1},
                 },
         }),
-        .cells = std::vector<PhysStdCell>{STD_CELL(0, 100, 2, 1, 0), STD_CELL(1, 200, 5, 4, 3),
-                                          STD_CELL(2, 300, 14, 15, 6), STD_CELL(3, 400, 7, 8, 9)},
+        .cells = std::vector<PhysStdCell>{STD_CELL(0, -1, 2, 1, 0), STD_CELL(1, 5, 5, 4, 3),
+                                          STD_CELL(2, 11, 14, 15, 6), STD_CELL(3, 17, 7, 8, 9)},
         .valid_caps = std::set{1_n, 10_n, 100_n, 1_u}};
 }();
 

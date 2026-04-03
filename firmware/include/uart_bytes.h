@@ -1,32 +1,41 @@
 #ifndef __UART_BYTES_H__
 #define __UART_BYTES_H__
 
-#include <stdio.h>
+#include <cstdint>
+#include <stdint.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 // irlc -> micro
-#define START_CONFIG    0b10000000
-#define END_CONFIG      0b10000001
-#define START_CB        0b110  // last 5 bits are 0-8 to decide which crossbar to config
-#define END_CB          0b10000011
-#define START_POT       0b101  // last 5 bits are 0-23 to decide which pot to config
-#define END_POT         0b10000101
-#define RESET_CONFIG    0b10011111
+#define START_CONFIG 0b10000000
+#define END_CONFIG 0b10000001
+#define START_CB 0b110 // last 5 bits are 0-8 to decide which crossbar to config
+#define END_CB 0b10000011
+#define START_POT 0b101 // last 5 bits are 0-23 to decide which pot to config
+#define END_POT 0b10000101
+#define RESET_CONFIG 0b10011111
 
 // micro -> irlc
-#define READY_TO_START  0b10000110
-#define CONFIG_SUCCESS  0b10001000
-#define UART_ERROR      0b11111111
-#define RESET_SUCCESS   0b10010101
+#define READY_TO_START 0b10000110
+#define CONFIG_SUCCESS 0b10001000
+#define UART_ERROR 0b11111111
+#define RESET_SUCCESS 0b10010101
 
-typedef struct _instruction {
-  uint8_t message : 5;
-  uint8_t prefix  : 3;
-} instruction_t;
+typedef uint8_t instruction_t;
+static inline instruction_t init_instr(uint8_t prefix, uint8_t message) {
+  return (prefix << 5) | (message & 0x1F);
+}
+static inline uint8_t get_prefix(instruction_t instr) { return instr >> 5; }
+static inline uint8_t get_message(instruction_t instr) { return instr & 0x1F; }
+
+typedef uint8_t connection_t;
+static inline connection_t init_connetion(uint8_t x_pin, uint8_t y_pin) {
+  return ((x_pin & 0xF) << 3) | (y_pin & 0x7);
+}
+static inline uint8_t get_x(connection_t conn) { return conn >> 3; }
+static inline uint8_t get_y(connection_t conn) { return conn & 0x7; }
 
 typedef enum {
   IDLE,

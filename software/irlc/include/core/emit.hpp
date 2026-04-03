@@ -1,8 +1,6 @@
 #pragma once
 
 #include "boost/asio.hpp"
-#include "boost/asio/buffer.hpp"
-#include "boost/asio/registered_buffer.hpp"
 #include "boost/outcome/result.hpp"
 #include "core/compiler.hpp"
 #include "core/route.hpp"
@@ -15,6 +13,7 @@ typedef enum ProgrammingErrorKind {
     PORT_CLOSED,
     TIMEOUT_HIT,
     BAD_RESPONSE,
+    ERROR_CODE,
     OTHER_SYSTEM,
 } ProgrammingErrorKind;
 
@@ -28,11 +27,17 @@ class ProgrammingError : public std::runtime_error {
     static ProgrammingError bad_response(uint8_t const *expected, size_t e_n, uint8_t const *got,
                                          size_t g_n);
 
-    ProgrammingError(ProgrammingErrorKind kind)
-        : kind(kind),
-          std::runtime_error(std::string(kind == PORT_CLOSED   ? "Port closed by peer"
-                                         : kind == TIMEOUT_HIT ? "Timeout hit"
-                                                               : "Unknown error occured")) {}
+    static inline ProgrammingError port_closed() {
+        return ProgrammingError(PORT_CLOSED, "Port closed by peer");
+    };
+
+    static inline ProgrammingError timeout_hit() {
+        return ProgrammingError(TIMEOUT_HIT, "Timeout hit");
+    };
+
+    static inline ProgrammingError error_code() {
+        return ProgrammingError(ERROR_CODE, "Error code received");
+    };
 
     ProgrammingError(boost::system::error_code ec)
         : kind(OTHER_SYSTEM), std::runtime_error("System error: " + ec.message()) {}

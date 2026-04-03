@@ -1,4 +1,5 @@
 #include "core/emit.hpp"
+#include "boost/asio/buffer.hpp"
 #include "boost/asio/error.hpp"
 #include "boost/asio/read.hpp"
 #include "boost/system/detail/errc.hpp"
@@ -11,6 +12,7 @@
 #include <ostream>
 #include <sstream>
 #include <stdexcept>
+#include <vector>
 
 using namespace boost;
 using namespace std;
@@ -28,6 +30,58 @@ TspiceProgrammer::TspiceProgrammer(string_view serial_port, size_t baud, uint64_
 TspiceProgrammer::Result TspiceProgrammer::ping_board() {
     // Binary bloat w/ strings
     throw runtime_error("NOT IMPLEMENTED *COUGH* MICAH *COUGH*");
+}
+
+TspiceProgrammer::Result TspiceProgrammer::send_stream(ProgrammingInfo const &prog_info) {
+    // Reset
+    TspiceProgrammer::Result r = try_reset_board();
+    if (!r)
+        return r;
+
+    vector<uint8_t> buffer{START_CONFIG, START_CONFIG};
+
+    // Send 2 start bytes
+    r = send(asio::buffer(buffer));
+    if (!r)
+        return r;
+
+    buffer.clear();
+    buffer.push_back(READY_TO_START);
+    r = read_expecting(asio::buffer(buffer));
+    if (!r)
+        return r;
+
+    buffer.clear();
+    for (auto const &resistor : prog_info.resistances) {
+        buffer.push_back(init_instr(START_POT, resistor.resistor_id));
+        buffer.push_back(resistor.value);
+    }
+
+    for (auto const &connection : prog_info.connections) {
+        buffer.push_back(init_instr(START_CB, connection.crossbar_id));
+        buffer.push_back(init_connetion(connection.col, connection.row));
+    }
+
+    r = send(asio::buffer(buffer));
+    if (!r)
+        return r;
+
+    buffer.clear();
+    buffer.push_back(END_CONFIG);
+    r = send(asio::buffer(buffer));
+    if (!r)
+        return r;
+
+    buffer.clear();
+    buffer.push_back(SUCCESS);
+    for (int i = 0; i < 10; i++)
+        buffer.push_back(0);
+
+    r = read_expecting(asio::buffer(buffer));
+    if (!r)
+        return r;
+
+    return success_t{};
 }
 
 TspiceProgrammer::Result TspiceProgrammer::try_reset_board() {
@@ -64,8 +118,6 @@ TspiceProgrammer::Result TspiceProgrammer::try_reset_board() {
     }
 }
 
-TspiceProgrammer::Result TspiceProgrammer::send_stream(ProgrammingInfo const &prog_info) {}
-
 TspiceProgrammer::Result TspiceProgrammer::send(boost::asio::const_buffer const &buffer) {
     system::error_code error;
 
@@ -74,7 +126,7 @@ TspiceProgrammer::Result TspiceProgrammer::send(boost::asio::const_buffer const 
 
     if (error.failed()) {
         if (error == asio::error::eof) {
-            return ProgrammingError(PORT_CLOSED);
+            return ProgrammingError::port_closed();
         }
         return ProgrammingError(error);
     }
@@ -119,7 +171,7 @@ TspiceProgrammer::read_expecting(boost::asio::mutable_buffer const &buffer) {
             return success_t{};
         }
     } else if (!read_complete) {
-        return ProgrammingError(TIMEOUT_HIT);
+        return ProgrammingError::timeout_hit();
     } else {
         return ProgrammingError(error);
     }

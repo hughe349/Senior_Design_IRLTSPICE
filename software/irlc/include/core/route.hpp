@@ -48,7 +48,7 @@ typedef struct QuantizedResistance {
 
 typedef struct ProgrammingInfo {
     std::vector<CrossbarCon> connections;
-    std::vector<ResistorMapping> resistances;
+    std::vector<QuantizedResistance> resistances;
 } ProgrammingInfo;
 
 std::ostream &operator<<(std::ostream &os, CrossbarCon const &val);

@@ -692,7 +692,7 @@ ProgrammingInfo SimpleTspiceRouter::do_routing(unique_ptr<AssignedNetlist> &assi
 
     return {
         .connections = connections,
-        .resistances = resistances,
+        .resistances = quantize_resistors(resistances),
     };
 }
 
