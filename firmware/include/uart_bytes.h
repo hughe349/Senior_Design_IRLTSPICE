@@ -32,10 +32,10 @@ static inline uint8_t get_message(instruction_t instr) { return instr & 0x1F; }
 
 typedef uint8_t connection_t;
 static inline connection_t init_connetion(uint8_t x_pin, uint8_t y_pin) {
-  return ((x_pin & 0xF) << 3) | (y_pin & 0x7);
+  return ((y_pin & 0x7) << 4) | (x_pin & 0xF);
 }
-static inline uint8_t get_x(connection_t conn) { return conn >> 3; }
-static inline uint8_t get_y(connection_t conn) { return conn & 0x7; }
+static inline uint8_t get_x(connection_t conn) { return conn & 0xF; }
+static inline uint8_t get_y(connection_t conn) { return (conn >> 4) & 0x7; }
 
 typedef enum {
   IDLE,
