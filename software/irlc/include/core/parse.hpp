@@ -17,6 +17,7 @@ class INetlistParser {
     INetlistParser(IrlCompiler const &compiler) : compiler(compiler) {}
 
   public:
+    virtual ~INetlistParser() = default;
     virtual const char *parser_name() const = 0;
 
     virtual std::unique_ptr<RawNetlist> try_parse(const std::string &filename,
@@ -48,6 +49,7 @@ class ParseException : public std::runtime_error {
 class SpiceParser : public INetlistParser {
   public:
     SpiceParser(IrlCompiler const &compiler) : INetlistParser(compiler) {}
+    virtual ~SpiceParser() override = default;
 
     static bool matches_filename(const std::string &filename);
 
@@ -61,6 +63,7 @@ class SpiceParser : public INetlistParser {
 class EeschemaParser : public INetlistParser {
   public:
     EeschemaParser(IrlCompiler const &compiler) : INetlistParser(compiler) {}
+    virtual ~EeschemaParser() override = default;
 
     static bool matches_filename(const std::string &filename);
 
@@ -75,21 +78,21 @@ template <typename... Parsers> class ParserFactory {
   public:
     // Gets the parsers in a prioritized list based on the terrible filename heuristic
     // Parser 0 is best, parser 1 second best, etc
-    static std::array<INetlistParser *, sizeof...(Parsers)>
+    static std::array<std::unique_ptr<INetlistParser>, sizeof...(Parsers)>
     make_parsers_prioritized(const std::string &filename, IrlCompiler const &compiler) {
-        std::array<INetlistParser *, sizeof...(Parsers)> all{};
+        std::array<std::unique_ptr<INetlistParser>, sizeof...(Parsers)> all{};
 
-        INetlistParser **good_ind = &all[0];
-        INetlistParser **bad_ind = &all[all.size() - 1];
+        std::unique_ptr<INetlistParser> *good_ind = &all[0];
+        std::unique_ptr<INetlistParser> *bad_ind = &all[all.size() - 1];
 
         (
             [&]() {
                 bool parser_good = Parsers::matches_filename(filename);
                 if (parser_good) {
-                    *good_ind = new Parsers(compiler);
+                    *good_ind = std::unique_ptr<INetlistParser>(new Parsers(compiler));
                     good_ind++;
                 } else {
-                    *bad_ind = new Parsers(compiler);
+                    *bad_ind = std::unique_ptr<INetlistParser>(new Parsers(compiler));
                     bad_ind--;
                 }
             }(),

@@ -41,7 +41,7 @@ int IrlCompiler::invoke() {
     auto parsers = AllParsersFactory().make_parsers_prioritized(*opts.input_file, *this);
 
     unique_ptr<RawNetlist> netlist(nullptr);
-    for (const INetlistParser *parser : parsers) {
+    for (const unique_ptr<INetlistParser> &parser : parsers) {
         if (opts.should_verbose_parse()) {
             log_fd << "Attempting parser: " << parser->parser_name() << "\n";
         }

@@ -24,14 +24,14 @@ TEST_CASE("Factory Identifies Parsers", "[parse]") {
     auto spiceparsers = AllParsersFactory::make_parsers_prioritized(filename1, c);
 
     REQUIRE(spiceparsers.size() == 2);
-    REQUIRE(dynamic_cast<SpiceParser *>(spiceparsers[0]) != nullptr);
-    REQUIRE(dynamic_cast<EeschemaParser *>(spiceparsers[1]) != nullptr);
+    REQUIRE(dynamic_cast<SpiceParser *>(spiceparsers[0].get()) != nullptr);
+    REQUIRE(dynamic_cast<EeschemaParser *>(spiceparsers[1].get()) != nullptr);
 
     auto eeschemaparsers = AllParsersFactory::make_parsers_prioritized(filename2, c);
 
     REQUIRE(eeschemaparsers.size() == 2);
-    REQUIRE(dynamic_cast<EeschemaParser *>(eeschemaparsers[0]) != nullptr);
-    REQUIRE(dynamic_cast<SpiceParser *>(eeschemaparsers[1]) != nullptr);
+    REQUIRE(dynamic_cast<EeschemaParser *>(eeschemaparsers[0].get()) != nullptr);
+    REQUIRE(dynamic_cast<SpiceParser *>(eeschemaparsers[1].get()) != nullptr);
 }
 
 TEST_CASE("Parsing Tokenizes", "[parse]") {
