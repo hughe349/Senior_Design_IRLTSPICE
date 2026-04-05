@@ -17,18 +17,20 @@ typedef struct val_pico {
     constexpr static inline val_pico no_scaling(uint64_t v) { return val_pico(v * 1000000000000); };
     static val_pico from_str(std::string_view str);
 
-    bool operator==(val_pico const &other) const;
-    bool operator!=(val_pico const &other) const;
-    bool operator<(val_pico const &other) const;
-    bool operator>(val_pico const &other) const;
-    bool operator<=(val_pico const &other) const;
-    bool operator>=(val_pico const &other) const;
+    // Holy const
+    // Also I can now see why resut has Derive
+    constexpr bool operator==(val_pico const &other) const { return v == other.v; };
+    constexpr bool operator!=(val_pico const &other) const { return v != other.v; };
+    constexpr bool operator<(val_pico const &other) const { return v < other.v; };
+    constexpr bool operator>(val_pico const &other) const { return v > other.v; };
+    constexpr bool operator<=(val_pico const &other) const { return v <= other.v; };
+    constexpr bool operator>=(val_pico const &other) const { return v >= other.v; };
 
-    val_pico operator+(val_pico const &other) const;
-    val_pico operator-(val_pico const &other) const;
-    val_pico operator*(val_pico const &other) const;
-    val_pico operator/(val_pico const &other) const;
-    val_pico operator%(val_pico const &other) const;
+    constexpr val_pico operator+(val_pico const &other) const { return v + other.v; };
+    constexpr val_pico operator-(val_pico const &other) const { return v - other.v; };
+    constexpr val_pico operator*(val_pico const &other) const { return v * other.v; };
+    constexpr val_pico operator/(val_pico const &other) const { return v / other.v; };
+    constexpr val_pico operator%(val_pico const &other) const { return v % other.v; };
 
 } val_pico_t;
 

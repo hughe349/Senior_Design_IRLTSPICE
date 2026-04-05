@@ -50,7 +50,7 @@ constexpr std::array RAW_GRAPH_RULES = {
                         .rule = [](RawNetlist const &netlist) -> RuleViolationResult {
                             for (auto v : pair_to_iter(boost::vertices(netlist))) {
                                 if (netlist[v].kind == NET &&
-                                    netlist[v].value.net_value == OUTPUT) {
+                                    netlist[v].value.net_value == CIR_OUTPUT) {
                                     return NO_VIOLATION;
                                 }
                             }
@@ -59,7 +59,8 @@ constexpr std::array RAW_GRAPH_RULES = {
     RawNetlistGraphRule{.rule_name = "Circuit contains input",
                         .rule = [](RawNetlist const &netlist) -> RuleViolationResult {
                             for (auto v : pair_to_iter(boost::vertices(netlist))) {
-                                if (netlist[v].kind == NET && netlist[v].value.net_value == INPUT) {
+                                if (netlist[v].kind == NET &&
+                                    netlist[v].value.net_value == CIR_INPUT) {
                                     return NO_VIOLATION;
                                 }
                             }
@@ -140,7 +141,7 @@ constexpr std::array RAW_VERTEX_RULES = {
     RawNetlistVertexRule{
         .rule_name = "Circuit output must be driven by only a buffer",
         .rule = [](RawNetlist const &netlist, RawVert v) -> RuleViolationResult {
-            if (netlist[v].kind != NET || netlist[v].value.net_value != OUTPUT) {
+            if (netlist[v].kind != NET || netlist[v].value.net_value != CIR_OUTPUT) {
                 return NO_VIOLATION;
             }
 
@@ -160,7 +161,7 @@ constexpr std::array RAW_VERTEX_RULES = {
                 return out;
             }
 
-            if (netlist[v].kind == NET && netlist[v].value.net_value == OUTPUT) {
+            if (netlist[v].kind == NET && netlist[v].value.net_value == CIR_OUTPUT) {
                 auto e = *boost::in_edges(v, netlist).first;
                 auto const &edge = netlist[e];
                 auto const &src = netlist[boost::source(e, netlist)];
@@ -189,7 +190,7 @@ constexpr std::array RAW_VERTEX_RULES = {
                     if (target_info.value.net_value == V_GND ||
                         target_info.value.net_value == V_HIGH ||
                         target_info.value.net_value == V_NEG ||
-                        target_info.value.net_value == INPUT) {
+                        target_info.value.net_value == CIR_INPUT) {
                         return "";
                     }
                 }

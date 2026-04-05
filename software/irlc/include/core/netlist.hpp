@@ -29,8 +29,8 @@ typedef enum NetlistVertexKind {
 
 typedef enum NetKind {
     WIRE,
-    INPUT,
-    OUTPUT,
+    CIR_INPUT,
+    CIR_OUTPUT,
     V_GND,
     V_HIGH,
     V_NEG,
@@ -57,8 +57,8 @@ struct RawNetlistVertexInfo {
     } value;
 };
 
-constexpr const std::array IRL_INPUT_NET_NAMES = {"INPUT"};
-constexpr const std::array IRL_OUTPUT_NET_NAMES = {"OUTPUT"};
+constexpr const std::array IRL_CIR_INPUT_NET_NAMES = {"INPUT"};
+constexpr const std::array IRL_CIR_OUTPUT_NET_NAMES = {"OUTPUT"};
 constexpr const std::array IRL_V_GND_NET_NAMES = {"0", "GND"};
 constexpr const std::array IRL_V_HIGH_NET_NAMES = {"VCC", "VDD", "+5V"};
 constexpr const std::array IRL_V_NEG_NET_NAMES = {"-5V"};
@@ -66,16 +66,16 @@ constexpr const std::array IRL_V_NEG_NET_NAMES = {"-5V"};
 #define NET_PAIR(KIND)                                                                             \
     std::pair { std::span(IRL_##KIND##_NET_NAMES.begin(), IRL_##KIND##_NET_NAMES.end()), KIND }
 
-constexpr const std::array RECOGNIZED_NETS =
-    arrify(NET_PAIR(INPUT), NET_PAIR(OUTPUT), NET_PAIR(V_GND), NET_PAIR(V_HIGH), NET_PAIR(V_NEG));
+constexpr const std::array RECOGNIZED_NETS = arrify(
+    NET_PAIR(CIR_INPUT), NET_PAIR(CIR_OUTPUT), NET_PAIR(V_GND), NET_PAIR(V_HIGH), NET_PAIR(V_NEG));
 
 static inline const char *net_name(NetKind const &netval) {
     switch (netval) {
     case WIRE:
         return "Normal Wire";
-    case INPUT:
+    case CIR_INPUT:
         return "Circuit Input";
-    case OUTPUT:
+    case CIR_OUTPUT:
         return "Circuit Output";
     case V_GND:
         return "Ground";

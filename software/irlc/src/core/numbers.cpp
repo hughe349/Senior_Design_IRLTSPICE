@@ -64,19 +64,6 @@ val_pico val_pico_t::from_str(std::string_view str) {
     }
 }
 
-bool val_pico_t::operator==(val_pico const &other) const { return v == other.v; }
-bool val_pico_t::operator!=(val_pico const &other) const { return v != other.v; }
-bool val_pico_t::operator<(val_pico const &other) const { return v < other.v; }
-bool val_pico_t::operator>(val_pico const &other) const { return v > other.v; }
-val_pico_t val_pico_t::operator+(val_pico const &other) const { return (v + other.v); };
-val_pico_t val_pico_t::operator-(val_pico const &other) const { return (v - other.v); };
-val_pico_t val_pico_t::operator*(val_pico const &other) const { return (v * other.v); };
-val_pico_t val_pico_t::operator/(val_pico const &other) const { return (v / other.v); };
-val_pico_t val_pico_t::operator%(val_pico const &other) const { return (v % other.v); };
-
-bool val_pico_t::operator<=(val_pico const &other) const { return v <= other.v; }
-bool val_pico_t::operator>=(val_pico const &other) const { return v >= other.v; }
-
 std::ostream &operator<<(std::ostream &os, val_pico_t const &val) {
     if (val >= 1_M && val % 1_M == 0) {
         os << (val / 1_M).v << "M";

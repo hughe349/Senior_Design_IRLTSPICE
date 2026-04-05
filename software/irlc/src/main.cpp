@@ -83,7 +83,7 @@ int main(int argc, char *argv[]) {
 
     IrlCompiler compiler(std::move(opts), std::cout);
 
-    if (compiler.opts.help || compiler.opts.input_file->empty()) {
+    if (compiler.opts.help || argc == 1) {
         std::cout << "Usage:\n\n"
                   << "  irlc [OPTIONS] <input-file>\n";
         std::cout << cmdline_desc << std::endl;

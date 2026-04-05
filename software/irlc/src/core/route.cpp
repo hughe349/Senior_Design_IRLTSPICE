@@ -151,7 +151,7 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
             case V_HIGH:
             case V_NEG:
             case V_GND:
-            case INPUT:
+            case CIR_INPUT:
                 if (compiler.opts.should_verbose_cell_assign())
                     compiler.log_fd << "  " << net_name(g[v].value.net_value) << "\n";
                 if (buffer_outputs.contains(v)) {
@@ -166,7 +166,7 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
                 // We don't want to visit it, though, because it leads to other cells
                 vertex_coloring[v] = boost::black_color;
                 break;
-            case OUTPUT:
+            case CIR_OUTPUT:
                 // Since the output is driven by a cell, we treat it as just another cell output to
                 // be routed back to us through the main switch. Thus we can fall through and re-use
                 // the wire logic.
@@ -290,7 +290,7 @@ unique_ptr<AssignedNetlist> SimpleTspiceRouter::try_assign(unique_ptr<RawNetlist
         for (RawEdge e : pair_to_iter(out_edges(buff, *raw))) {
             if ((*raw)[e].kind == PIN_CELL_BUFFER_OUT) {
                 buffer_outputs[target(e, *raw)] = i;
-                if ((*raw)[target(e, *raw)].value.net_value == OUTPUT) {
+                if ((*raw)[target(e, *raw)].value.net_value == CIR_OUTPUT) {
                     if (assigned->output_cell != UINT32_MAX) {
                         rule_failed<"Circuit output must be driven by only a buffer">();
                     }
@@ -425,7 +425,7 @@ ProgrammingInfo SimpleTspiceRouter::do_routing(unique_ptr<AssignedNetlist> &assi
         ColConIter output_col =
             std::find_if(board.root.cols_begin(), board.root.cols_end(), [](const ColCon &con) {
                 if (SpecialNetCon const *spnet = std::get_if<SpecialNetCon>(&con)) {
-                    if (spnet->kind == OUTPUT) {
+                    if (spnet->kind == CIR_OUTPUT) {
                         return true;
                     }
                 }
