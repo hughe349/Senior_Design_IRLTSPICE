@@ -2,6 +2,7 @@
 #include "boost/program_options/parsers.hpp"
 #include "boost/program_options/value_semantic.hpp"
 #include "core/compiler.hpp"
+#include <array>
 #include <boost/program_options.hpp>
 #include <cstddef>
 #include <cstring>
@@ -12,10 +13,21 @@ using std::string;
 
 namespace po = boost::program_options;
 
-consteval std::string flagify(const char *long_name) {
-    std::string str(long_name);
-    std::replace(str.begin(), str.end(), '_', '-');
-    return str;
+template <size_t N> consteval std::array<char, N> flagify(std::array<char, N> long_name) {
+    std::array<char, N> out(long_name);
+    std::replace(out.begin(), out.end(), '_', '-');
+    return out;
+}
+
+template <std::size_t... Ns> auto consteval concatenate(const std::array<char, Ns> &...arrays) {
+    std::array<char, (Ns + ...) + 1> result;
+    std::size_t index{};
+
+    ((std::copy_n(arrays.begin(), Ns, result.begin() + index), index += Ns), ...);
+
+    result[result.size() - 1] = '\0';
+
+    return result;
 }
 
 IrlCompilerOptions build_compiler_options(std::map<std::string, po::variable_value> &vm);
@@ -27,15 +39,22 @@ int main(int argc, char *argv[]) {
         opt_groups.emplace(opt, po::options_description(ilrCompilerOptionGroupName(opt)));
     }
 
+#define CHAR_ARR(word) std::to_array(word)
+
     // Actually the coolest pattern I've ever seen
 #define FLAG_OPT(LONG_N, SHORT_N, MSG, CATEGORY)                                                   \
     do {                                                                                           \
-        opt_groups[CATEGORY].add_options()((flagify(QUOTE(LONG_N)) + "," SHORT_N).c_str(), MSG);   \
+        opt_groups[CATEGORY].add_options()(                                                        \
+            concatenate(flagify(CHAR_ARR(QUOTE(LONG_N))), CHAR_ARR(","), CHAR_ARR(SHORT_N))        \
+                .data(),                                                                           \
+            MSG);                                                                                  \
     } while (0);
 #define TYPED_OPT(LONG_N, SHORT_N, TYPE, DEFAULT, MSG, CATEGORY)                                   \
     do {                                                                                           \
-        opt_groups[CATEGORY].add_options()((flagify(QUOTE(LONG_N)) + "," SHORT_N).c_str(),         \
-                                           po::value<TYPE>(), MSG);                                \
+        opt_groups[CATEGORY].add_options()(                                                        \
+            concatenate(flagify(CHAR_ARR(QUOTE(LONG_N))), CHAR_ARR(","), CHAR_ARR(SHORT_N))        \
+                .data(),                                                                           \
+            po::value<TYPE>(), MSG);                                                               \
                                                                                                    \
     } while (0);
 
@@ -52,7 +71,7 @@ int main(int argc, char *argv[]) {
     }
 
     po::positional_options_description positional;
-    positional.add(flagify(EX_AND_QUOTE(INFILE_OPT)).c_str(), -1);
+    positional.add(flagify(CHAR_ARR(EX_AND_QUOTE(INFILE_OPT))).data(), -1);
 
     po::variables_map vm;
     po::store(
@@ -86,10 +105,10 @@ IrlCompilerOptions build_compiler_options(std::map<std::string, po::variable_val
     // #undef TYPED_OPT
 
 #define FLAG_OPT(LONG_N, SHORT_N, MSG, CATEGORY)                                                   \
-    .LONG_N = vm.contains(flagify(QUOTE(LONG_N)).c_str()),
+    .LONG_N = vm.contains(flagify(CHAR_ARR(QUOTE(LONG_N))).data()),
 #define TYPED_OPT(LONG_N, SHORT_N, TYPE, DEFAULT, MSG, CATEGORY)                                   \
-    .LONG_N = vm.contains(flagify(QUOTE(LONG_N)).c_str())                                          \
-                  ? vm[flagify(QUOTE(LONG_N)).c_str()].as<TYPE>()                                  \
+    .LONG_N = vm.contains(flagify(CHAR_ARR(QUOTE(LONG_N))).data())                                 \
+                  ? vm[flagify(CHAR_ARR(QUOTE(LONG_N))).data()].as<TYPE>()                         \
                   : DEFAULT,
 
     return {COMPILER_OPTIONS};
