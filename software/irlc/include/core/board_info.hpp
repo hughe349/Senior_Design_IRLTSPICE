@@ -335,7 +335,7 @@ inline ChainedCrossbar::ChainedCrossbar(
 }
 
 template <typename... PCross> inline ChainedCrossbar::ChainedCrossbar(PCross... nbars) {
-    this->bars = std::vector{nbars...};
+    ((this->bars.push_back(nbars)), ...);
     for (auto &bar : bars | std::views::drop(1)) {
         bar.rows.clear();
         for (uint8_t i = 0; i < bar.rows.size(); i++) {
