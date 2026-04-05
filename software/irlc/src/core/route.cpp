@@ -251,7 +251,7 @@ class CellAssigningVisitor : public boost::bfs_visitor<> {
                 throw runtime_error("TODO");
                 break;
             case NET:
-                __builtin_unreachable();
+                // Unreachable. Compiler should be able to get this one I hope
                 break;
             }
         }
@@ -462,7 +462,7 @@ ProgrammingInfo SimpleTspiceRouter::do_routing(unique_ptr<AssignedNetlist> &assi
     // This map is a temporary for each cell.
     // We populate it with nets, then go thru the components and connect them to their nets
     netmap_t netmap{};
-    std::set<typeof(ComponentColCon{}.id)> taken_components{};
+    std::set<decltype(ComponentColCon{}.id)> taken_components{};
     size_t i = -1;
     for (auto const &cell : assigned->cells) {
         netmap.clear();
