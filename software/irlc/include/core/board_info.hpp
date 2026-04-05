@@ -334,8 +334,20 @@ inline ChainedCrossbar::ChainedCrossbar(
     }
 }
 
+// Insane recursive template fuckery.
+// This was the only way I could get this to build on msvc I could not fold.
+
+template <typename... PCross> inline void push_cross(ChainedCrossbar &bar, PCross... cross);
+template <> inline void push_cross(ChainedCrossbar &bar) { return; }
+template <typename... PCross>
+inline void push_cross(ChainedCrossbar &bar, PhysCrossbar pbar, PCross... nbars) {
+    bar.bars.push_back(pbar);
+    push_cross(bar, nbars...);
+}
+
 template <typename... PCross> inline ChainedCrossbar::ChainedCrossbar(PCross... nbars) {
-    ((this->bars.push_back(nbars)), ...);
+    push_cross(*this, nbars...);
+    // ((this->bars.push_back(nbars)), ...);
     for (auto &bar : bars | std::views::drop(1)) {
         bar.rows.clear();
         for (uint8_t i = 0; i < bar.rows.size(); i++) {
