@@ -63,34 +63,8 @@ void setup_gpios(void) {
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, 1);
 }
 
-/*
- * BELOW INIT FUNCTIONS BORROWED FROM NIRAJ'S 362 SPRING 25 REPO
- */
 void internal_clock()
 {
-  /* Disable HSE to allow use of the GPIOs */
-  // RCC->CR &= ~RCC_CR_HSEON;
-  // /* Enable Prefetch Buffer and set Flash Latency */
-  // FLASH->ACR = FLASH_ACR_PRFTBE | FLASH_ACR_LATENCY;
-  // /* HCLK = SYSCLK */
-  // RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
-  // /* PCLK = HCLK */
-  // RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE_DIV1;
-  // /* PLL configuration = (HSI/2) * 12 = ~48 MHz */
-  // RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLMUL));
-  // RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSI_DIV2 | RCC_CFGR_PLLXTPRE_HSE_PREDIV_DIV1 | RCC_CFGR_PLLMUL12);
-  // /* Enable PLL */
-  // RCC->CR |= RCC_CR_PLLON;
-  // /* Wait till PLL is ready */
-  // while ((RCC->CR & RCC_CR_PLLRDY) == 0)
-  //   ;
-  // /* Select PLL as system clock source */
-  // RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
-  // RCC->CFGR |= (uint32_t)RCC_CFGR_SW_PLL;
-  // /* Wait till PLL is used as system clock source */
-  // while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)RCC_CFGR_SWS_PLL)
-  //   ;
-
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
@@ -106,10 +80,6 @@ void internal_clock()
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL12;
   RCC_OscInitStruct.PLL.PREDIV = RCC_PREDIV_DIV2;
   HAL_RCC_OscConfig(&RCC_OscInitStruct);
-  // if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  // {
-  //   Error_Handler();
-  // }
 
   /** Initializes the CPU, AHB and APB buses clocks
   */
@@ -121,6 +91,7 @@ void internal_clock()
   HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1);
 
   while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)RCC_CFGR_SWS_PLL);
+  
   // fix hal timing
   SystemCoreClock = 48000000;
   HAL_InitTick(TICK_INT_PRIORITY);
