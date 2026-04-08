@@ -23,7 +23,6 @@ jobs:
           - os: windows-latest
             build_type: Release
             c_compiler: msvc
-            build_subdir: Release
             cxx: msvc
 
           - os: ubuntu-latest
@@ -52,6 +51,13 @@ jobs:
       run: |
         echo "source-dir=${{ github.workspace }}/software/irlc" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=${{ github.workspace }}/software/irlc/build/" >> "$GITHUB_OUTPUT"
+        if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+          echo "build-exe-subdir=${{ matrix.build_type }}/" >> "$GITHUB_OUTPUT"
+          echo "exe-suffix=.exe" >> "$GITHUB_OUTPUT"
+        else
+          echo "build-exe-subdir=${{ matrix.build_type }}/" >> "$GITHUB_OUTPUT"
+          echo "exe-suffix=" >> "$GITHUB_OUTPUT"
+        fi
 
 
     # The following cache stuff taken from:
@@ -115,4 +121,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: irlc-${{ matrix.os }}-${{ matrix.c_compiler }}
-        path: ${{ steps.strings.outputs.build-output-dir }}/${{ matrix.build_subdir }}/irlc
+        path: ${{ steps.strings.outputs.build-output-dir }}/${{ steps.strings.outputs.build-exe-subdir }}irlc${{ steps.strings.outputs.exe-suffix }}
