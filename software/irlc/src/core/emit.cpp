@@ -170,9 +170,10 @@ TspiceProgrammer::read_expecting(boost::asio::mutable_buffer const &buffer) {
     bool read_complete = false;
     size_t read_n = 0;
 
-    uint8_t temp_buff[buffer.size()];
-
-    std::memcpy(temp_buff, buffer.data(), buffer.size());
+    // Shoot me in the head VLAs don't exist in C++ so I gotta heap allocate for no reason.
+    // Make it static for reuse
+    static std::vector<uint8_t> temp_buff;
+    temp_buff.assign((uint8_t *)buffer.data(), (uint8_t *)buffer.data() + buffer.size());
 
     asio::steady_timer timer(io, asio::chrono::milliseconds(timeout_ms));
     timer.async_wait([&](const system::error_code &ec) {
@@ -197,8 +198,9 @@ TspiceProgrammer::read_expecting(boost::asio::mutable_buffer const &buffer) {
     compiler.log_fd << std::endl;
 
     if (read_complete && !error) {
-        if (read_n != buffer.size() || std::memcmp(temp_buff, buffer.data(), buffer.size())) {
-            return ProgrammingError::bad_response(temp_buff, buffer.size(),
+        if (read_n != buffer.size() ||
+            std::memcmp(temp_buff.data(), buffer.data(), buffer.size())) {
+            return ProgrammingError::bad_response(temp_buff.data(), buffer.size(),
                                                   (uint8_t *)buffer.data(), read_n);
         } else {
             return success_t{};
