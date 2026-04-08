@@ -20,10 +20,10 @@ template <size_t N> consteval std::array<char, N> flagify(std::array<char, N> lo
 }
 
 template <std::size_t... Ns> auto consteval concatenate(const std::array<char, Ns> &...arrays) {
-    std::array<char, (Ns + ...) + 1> result;
+    std::array<char, ((Ns - 1) + ...) + 1> result;
     std::size_t index{};
 
-    ((std::copy_n(arrays.begin(), Ns, result.begin() + index), index += Ns), ...);
+    ((std::copy_n(arrays.begin(), Ns - 1, result.begin() + index), index += Ns - 1), ...);
 
     result[result.size() - 1] = '\0';
 

@@ -107,42 +107,38 @@ int IrlCompiler::invoke() {
     }
 
     if (opts.do_programming) {
-        try {
-            if (opts.serial_port.has_value()) {
-                TspiceProgrammer programmer(*opts.serial_port, opts.serial_baud,
-                                            opts.serial_timeout, *this);
-                TspiceProgrammer::Result r = programmer.send_stream(prog_info);
-                if (!r) {
-                    throw r.error();
-                }
-            }
-            if (opts.print_serial) {
-                // std::unique_ptr<FdMessageWriter> fdw(new FdMessageWriter(log_fd));
-                // if (writer != nullptr) {
-                //     std::unique_ptr<CompositeMessageWriter<IProgramMessageWriter,
-                //     FdMessageWriter>>
-                //         comp(new CompositeMessageWriter(writer, fdw));
-                //     writer = std::move(comp);
-                // }
-            }
-            // if (writer == nullptr) {
-            //     log_error("Programming requires either a serial port or the --print-serial
-            //     flag.");
-            // }
+        std::unique_ptr<SerialWrapper> serial = nullptr;
+        if (opts.serial_port.has_value()) {
+            try {
+                serial.reset(new SerialWrapper(opts.print_serial, log_fd, opts.serial_port.value(),
+                                               opts.serial_timeout, opts.serial_baud));
 
-            // programmer.send_stream(prog_info);
-        } catch (const boost::system::system_error &e) {
-            log_fd << "[sys]-";
-            if (e.code() == boost::system::errc::no_such_file_or_directory) {
-                log_error("Specified serial port not found");
-            } else {
+            } catch (const boost::system::system_error &e) {
+                log_fd << "[sys]-";
+                if (e.code() == boost::system::errc::no_such_file_or_directory) {
+                    log_error("Specified serial port not found");
+                } else {
+                    log_error(e.what());
+                }
+            } catch (const runtime_error &e) {
                 log_error(e.what());
+                log_fd << "    Occured opening serial port\n";
+            } catch (...) {
+                log_error("Unknown error occured opening serial port\n");
             }
-        } catch (const runtime_error &e) {
-            log_fd << "[?]-";
-            log_error(e.what());
-        } catch (...) {
-            log_error("Unknown error occured programming");
+            if (serial.get() == nullptr) {
+                return -1;
+            }
+        } else if (opts.print_serial) {
+            serial.reset(new SerialWrapper(log_fd));
+        } else {
+            log_error("Programming requested but print serial or serial port not specified");
+            return -1;
+        }
+        TspiceProgrammer programmer(std::move(serial), *this);
+        ProgrammingError::Result r = programmer.send_stream(prog_info);
+        if (!r) {
+            throw r.error();
         }
     }
 
