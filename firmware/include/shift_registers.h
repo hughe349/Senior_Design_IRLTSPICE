@@ -6,12 +6,23 @@ extern "C"
 {
 #endif
 
-void reset_cd22m_sr(void);
-void reset_bruz_sr(void);
-void set_bruz_sr_data(int data);
-void set_cd22m_sr_data(int data);
-void clock_bruz_sr(void);
-void clock_cd22m_sr(void);
+// void reset_cd22m_sr(void);
+// void reset_bruz_sr(void);
+// void set_bruz_sr_data(int data);
+// void set_cd22m_sr_data(int data);
+// void clock_bruz_sr(void);
+// void clock_cd22m_sr(void);
+
+sr_reset(sr_t sr);
+sr_set(sr_t sr, int data);
+sr_clock(sr_t sr);
+sr_start(sr_t sr);
+sr_shift_en(sr_t sr);
+
+typedef enum {
+  BRUZ_SR,
+  CD22M_SR
+} sr_t;
 
 #ifdef __cplusplus
 }
