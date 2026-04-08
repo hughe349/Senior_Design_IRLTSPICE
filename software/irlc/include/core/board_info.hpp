@@ -122,7 +122,8 @@ class ColConIter {
 typedef class ChainedCrossbar {
   public:
     // Trivial chain (no swizzle)
-    template <typename... PCross> inline ChainedCrossbar(PCross... nbars);
+    // template <typename... PCross> inline ChainedCrossbar(PCross... nbars);
+    inline ChainedCrossbar(std::initializer_list<PhysCrossbar> nbars);
     template <size_t N_BARS, size_t N_ROWS>
     inline ChainedCrossbar(
         std::array<PhysCrossbar, N_BARS> bars,
@@ -283,7 +284,7 @@ const SimpleTspiceInfo MAIN_BOARD = []() {
     }
 
     return SimpleTspiceInfo{
-        .root = ChainedCrossbar(PhysCrossbar{
+        .root = ChainedCrossbar({PhysCrossbar{
             .id = ROOT_BAR,
             .rows =
                 std::vector<RowCon>{
@@ -315,7 +316,7 @@ const SimpleTspiceInfo MAIN_BOARD = []() {
                     RoutableColCon{.child_id = CELL_2_BAR_0, .child_row = 0},
                     RoutableColCon{.child_id = CELL_2_BAR_0, .child_row = 1},
                 },
-        }),
+        }}),
         .cells = std::vector<PhysStdCell>{STD_CELL(0, -1, 2, 1, 0), STD_CELL(1, 5, 5, 4, 3),
                                           STD_CELL(2, 11, 14, 15, 6), STD_CELL(3, 17, 7, 8, 9)},
         .valid_caps = std::set{1_n, 10_n, 100_n, 1_u}};
@@ -334,20 +335,10 @@ inline ChainedCrossbar::ChainedCrossbar(
     }
 }
 
-// Insane recursive template fuckery.
-// This was the only way I could get this to build on msvc I could not fold.
-
-template <typename... PCross> inline void push_cross(ChainedCrossbar &bar, PCross... cross);
-template <> inline void push_cross(ChainedCrossbar &bar) { return; }
-template <typename... PCross>
-inline void push_cross(ChainedCrossbar &bar, PhysCrossbar pbar, PCross... nbars) {
-    bar.bars.push_back(pbar);
-    push_cross(bar, nbars...);
-}
-
-template <typename... PCross> inline ChainedCrossbar::ChainedCrossbar(PCross... nbars) {
-    push_cross(*this, nbars...);
-    // ((this->bars.push_back(nbars)), ...);
+inline ChainedCrossbar::ChainedCrossbar(std::initializer_list<PhysCrossbar> nbars) {
+    for (PhysCrossbar const &bar : nbars) {
+        this->bars.push_back(bar);
+    }
     for (auto &bar : bars | std::views::drop(1)) {
         bar.rows.clear();
         for (uint8_t i = 0; i < bar.rows.size(); i++) {
