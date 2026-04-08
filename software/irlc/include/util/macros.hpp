@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <array>
 
+typedef unsigned long long operator_t;
+
 template <class... Ts> struct overloads : Ts... {
     using Ts::operator()...;
 };
@@ -15,3 +17,5 @@ template <size_t N> struct StringLiteral {
 
     char value[N];
 };
+
+static inline size_t operator""_z(operator_t n) { return (size_t)n; }

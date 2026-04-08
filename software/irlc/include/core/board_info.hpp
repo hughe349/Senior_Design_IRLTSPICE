@@ -1,6 +1,7 @@
 #pragma once
 #include "core/netlist.hpp"
 #include "core/numbers.hpp"
+#include "util/macros.hpp"
 #include <array>
 #include <cstddef>
 #include <cstdint>
@@ -305,9 +306,9 @@ const SimpleTspiceInfo MAIN_BOARD = []() {
                                         },                                                         \
                                 }},                                                                \
                             std::array<std::array<std::pair<size_t, size_t>, 8>, 1>{std::array{    \
-                                std::pair(0ul, 4ul), std::pair(1ul, 5ul), std::pair(2ul, 6ul),     \
-                                std::pair(3ul, 7ul), std::pair(4ul, 0ul), std::pair(5ul, 1ul),     \
-                                std::pair(6ul, 2ul), std::pair(7ul, 3ul)}})                        \
+                                std::pair(0_z, 4_z), std::pair(1_z, 5_z), std::pair(2_z, 6_z),     \
+                                std::pair(3_z, 7_z), std::pair(4_z, 0_z), std::pair(5_z, 1_z),     \
+                                std::pair(6_z, 2_z), std::pair(7_z, 3_z)}})                        \
     }
 
     return SimpleTspiceInfo{
