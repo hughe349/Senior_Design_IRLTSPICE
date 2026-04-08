@@ -226,14 +226,12 @@ consteval RawNetlistRuleRef get_rule(const char *rule_name) {
     bool found_value = false;
     for (RawNetlistVertexRule const &vert_rule : RAW_VERTEX_RULES) {
         if (std::string(vert_rule.rule_name).compare(rule_name) == 0) {
-            return &vert_rule;
-            // found_value = true;
+            return RawNetlistRuleRef{&vert_rule};
         }
     }
     for (RawNetlistGraphRule const &graph_rule : RAW_GRAPH_RULES) {
         if (std::string(graph_rule.rule_name).compare(rule_name) == 0) {
-            return &graph_rule;
-            // found_value = true;
+            return RawNetlistRuleRef{&graph_rule};
         }
     }
 
@@ -243,7 +241,7 @@ consteval RawNetlistRuleRef get_rule(const char *rule_name) {
 // Asserts that a rule has been violated, so somehow the rule checker has failed or a rule was
 // improperly written.
 template <StringLiteral rule_name> void rule_failed() {
-    auto rule = get_rule(rule_name.value);
+    RawNetlistRuleRef rule = get_rule(rule_name.value);
     std::visit(
         [](auto r) {
             throw std::runtime_error(std::string("An assupmtion protected by rule \"") +
