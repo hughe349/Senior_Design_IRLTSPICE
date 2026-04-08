@@ -69,28 +69,58 @@ void setup_gpios(void) {
 void internal_clock()
 {
   /* Disable HSE to allow use of the GPIOs */
-  RCC->CR &= ~RCC_CR_HSEON;
-  /* Enable Prefetch Buffer and set Flash Latency */
-  FLASH->ACR = FLASH_ACR_PRFTBE | FLASH_ACR_LATENCY;
-  /* HCLK = SYSCLK */
-  RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
-  /* PCLK = HCLK */
-  RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE_DIV1;
-  /* PLL configuration = (HSI/2) * 12 = ~48 MHz */
-  RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLMUL));
-  RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSI_DIV2 | RCC_CFGR_PLLXTPRE_HSE_PREDIV_DIV1 | RCC_CFGR_PLLMUL12);
-  /* Enable PLL */
-  RCC->CR |= RCC_CR_PLLON;
-  /* Wait till PLL is ready */
-  while ((RCC->CR & RCC_CR_PLLRDY) == 0)
-    ;
-  /* Select PLL as system clock source */
-  RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
-  RCC->CFGR |= (uint32_t)RCC_CFGR_SW_PLL;
-  /* Wait till PLL is used as system clock source */
-  while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)RCC_CFGR_SWS_PLL)
-    ;
+  // RCC->CR &= ~RCC_CR_HSEON;
+  // /* Enable Prefetch Buffer and set Flash Latency */
+  // FLASH->ACR = FLASH_ACR_PRFTBE | FLASH_ACR_LATENCY;
+  // /* HCLK = SYSCLK */
+  // RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;
+  // /* PCLK = HCLK */
+  // RCC->CFGR |= (uint32_t)RCC_CFGR_PPRE_DIV1;
+  // /* PLL configuration = (HSI/2) * 12 = ~48 MHz */
+  // RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE | RCC_CFGR_PLLMUL));
+  // RCC->CFGR |= (uint32_t)(RCC_CFGR_PLLSRC_HSI_DIV2 | RCC_CFGR_PLLXTPRE_HSE_PREDIV_DIV1 | RCC_CFGR_PLLMUL12);
+  // /* Enable PLL */
+  // RCC->CR |= RCC_CR_PLLON;
+  // /* Wait till PLL is ready */
+  // while ((RCC->CR & RCC_CR_PLLRDY) == 0)
+  //   ;
+  // /* Select PLL as system clock source */
+  // RCC->CFGR &= (uint32_t)((uint32_t)~(RCC_CFGR_SW));
+  // RCC->CFGR |= (uint32_t)RCC_CFGR_SW_PLL;
+  // /* Wait till PLL is used as system clock source */
+  // while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)RCC_CFGR_SWS_PLL)
+  //   ;
 
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
+  */
+  FLASH->ACR = FLASH_ACR_PRFTBE | FLASH_ACR_LATENCY;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL12;
+  RCC_OscInitStruct.PLL.PREDIV = RCC_PREDIV_DIV2;
+  HAL_RCC_OscConfig(&RCC_OscInitStruct);
+  // if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  // {
+  //   Error_Handler();
+  // }
+
+  /** Initializes the CPU, AHB and APB buses clocks
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1);
+
+  while ((RCC->CFGR & (uint32_t)RCC_CFGR_SWS) != (uint32_t)RCC_CFGR_SWS_PLL);
   // fix hal timing
   SystemCoreClock = 48000000;
   HAL_InitTick(TICK_INT_PRIORITY);
