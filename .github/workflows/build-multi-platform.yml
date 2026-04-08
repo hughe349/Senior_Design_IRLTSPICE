@@ -23,6 +23,7 @@ jobs:
           - os: windows-latest
             build_type: Release
             c_compiler: msvc
+            build_subdir: Release
             cxx: msvc
 
           - os: ubuntu-latest
@@ -50,7 +51,7 @@ jobs:
       shell: bash
       run: |
         echo "source-dir=${{ github.workspace }}/software/irlc" >> "$GITHUB_OUTPUT"
-        echo "build-output-dir=${{ github.workspace }}/software/irlc/build" >> "$GITHUB_OUTPUT"
+        echo "build-output-dir=${{ github.workspace }}/software/irlc/build/${{ matrix.build_subdir }}" >> "$GITHUB_OUTPUT"
 
 
     # The following cache stuff taken from:
