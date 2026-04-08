@@ -55,7 +55,7 @@ jobs:
           echo "build-exe-subdir=${{ matrix.build_type }}/" >> "$GITHUB_OUTPUT"
           echo "exe-suffix=.exe" >> "$GITHUB_OUTPUT"
         else
-          echo "build-exe-subdir=${{ matrix.build_type }}/" >> "$GITHUB_OUTPUT"
+          echo "build-exe-subdir=" >> "$GITHUB_OUTPUT"
           echo "exe-suffix=" >> "$GITHUB_OUTPUT"
         fi
 
