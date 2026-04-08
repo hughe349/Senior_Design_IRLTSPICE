@@ -221,17 +221,17 @@ constexpr std::array RAW_VERTEX_RULES = {
     },
 };
 
-consteval RawNetlistRuleRef get_rule(const char *rule_name) {
+consteval bool rule_exists(const char *rule_name) {
     RawNetlistRuleRef value;
     bool found_value = false;
     for (RawNetlistVertexRule const &vert_rule : RAW_VERTEX_RULES) {
         if (std::string(vert_rule.rule_name).compare(rule_name) == 0) {
-            return RawNetlistRuleRef{&vert_rule};
+            return true;
         }
     }
     for (RawNetlistGraphRule const &graph_rule : RAW_GRAPH_RULES) {
         if (std::string(graph_rule.rule_name).compare(rule_name) == 0) {
-            return RawNetlistRuleRef{&graph_rule};
+            return true;
         }
     }
 
@@ -241,13 +241,11 @@ consteval RawNetlistRuleRef get_rule(const char *rule_name) {
 // Asserts that a rule has been violated, so somehow the rule checker has failed or a rule was
 // improperly written.
 template <StringLiteral rule_name> void rule_failed() {
-    RawNetlistRuleRef rule = get_rule(rule_name.value);
-    std::visit(
-        [](auto r) {
-            throw std::runtime_error(std::string("An assupmtion protected by rule \"") +
-                                     rule_name.value +
-                                     "\" has been violated, indicating a problem with irlc's "
-                                     "implementation. Please report this bug");
-        },
-        rule);
+    constexpr bool real_rule = rule_exists(rule_name.value);
+    if (real_rule) {
+        throw std::runtime_error(std::string("An assupmtion protected by rule \"") +
+                                 rule_name.value +
+                                 "\" has been violated, indicating a problem with irlc's "
+                                 "implementation. Please report this bug");
+    }
 }
