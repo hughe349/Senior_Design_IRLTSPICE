@@ -18,11 +18,11 @@ typedef enum {
   CD22M_SR
 } sr_t;
 
-sr_reset(sr_t sr);
-sr_set(sr_t sr, int data);
-sr_clock(sr_t sr);
-sr_start(sr_t sr);
-sr_shift_en(sr_t sr);
+void sr_reset(sr_t sr);
+void sr_set(sr_t sr, int data);
+void sr_clock(sr_t sr);
+void sr_start(sr_t sr);
+void sr_shift_en(sr_t sr);
 
 #ifdef __cplusplus
 }

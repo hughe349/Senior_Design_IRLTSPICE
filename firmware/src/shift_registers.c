@@ -1,7 +1,7 @@
 #include "shift_registers.h"
 #include "stm32f0xx_hal.h"
 
-sr_reset(sr_t sr) {
+void sr_reset(sr_t sr) {
   if (sr == BRUZ_SR) {
     // bruz is ~cs
     sr_set(sr, 1);
@@ -12,12 +12,12 @@ sr_reset(sr_t sr) {
   }
 }
 
-sr_set(sr_t sr, int data) {
+void sr_set(sr_t sr, int data) {
   if (sr == BRUZ_SR)  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, data);
   else                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, data);
 }
 
-sr_clock(sr_t sr) {
+void sr_clock(sr_t sr) {
   if (sr == BRUZ_SR) {
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, 1);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, 0);
@@ -27,7 +27,7 @@ sr_clock(sr_t sr) {
   }
 }
 
-sr_start(sr_t sr) {
+void sr_start(sr_t sr) {
   if (sr == BRUZ_SR) {
     sr_set(sr, 0);
     sr_clock(sr);
@@ -40,6 +40,6 @@ sr_start(sr_t sr) {
 
 }
 
-sr_shift_en(sr_t sr) {
+void sr_shift_en(sr_t sr) {
   sr_clock(sr);
 }
