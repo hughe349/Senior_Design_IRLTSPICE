@@ -13,16 +13,16 @@ extern "C"
 // void clock_bruz_sr(void);
 // void clock_cd22m_sr(void);
 
+typedef enum {
+  BRUZ_SR,
+  CD22M_SR
+} sr_t;
+
 sr_reset(sr_t sr);
 sr_set(sr_t sr, int data);
 sr_clock(sr_t sr);
 sr_start(sr_t sr);
 sr_shift_en(sr_t sr);
-
-typedef enum {
-  BRUZ_SR,
-  CD22M_SR
-} sr_t;
 
 #ifdef __cplusplus
 }
