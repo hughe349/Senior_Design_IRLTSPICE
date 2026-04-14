@@ -1,15 +1,14 @@
 #pragma once
 
-#include "boost/asio.hpp"
-#include "boost/asio/serial_port.hpp"
-#include "boost/outcome/result.hpp"
 #include "core/compiler.hpp"
 #include "core/route.hpp"
+#include <boost/asio.hpp>
+#include <boost/asio/serial_port.hpp>
+#include <boost/outcome/result.hpp>
 #include <cstdint>
 #include <memory>
 #include <optional>
 #include <ostream>
-#include <span>
 #include <stdexcept>
 #include <string_view>
 

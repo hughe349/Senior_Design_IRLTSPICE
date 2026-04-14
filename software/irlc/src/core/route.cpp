@@ -1,8 +1,3 @@
-#include "boost/graph/adjacency_list.hpp"
-#include "boost/graph/breadth_first_search.hpp"
-#include "boost/graph/properties.hpp"
-#include "boost/range/adaptor/indexed.hpp"
-#include "boost/range/iterator_range_core.hpp"
 #include "core/board_info.hpp"
 #include "core/compiler.hpp"
 #include "core/netlist.hpp"
@@ -11,6 +6,11 @@
 #include "util/boost_util.hpp"
 #include "util/macros.hpp"
 #include <algorithm>
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/breadth_first_search.hpp>
+#include <boost/graph/properties.hpp>
+#include <boost/range/adaptor/indexed.hpp>
+#include <boost/range/iterator_range_core.hpp>
 #include <cassert>
 #include <core/route.hpp>
 #include <cstddef>
