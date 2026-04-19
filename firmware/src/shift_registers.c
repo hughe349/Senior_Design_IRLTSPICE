@@ -8,6 +8,7 @@ void sr_reset(sr_t sr) {
     for (int i = 0; i < 8; i++) sr_clock(sr);
   } else {
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, 0);
+    HAL_Delay(1);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, 1);
   }
 }
@@ -20,9 +21,11 @@ void sr_set(sr_t sr, int data) {
 void sr_clock(sr_t sr) {
   if (sr == BRUZ_SR) {
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, 1);
+    HAL_Delay(1);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, 0);
   } else {
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, 1);
+    HAL_Delay(1);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, 0);
   }
 }

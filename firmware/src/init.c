@@ -12,8 +12,7 @@ void setup_spi(SPI_HandleTypeDef *hspi)
 
   // gpio config
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-  GPIO_InitStruct.Pin           = GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7 |
-                                  GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10;
+  GPIO_InitStruct.Pin           = GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7;
   GPIO_InitStruct.Mode          = GPIO_MODE_AF_PP;
   GPIO_InitStruct.Pull          = GPIO_NOPULL;
   GPIO_InitStruct.Speed         = GPIO_SPEED_FREQ_HIGH;
@@ -53,14 +52,16 @@ void setup_gpios(void) {
 
   __HAL_RCC_GPIOC_CLK_ENABLE();
   GPIO_InitTypeDef GPIOC_InitStruct = {0};
-  GPIOC_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
+  GPIOC_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10;
   GPIOC_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIOC_InitStruct.Pull = GPIO_NOPULL;
-  GPIOC_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  HAL_GPIO_Init(GPIOC, &GPIOC_InitStruct);
+  GPIOC_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIOC_InitStruct);
 
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, 1);  // active low resets
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, 1);
+
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, 1);
 }
 
 void internal_clock()
