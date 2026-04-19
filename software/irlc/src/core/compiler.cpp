@@ -1,7 +1,4 @@
 #include "core/compiler.hpp"
-#include "boost/system/detail/errc.hpp"
-#include "boost/system/detail/error_code.hpp"
-#include "boost/system/system_error.hpp"
 #include "core/board_info.hpp"
 #include "core/debug.hpp"
 #include "core/emit.hpp"
@@ -9,6 +6,9 @@
 #include "core/parse.hpp"
 #include "core/route.hpp"
 #include "core/verify.hpp"
+#include <boost/system/detail/errc.hpp>
+#include <boost/system/detail/error_code.hpp>
+#include <boost/system/system_error.hpp>
 #include <cstdint>
 #include <fstream>
 #include <iostream>
