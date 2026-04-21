@@ -19,14 +19,24 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Dependencies
 # ============
 
+# CPM
+# download CPM.cmake
+file(
+  DOWNLOAD
+  https://github.com/cpm-cmake/CPM.cmake/releases/download/v0.42.1/CPM.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake
+  EXPECTED_HASH SHA256=f3a6dcc6a04ce9e7f51a127307fa4f699fb2bade357a8eb4c5b45df76e1dc6a5
+)
+include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
+
 # Boost
 set(BOOST_INCLUDE_LIBRARIES graph program_options asio outcome)
-FetchContent_Declare(
-    Boost 
+CPMAddPackage(
+    NAME Boost 
+    VERSION 1.90.0
     URL https://github.com/boostorg/boost/releases/download/boost-1.90.0/boost-1.90.0-cmake.tar.xz
     URL_HASH SHA256=aca59f889f0f32028ad88ba6764582b63c916ce5f77b31289ad19421a96c555f
 )
-FetchContent_MakeAvailable(Boost)
 
 # =======
 # Targets
