@@ -7,9 +7,6 @@ on:
   pull_request:
     branches: [ "main", "software" ]
 
-env:
-  CPM_SOURCE_CACHE: $HOME/cpm-cache
-
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -54,6 +51,7 @@ jobs:
       run: |
         echo "source-dir=${{ github.workspace }}/software/irlc" >> "$GITHUB_OUTPUT"
         echo "build-output-dir=${{ github.workspace }}/software/irlc/build/" >> "$GITHUB_OUTPUT"
+        echo "cpm-dir=$HOME/cpm-cache" >> "$GITHUB_OUTPUT"
         if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
           echo "build-exe-subdir=${{ matrix.build_type }}/" >> "$GITHUB_OUTPUT"
           echo "exe-suffix=.exe" >> "$GITHUB_OUTPUT"
@@ -62,12 +60,16 @@ jobs:
           echo "exe-suffix=" >> "$GITHUB_OUTPUT"
         fi
 
+    - name: Set CPM dir
+      shell: bash
+      run: echo "CPM_SOURCE_CACHE=$HOME/cpm-cache" >> $GITHUB_ENV
+
     # First, cache downloaded deps
     - name: Set up cache
       id: cache-cpm
       uses: actions/cache@v4
       with:
-        path: ~/cpm-cache
+        path: ${{ env.CPM_SOURCE_CACHE }}
         key: ${{ runner.os }}-cpm-${{ hashFiles('**/') }}
         restore-keys: |
           ${{ runner.os }}-cpm-
