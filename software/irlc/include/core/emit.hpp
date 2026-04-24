@@ -95,4 +95,7 @@ class TspiceProgrammer {
     ProgrammingError::Result try_reset_board();
     // Sends stream of programming commands to the board, with timeouts
     ProgrammingError::Result send_stream(ProgrammingInfo const &prog_info);
+
+    // Sends a worst-case timing event (sends all connections + bruzzes)
+    ProgrammingError::Result send_worstcase(SimpleTspiceInfo const &board);
 };

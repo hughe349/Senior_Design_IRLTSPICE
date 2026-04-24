@@ -1,4 +1,6 @@
 #include "core/emit.hpp"
+#include "core/board_info.hpp"
+#include "core/route.hpp"
 #include "extern/uart_bytes.h"
 #include <boost/asio/buffer.hpp>
 #include <boost/asio/error.hpp>
@@ -14,7 +16,9 @@
 #include <ostream>
 #include <sstream>
 #include <stdexcept>
+#include <unordered_set>
 #include <utility>
+#include <variant>
 #include <vector>
 
 using namespace boost;
@@ -263,4 +267,51 @@ SerialWrapper::SerialWrapper(bool do_log, std::ostream &log_fd, std::string_view
     context->port.set_option(
         asio::serial_port::flow_control(asio::serial_port::flow_control::none));
     context->port.set_option(asio::serial_port::stop_bits(asio::serial_port::stop_bits::one));
+}
+
+ProgrammingError::Result TspiceProgrammer::send_worstcase(SimpleTspiceInfo const &board) {
+    ProgrammingInfo proginfo;
+
+    auto add_all_conns = [&](PhysCrossbar const &bar) {
+        for (int r = 0; r < bar.rows.size(); r++) {
+            for (int c = 0; c < bar.cols.size(); c++) {
+                proginfo.connections.push_back(CrossbarCon{.crossbar_id = bar.id,
+                                                           .row = static_cast<uint8_t>(r),
+                                                           .col = static_cast<uint8_t>(c)});
+            }
+        }
+    };
+
+    std::unordered_set<decltype(((ComponentColCon *)0)->id)> r_ids;
+
+    for (auto const &bar : board.root.bars) {
+        add_all_conns(bar);
+    }
+    for (auto const &cell : board.cells) {
+        for (auto const &bar : cell.crossbars.bars) {
+            add_all_conns(bar);
+            for (auto const &col : bar.cols) {
+                ComponentColCon const *con = std::get_if<ComponentColCon>(&col);
+                if (con && con->kind == R && !r_ids.contains(con->id)) {
+                    r_ids.insert(con->id);
+                    proginfo.resistances.push_back(QuantizedResistance{
+                        .resistor_id = static_cast<uint8_t>(con->id), .value = 0x00});
+                }
+            }
+        }
+    }
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    auto r = this->send_stream(proginfo);
+
+    auto stop = std::chrono::high_resolution_clock::now();
+
+    if (r.has_failure()) {
+        return r;
+    }
+
+    auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+    compiler.log_fd << "Time taken: " << duration.count() << " microseconds" << std::endl;
+    return r;
 }

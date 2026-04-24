@@ -136,7 +136,12 @@ int IrlCompiler::invoke() {
             return -1;
         }
         TspiceProgrammer programmer(std::move(serial), *this);
-        ProgrammingError::Result r = programmer.send_stream(prog_info);
+        ProgrammingError::Result r = success_t{};
+        if (opts.do_worstcase) {
+            r = programmer.send_worstcase(MAIN_BOARD);
+        } else {
+            r = programmer.send_stream(prog_info);
+        }
         if (!r) {
             throw r.error();
         }

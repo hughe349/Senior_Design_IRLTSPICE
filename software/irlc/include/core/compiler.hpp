@@ -63,6 +63,7 @@ typedef enum unspecified_t { UNSPECIFIED } unspecified_t;
               PROGRAMMING)                                                                         \
     TYPED_OPT(serial_timeout, "", size_t, 100, "Timeout (ms) for board (default = 100)",           \
               PROGRAMMING)                                                                         \
+    FLAG_OPT(do_worstcase, "", "Do worst case and time it. NOT FOR NORMAL USERS", PROGRAMMING)     \
     FLAG_OPT(verbose, "v", "SUPER VERBOSE. Enable all verbose flags", GENERAL)
 
 struct IrlCompilerOptions {
