@@ -6361,7 +6361,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Package_DIP:DIP-40_W15.24mm"
+		(property "Footprint" "Package_DIP:DIP-40_W15.24mm_LongPads"
 			(at 151.13 121.92 0)
 			(effects
 				(font
@@ -6775,7 +6775,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Package_DIP:DIP-40_W15.24mm"
+		(property "Footprint" "Package_DIP:DIP-40_W15.24mm_LongPads"
 			(at 214.63 123.19 0)
 			(effects
 				(font
