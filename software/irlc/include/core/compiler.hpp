@@ -44,6 +44,7 @@ typedef enum unspecified_t { UNSPECIFIED } unspecified_t;
     FLAG_OPT(version, "", "Print version and exit", GENERAL)                                       \
     TYPED_OPT(INFILE_OPT, "", std::optional<std::string>, std::nullopt,                            \
               "Input spice file to compile", GENERAL)                                              \
+    FLAG_OPT(do_timing, "", "Time all stages and print results", GENERAL)                          \
     FLAG_OPT(show_components, "", "List the references + values of recognized components", INFO)   \
     FLAG_OPT(show_nets, "", "List special nets and their recognized names", INFO)                  \
     FLAG_OPT(verbose_lex, "", "Enable verbose netlist lexing (tokenizing)", PARSING)               \

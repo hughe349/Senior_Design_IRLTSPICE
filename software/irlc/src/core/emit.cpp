@@ -10,10 +10,14 @@
 
 #include <boost/asio.hpp>
 
+#include <chrono>
 #include <cstdint>
+#include <cstdio>
 #include <cstring>
+#include <iostream>
 #include <optional>
 #include <ostream>
+#include <set>
 #include <sstream>
 #include <stdexcept>
 #include <unordered_set>
@@ -70,9 +74,21 @@ Result TspiceProgrammer::send_stream(ProgrammingInfo const &prog_info) {
             return r;
     }
 
-    for (auto const &connection : prog_info.connections) {
-        buffer.push_back(init_instr(START_CB, connection.crossbar_id));
-        buffer.push_back(init_connetion(connection.col, connection.row));
+    std::unordered_set<decltype(prog_info.connections[0].crossbar_id)> crossbars;
+
+    for (auto connection_begin = prog_info.connections.begin();
+         connection_begin != prog_info.connections.end(); ++connection_begin) {
+        if (crossbars.contains(connection_begin->crossbar_id)) {
+            continue;
+        }
+        crossbars.insert(connection_begin->crossbar_id);
+        buffer.push_back(init_instr(START_CB, connection_begin->crossbar_id));
+        for (auto connection = connection_begin; connection != prog_info.connections.end();
+             ++connection) {
+            if (connection->crossbar_id != connection_begin->crossbar_id)
+                continue;
+            buffer.push_back(init_connetion(connection->col, connection->row));
+        }
         buffer.push_back(END_CB);
         r = serial->send(asio::buffer(buffer));
         if (!r)
@@ -84,6 +100,20 @@ Result TspiceProgrammer::send_stream(ProgrammingInfo const &prog_info) {
         if (!r)
             return r;
     }
+    // for (auto const &connection : prog_info.connections) {
+    //     buffer.push_back(init_instr(START_CB, connection.crossbar_id));
+    //     buffer.push_back(init_connetion(connection.col, connection.row));
+    //     buffer.push_back(END_CB);
+    //     r = serial->send(asio::buffer(buffer));
+    //     if (!r)
+    //         return r;
+    //     buffer.clear();
+    //     buffer.push_back(RETURN_TO_CONFIG);
+    //     r = serial->read_expecting(asio::buffer(buffer));
+    //     buffer.clear();
+    //     if (!r)
+    //         return r;
+    // }
 
     if (compiler.opts.should_verbose_parse())
         compiler.log_fd << "END!" << std::endl;
@@ -91,6 +121,12 @@ Result TspiceProgrammer::send_stream(ProgrammingInfo const &prog_info) {
     buffer.clear();
     buffer.push_back(END_CONFIG);
     r = serial->send(asio::buffer(buffer));
+    if (!r)
+        return r;
+
+    buffer.clear();
+    buffer.push_back(CONFIG_SUCCESS);
+    r = serial->read_expecting(asio::buffer(buffer));
     if (!r)
         return r;
 
@@ -311,7 +347,7 @@ ProgrammingError::Result TspiceProgrammer::send_worstcase(SimpleTspiceInfo const
         return r;
     }
 
-    auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     compiler.log_fd << "Time taken: " << duration.count() << " microseconds" << std::endl;
     return r;
 }

@@ -20,6 +20,20 @@ using namespace std;
 
 int IrlCompiler::invoke() {
 
+    auto start = std::chrono::high_resolution_clock::now();
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto start_clock = [&]() {
+        if (opts.do_timing)
+            start = std::chrono::high_resolution_clock::now();
+    };
+    auto stop_clock = [&](auto const &segment) {
+        if (opts.do_timing) {
+            stop = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+            log_fd << "Segment: " << segment << ", took: " << duration.count() << " microseconds\n";
+        }
+    };
+
     int info_count = print_info();
     if (info_count != 0) {
         return 0;
@@ -41,6 +55,7 @@ int IrlCompiler::invoke() {
     auto parsers = AllParsersFactory().make_parsers_prioritized(*opts.input_file, *this);
 
     unique_ptr<RawNetlist> netlist(nullptr);
+    start_clock();
     for (const unique_ptr<INetlistParser> &parser : parsers) {
         if (opts.should_verbose_parse()) {
             log_fd << "Attempting parser: " << parser->parser_name() << "\n";
@@ -54,6 +69,7 @@ int IrlCompiler::invoke() {
             log_error("Unknown error occured parsing.");
         }
     }
+    stop_clock("parse");
 
     if (netlist == nullptr) {
         log_error("Failed to parse input file: " + *opts.input_file);
@@ -65,6 +81,7 @@ int IrlCompiler::invoke() {
     }
     SimpleTspiceRouter router(*this, MAIN_BOARD);
 
+    start_clock();
     router.prune_unconnected_nets(*netlist);
 
     if (opts.should_verbose_final_netlist()) {
@@ -105,7 +122,9 @@ int IrlCompiler::invoke() {
     } catch (...) {
         log_error("Unknown error occured parsing.");
     }
+    stop_clock("route");
 
+    start_clock();
     if (opts.do_programming) {
         std::unique_ptr<SerialWrapper> serial = nullptr;
         if (opts.serial_port.has_value()) {
@@ -146,6 +165,7 @@ int IrlCompiler::invoke() {
             throw r.error();
         }
     }
+    stop_clock("program");
 
     return 0;
 }
