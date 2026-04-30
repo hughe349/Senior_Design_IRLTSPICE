@@ -9,6 +9,8 @@ extern "C" {
 #include "stm32f0xx_hal_spi.h"
 #include <stdint.h>
 
+void program_bruz(uint8_t bruz_num, uint8_t addr, uint8_t res, SPI_HandleTypeDef *hspi);
+void program_pot(uint8_t pot_num, uint8_t addr, uint8_t res, SPI_HandleTypeDef *hspi);
 void set_resistance(uint8_t addr, uint8_t res, SPI_HandleTypeDef *hspi);
 void config_pots(uint8_t *pot_resistances, SPI_HandleTypeDef *hspi);
 void reset_pots(void);

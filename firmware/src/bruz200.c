@@ -18,7 +18,46 @@ uint8_t pot_order[24] = {
   10, 11, 22, 23
 };
 
+uint8_t bruz_order[8] = {
+  0, 4, 1, 5, 2, 6, 3, 7
+};
+
 #define NUM_OF_POTS 24
+
+void program_pot(uint8_t pot_num, uint8_t addr, uint8_t res, SPI_HandleTypeDef *hspi) {
+  uint8_t bruz_num;
+
+  /*
+  0-3   -> 0
+  4-5   -> 1
+  6-9   -> 2
+  10-11 -> 3
+  12-15 -> 4
+  16-17 -> 5
+  18-21 -> 6
+  22-23 -> 7
+  */
+
+  if ((pot_num % 6) < 4) {
+    bruz_num = (pot_num / 6) * 2;
+  } else {
+    bruz_num = ((pot_num / 6) * 2) + 1;
+  }
+
+  program_bruz(bruz_num, addr, res, hspi);
+
+}
+
+void program_bruz(uint8_t bruz_num, uint8_t addr, uint8_t res, SPI_HandleTypeDef *hspi) {
+  sr_start(BRUZ_SR);
+
+  for (int i = 0; i < 7; i++ ) {
+    if (bruz_order[i] != bruz_num) { sr_clock(BRUZ_SR); }
+    else { break; }
+  }
+
+  sr_reset(BRUZ_SR);
+}
 
 void set_resistance(uint8_t addr, uint8_t res, SPI_HandleTypeDef *hspi) {
   uint8_t tx[2];
@@ -44,7 +83,7 @@ void config_pots(uint8_t *pot_resistances, SPI_HandleTypeDef *hspi) {
   for (int i = 0; i < NUM_OF_POTS; i++) {
 
     uint8_t pot_index = pot_order[i] % 6;
-    if (pot_index < 3) {
+    if (pot_index <= 3) {
       // 0 -> 0, 1 -> 1, 2 -> 2, 3 -> 3
       set_resistance(pot_index, pot_resistances[pot_order[i]], hspi);
     } else {
