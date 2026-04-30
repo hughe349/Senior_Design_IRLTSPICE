@@ -8,6 +8,10 @@
 #include <ranges>
 #include <set>
 #include <span>
+#include <sstream>
+#include <stdexcept>
+#include <string_view>
+#include <unordered_map>
 #include <variant>
 #include <vector>
 
@@ -161,21 +165,20 @@ typedef struct SimpleTspiceInfo {
 bool validate_simple_tspice(SimpleTspiceInfo const &board);
 
 // Board defs
+#define ROOT_BAR 0
+#define CELL_0_BAR_0 1
+#define CELL_0_BAR_1 2
+#define CELL_1_BAR_0 3
+#define CELL_1_BAR_1 4
+#define CELL_2_BAR_0 5
+#define CELL_2_BAR_1 6
+#define CELL_3_BAR_0 7
+#define CELL_3_BAR_1 8
 
 const SimpleTspiceInfo MAIN_BOARD = []() {
     uint8_t i = 0;
     auto uniquie = [&i]() { return --i; };
     auto prev = [&i]() { return i; };
-
-    const auto ROOT_BAR = 0;
-    const auto CELL_0_BAR_0 = 1;
-    const auto CELL_0_BAR_1 = 2;
-    const auto CELL_1_BAR_0 = 3;
-    const auto CELL_1_BAR_1 = 4;
-    const auto CELL_2_BAR_0 = 5;
-    const auto CELL_2_BAR_1 = 6;
-    const auto CELL_3_BAR_0 = 7;
-    const auto CELL_3_BAR_1 = 8;
 
     // One of the macros of all time
 #define STD_CELL(CELL_ID, FIRST_R, C1, C2, C3)                                                     \
@@ -349,6 +352,75 @@ const SimpleTspiceInfo MAIN_BOARD = []() {
                                           STD_CELL(2, 11, 14, 15, 6), STD_CELL(3, 17, 7, 8, 9)},
         .valid_caps = std::set{1_n, 10_n, 100_n, 1_u}};
 }();
+
+const SimpleTspiceInfo MINIMAL_MAIN = []() {
+    uint8_t i = 0;
+    auto uniquie = [&i]() { return --i; };
+    auto prev = [&i]() { return i; };
+
+    auto out =
+        SimpleTspiceInfo{.root = ChainedCrossbar({PhysCrossbar{
+                             .id = ROOT_BAR,
+                             .rows =
+                                 std::vector<RowCon>{
+                                     SpecialNetCon{.kind = V_HIGH},
+                                     FloatingCon{},
+                                     SpecialNetCon{.kind = V_NEG},
+                                     FloatingCon{},
+                                     // BufferOutputRowCon{.id = 3},
+                                     SpecialNetCon{.kind = CIR_INPUT},
+                                     FloatingCon{},
+                                     // BufferOutputRowCon{.id = 0},
+                                     FloatingCon{},
+                                     // BufferOutputRowCon{.id = 1},
+                                     BufferOutputRowCon{.id = 0},
+                                 },
+                             .cols =
+                                 std::vector<ColCon>{
+                                     FloatingCon{},
+                                     FloatingCon{},
+                                     FloatingCon{},
+                                     // RoutableColCon{.child_id = CELL_0_BAR_0, .child_row = 2},
+                                     // RoutableColCon{.child_id = CELL_0_BAR_0, .child_row = 1},
+                                     // RoutableColCon{.child_id = CELL_0_BAR_0, .child_row = 0},
+                                     FloatingCon{},
+                                     FloatingCon{},
+                                     FloatingCon{},
+                                     // RoutableColCon{.child_id = CELL_1_BAR_0, .child_row = 2},
+                                     // RoutableColCon{.child_id = CELL_1_BAR_0, .child_row = 1},
+                                     // RoutableColCon{.child_id = CELL_1_BAR_0, .child_row = 0},
+                                     RoutableColCon{.child_id = CELL_2_BAR_0, .child_row = 2},
+                                     FloatingCon{},
+                                     FloatingCon{},
+                                     FloatingCon{},
+                                     // RoutableColCon{.child_id = CELL_3_BAR_0, .child_row = 0},
+                                     // RoutableColCon{.child_id = CELL_3_BAR_0, .child_row = 1},
+                                     // RoutableColCon{.child_id = CELL_3_BAR_0, .child_row = 2},
+                                     SpecialNetCon{.kind = CIR_OUTPUT},
+                                     FloatingCon{},
+                                     FloatingCon{},
+                                     FloatingCon{},
+                                     RoutableColCon{.child_id = CELL_2_BAR_0, .child_row = 0},
+                                     RoutableColCon{.child_id = CELL_2_BAR_0, .child_row = 1},
+                                 },
+                         }}),
+                         .cells = std::vector<PhysStdCell>{STD_CELL(2, 11, 14, 15, 6)},
+                         .valid_caps = std::set{1_n, 10_n, 100_n, 1_u}};
+
+    // Hack
+    out.cells[0].id = 0;
+    return out;
+}();
+
+static inline const SimpleTspiceInfo *get_board_info_by_name(std::string_view name) {
+    if (name == "MAIN_BOARD") {
+        return &MAIN_BOARD;
+    } else if (name == "MINIMAL_MAIN") {
+        return &MINIMAL_MAIN;
+    } else {
+        throw std::runtime_error((std::ostringstream() << "No board with name: " << name).str());
+    }
+}
 
 template <size_t N_BARS, size_t N_ROWS>
 inline ChainedCrossbar::ChainedCrossbar(

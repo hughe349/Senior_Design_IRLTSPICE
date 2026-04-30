@@ -76,10 +76,17 @@ int IrlCompiler::invoke() {
         return -1;
     }
 
-    if (!validate_simple_tspice(MAIN_BOARD)) {
+    if (opts.should_verbose_cell_assign()) {
+        log_fd << "Parsing done\n";
+    }
+    const SimpleTspiceInfo &active_board = *get_board_info_by_name(opts.board);
+    if (!validate_simple_tspice(active_board)) {
         throw runtime_error("Bro we fucked up so bad oh jeez man this is bad :(");
     }
-    SimpleTspiceRouter router(*this, MAIN_BOARD);
+    if (opts.should_verbose_cell_assign()) {
+        log_fd << "Valid board\n";
+    }
+    SimpleTspiceRouter router(*this, active_board);
 
     start_clock();
     router.prune_unconnected_nets(*netlist);
@@ -99,7 +106,7 @@ int IrlCompiler::invoke() {
 
     unique_ptr<AssignedNetlist> assigned;
     if (opts.should_verbose_cell_assign()) {
-        log_fd << "Attempting assignment";
+        log_fd << "Attempting assignment\n";
     }
 
     try {
@@ -157,7 +164,7 @@ int IrlCompiler::invoke() {
         TspiceProgrammer programmer(std::move(serial), *this);
         ProgrammingError::Result r = success_t{};
         if (opts.do_worstcase) {
-            r = programmer.send_worstcase(MAIN_BOARD);
+            r = programmer.send_worstcase(active_board);
         } else {
             r = programmer.send_stream(prog_info);
         }

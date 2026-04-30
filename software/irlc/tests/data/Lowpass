@@ -1,0 +1,5 @@
+Lowpass
+
+R1 INPUT cout 10k
+C1 cout GND 1u
+U1 OUTPUT cout IRL_BUFFER

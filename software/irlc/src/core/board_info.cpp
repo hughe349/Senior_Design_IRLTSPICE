@@ -138,6 +138,9 @@ bool validate_simple_tspice(SimpleTspiceInfo const &board) {
             if (!isgood) {
                 cout << "Bad row: " << (uint32_t)id_barptr_pair.first << ", " << rowid << "\n";
                 return false;
+            } else {
+                continue;
+                cout << "Good row: " << (uint32_t)id_barptr_pair.first << ", " << rowid << "\n";
             }
         }
         for (auto &colcon : id_barptr_pair.second->cols) {
@@ -173,6 +176,9 @@ bool validate_simple_tspice(SimpleTspiceInfo const &board) {
             if (!isgood) {
                 cout << "Bad col: " << (uint32_t)id_barptr_pair.first << ", " << colid << "\n";
                 return false;
+            } else {
+                continue;
+                cout << "Good col: " << (uint32_t)id_barptr_pair.first << ", " << colid << "\n";
             }
         }
     }

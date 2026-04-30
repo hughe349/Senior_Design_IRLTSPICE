@@ -476,6 +476,8 @@ ProgrammingInfo SimpleTspiceRouter::do_routing(unique_ptr<AssignedNetlist> &assi
             if (std::holds_alternative<BufferInputRowCon>(row)) {
                 // No for-else in c++ hence goto. Also no enumerate hence the pointer arithmetic.
                 // dogshit language.
+                if (compiler.opts.should_verbose_connections())
+                    compiler.log_fd << "Found output!\n";
                 assert(free_cells[i][row_i]);
                 netmap[cell.pre_buffer_output_net] = row_i;
                 free_cells[i][row_i] = false;
@@ -484,6 +486,8 @@ ProgrammingInfo SimpleTspiceRouter::do_routing(unique_ptr<AssignedNetlist> &assi
         }
         throw RoutingError(i, "No output row on crossbar");
     found_output:
+        if (compiler.opts.should_verbose_connections())
+            compiler.log_fd << "Looking for inputs\n";
         // Priority 2 is cell inputs.
         for (pair<RawVert, CellInputId> const &input : cell.input_nets) {
             bool we_good = std::visit(

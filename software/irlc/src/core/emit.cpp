@@ -126,6 +126,8 @@ Result TspiceProgrammer::send_stream(ProgrammingInfo const &prog_info) {
 
     buffer.clear();
     buffer.push_back(CONFIG_SUCCESS);
+    for (int i = 0; i < 100; i++)
+        buffer.push_back(0);
     r = serial->read_expecting(asio::buffer(buffer));
     if (!r)
         return r;
