@@ -83,6 +83,8 @@ void reset_pots(void) {
 
 void config_pots(uint8_t *pot_resistances, SPI_HandleTypeDef *hspi) {
   for (int i = 0; i < NUM_OF_POTS; i++) {
-    program_pot(i, pot_resistances[i], hspi);
+    if (pot_resistances[i] > 0) {
+      program_pot(i, pot_resistances[i], hspi);
+    }
   }
 }
