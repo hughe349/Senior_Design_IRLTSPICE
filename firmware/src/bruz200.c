@@ -18,6 +18,8 @@ uint8_t pot_order[24] = {
   10, 11, 22, 23
 };
 
+#define NUM_OF_POTS 24
+
 void set_resistance(uint8_t addr, uint8_t res, SPI_HandleTypeDef *hspi) {
   uint8_t tx[2];
 
@@ -26,6 +28,8 @@ void set_resistance(uint8_t addr, uint8_t res, SPI_HandleTypeDef *hspi) {
   tx[0] = (uint8_t)(res << RES_OFFSET);
   tx[1] = (uint8_t)(addr & ADDR_MASK);
   HAL_SPI_Transmit(hspi, tx, 1, TRANSMIT_DELAY);
+
+  // while (hspi->State == HAL_SPI_STATE_BUSY_TX);
 }
 
 void reset_pots(void) {
@@ -49,7 +53,7 @@ void config_pots(uint8_t *pot_resistances, SPI_HandleTypeDef *hspi) {
     }
 
     // if we reach the end of an enable bit
-    if (pot_index == 3 | pot_index == 5) {
+    if ((pot_index == 3) | (pot_index == 5)) {
       sr_shift_en(BRUZ_SR);
     }
   }

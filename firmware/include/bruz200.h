@@ -9,8 +9,6 @@ extern "C" {
 #include "stm32f0xx_hal_spi.h"
 #include <stdint.h>
 
-#define NUM_OF_POTS 24
-
 void set_resistance(uint8_t addr, uint8_t res, SPI_HandleTypeDef *hspi);
 void config_pots(uint8_t *pot_resistances, SPI_HandleTypeDef *hspi);
 void reset_pots(void);

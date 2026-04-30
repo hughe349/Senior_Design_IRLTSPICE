@@ -32,13 +32,13 @@ void disable_connection(uint8_t x_pin, uint8_t y_pin) {
 }
 
 void reset_crossbars(void) {
-  GPIOB->ODR |= 0x0040;
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, 1);
   HAL_Delay(1);
-  GPIOB->ODR &= ~(0x0040);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, 0);
 }
 
 void strobe_crossbars(void) {
   GPIOB->ODR |= 0x0080;
-  HAL_Delay(1);
+  HAL_Delay(10);
   GPIOB->ODR &= ~(0x0080);
 }
