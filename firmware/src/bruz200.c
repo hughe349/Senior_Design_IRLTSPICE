@@ -24,15 +24,16 @@ uint8_t bruz_order[8] = {
 
 #define NUM_OF_POTS 24
 
-void program_pot(uint8_t pot_num, uint8_t addr, uint8_t res, SPI_HandleTypeDef *hspi) {
+void program_pot(uint8_t pot_num, uint8_t res, SPI_HandleTypeDef *hspi) {
   uint8_t bruz_num;
+  uint8_t addr;
 
   /*
-  0-3   -> 0
-  4-5   -> 1
-  6-9   -> 2
-  10-11 -> 3
-  12-15 -> 4
+  0-3   -> 0, 0-3
+  4-5   -> 1, 0/2
+  6-9   -> 2  0-3
+  10-11 -> 3  0/2
+  12-15 -> 4  ...
   16-17 -> 5
   18-21 -> 6
   22-23 -> 7
@@ -40,8 +41,10 @@ void program_pot(uint8_t pot_num, uint8_t addr, uint8_t res, SPI_HandleTypeDef *
 
   if ((pot_num % 6) < 4) {
     bruz_num = (pot_num / 6) * 2;
+    addr = (pot_num % 6);
   } else {
     bruz_num = ((pot_num / 6) * 2) + 1;
+    addr = ((pot_num % 6) * 2) + 1;
   }
 
   program_bruz(bruz_num, addr, res, hspi);
