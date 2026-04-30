@@ -16,8 +16,8 @@ void setup_blinker(void);
 void send_array(uint8_t *data, uint32_t size);
 // void send_string(char *str);
 
-#define SINGLE_CELL
-// #define REAL_BOARD
+// #define SINGLE_CELL
+#define REAL_BOARD
 
 #define WAIT_FOR_UART_TX while (!(USART5->ISR & USART_ISR_TXE))
 #ifdef REAL_BOARD
@@ -27,7 +27,7 @@ void send_array(uint8_t *data, uint32_t size);
 #ifdef SINGLE_CELL
   uint8_t x_addr_single_cell[16] = {0, 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 6, 7, 14, 15};
 
-  static void program_pot(int bruz_num, int pot_num, uint8_t res, SPI_HandleTypeDef *hspi);
+  static void program_single_cell_pot(int bruz_num, int pot_num, uint8_t res, SPI_HandleTypeDef *hspi);
   static void enable_single_cell_connection(int cd22m_num, uint8_t x_pin, uint8_t y_pin);
   static void setup_single_cell_gpios(void);
   static void reset_single_cell_cd22m(void);
@@ -71,16 +71,58 @@ int main(void)
   reset_crossbars();
   reset_pots();
 
-  // while (true) {
-  //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
-  //   HAL_Delay(500);
+  sr_start(CD22M_SR);
+  enable_connection(14,4);
+  // for (int i = 0; i < NUM_OF_CROSSBARS; i++) {
+  //   for (int j = 0; j < NUM_OF_CROSSBAR_CONS; j++) {
+  //     if (crossbar_cons[crossbar_order[i]][j]) {
+  //       enable_connection(get_x(j), get_y(j));
+  //     }
+  //   }
+  // Shift twice = cell 2 bar 1
+  // Y4 is input
+  sr_shift_en(CD22M_SR);
+  sr_shift_en(CD22M_SR);
+  // enable_connection(14,0);
+  // Divider
+  // enable_connection(6,4);
+  // enable_connection(7,7);
+  // enable_connection(8,7);
+  // enable_connection(9,0);
 
-  //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
-  //   HAL_Delay(500);
+  // IDK
+  // enable_connection(1,4);
+  // enable_connection(0,7);
+  // enable_connection(2,7);
 
-  // }
+  // Inverting amp
+  // enable_connection(6,4);
+  // enable_connection(7,3);
+  // enable_connection(2,3);
+  // enable_connection(8,3);
+  // enable_connection(1,0);
+  // enable_connection(9,7);
+  // enable_connection(0,7);
 
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
+  sr_shift_en(CD22M_SR);
+  sr_shift_en(CD22M_SR);
+  sr_shift_en(CD22M_SR);
+  sr_shift_en(CD22M_SR);
+  sr_shift_en(CD22M_SR);
+  // At 7 now
+  enable_connection(0,0);
+
+
+  while (true) {
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
+    HAL_Delay(500);
+
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
+    HAL_Delay(500);
+
+  }
+
+  // HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
 
   // sr_set(CD22M_SR, 0);
   // sr_reset(CD22M_SR);
@@ -107,7 +149,7 @@ int main(void)
   // }
   // sr_set(CD22M_SR, 1);
 
-  // while (true);
+  while (true);
 
   while (true) {  
 
@@ -286,13 +328,13 @@ int main(void)
 
   enable_single_cell_connection(0, 14, 0);
   enable_single_cell_connection(0, 15, 1);
-  enable_single_cell_connection(0, 0, 1);
-  enable_single_cell_connection(0, 1, 4);
+  enable_single_cell_connection(0, 10, 1);
+  enable_single_cell_connection(0, 11, 4);
 
-  program_pot(0, 0, 96, &hspi);
-  program_pot(0, 1, 96, &hspi);
-  program_pot(0, 2, 96, &hspi);
-  program_pot(0, 3, 96, &hspi);
+  program_single_cell_pot(0, 0, 96, &hspi);
+  program_single_cell_pot(0, 1, 96, &hspi);
+  program_single_cell_pot(0, 2, 96, &hspi);
+  program_single_cell_pot(0, 3, 96, &hspi);
 
   // enable_connection(6, 1);
 
@@ -305,7 +347,7 @@ int main(void)
   // enable_connection(0, 2);
   // enable_connection(11, 2);
 
-  // program_pot(0, 1, 96, &hspi);
+  // program_single_cell_pot(0, 1, 96, &hspi);
   
   // void set_resistance(uint8_t addr, uint8_t res, SPI_HandleTypeDef *hspi)
   // addr 0 -> wiper 1
@@ -358,7 +400,8 @@ void setup_blinker(void) {
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
 }
 
-static void program_pot (int bruz_num, int pot_num, uint8_t res, SPI_HandleTypeDef *hspi) {
+#ifdef SINGLE_CELL
+static void program_single_cell_pot (int bruz_num, int pot_num, uint8_t res, SPI_HandleTypeDef *hspi) {
   if (bruz_num == 0) HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, 0);
   else               HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 0);
 
@@ -436,6 +479,7 @@ static void setup_single_cell_gpios(void) {
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, 0);
 
 }
+#endif
 
 // for (int i = 0; i < NUM_OF_CROSSBARS; i++) {
 //   WAIT_FOR_UART_TX;
