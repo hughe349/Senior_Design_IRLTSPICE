@@ -53,7 +53,6 @@ int main(void)
   uint8_t crossbar_cons[NUM_OF_CROSSBARS][NUM_OF_CROSSBAR_CONS] = {0};
   uint8_t pot_resistances[NUM_OF_POTS] = {0};
   uint8_t rx;
-  // instruction_t instruction;
 
   uint8_t cur_cb;
   uint8_t cur_pot;
@@ -118,27 +117,6 @@ int main(void)
   // sr_reset(CD22M_SR);
   // sr_start(CD22M_SR);
 
-  // while (true) {
-
-  //   HAL_Delay(5000);
-  //   enable_connection(1, 1);
-  //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);
-
-  //   HAL_Delay(5000);
-  //   disable_connection(1, 1);
-  //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);
-
-  // }
-  // for (int i = 0; i < 5; i++) { 
-  //   sr_clock(CD22M_SR);
-  //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
-  //   HAL_Delay(1000);
-  //   sr_clock(CD22M_SR);
-  //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
-  //   HAL_Delay(1000);
-  // }
-  // sr_set(CD22M_SR, 1);
-
   while (true);
 
   while (true) {  
@@ -150,16 +128,6 @@ int main(void)
     if (state == IDLE) {
       HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
     }
-
-    // reset_crossbars();
-    // while (true) { 
-    //   if (USART5->ISR & USART_ISR_RXNE) {
-    //     WAIT_FOR_UART_TX;
-    //     USART5->TDR = USART5->RDR;
-    //   }
-
-    // }
-
 
     if ((USART5->ISR & USART_ISR_RXNE)) {
       HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
@@ -315,53 +283,16 @@ int main(void)
   // enable_connection(11, 4);
 
   /* high pass */
-
   enable_single_cell_connection(0, 14, 0);
   enable_single_cell_connection(0, 15, 1);
   enable_single_cell_connection(0, 10, 1);
   enable_single_cell_connection(0, 11, 4);
 
+  /* testing pots */
   program_single_cell_pot(0, 0, 96, &hspi);
   program_single_cell_pot(0, 1, 96, &hspi);
   program_single_cell_pot(0, 2, 96, &hspi);
   program_single_cell_pot(0, 3, 96, &hspi);
-
-  // enable_connection(6, 1);
-
-  // enable_connection(7, 3);
-  // enable_connection(1, 3);
-  // enable_connection(10, 3);
-
-  // enable_connection(2, 4);
-
-  // enable_connection(0, 2);
-  // enable_connection(11, 2);
-
-  // program_single_cell_pot(0, 1, 96, &hspi);
-  
-  // void set_resistance(uint8_t addr, uint8_t res, SPI_HandleTypeDef *hspi)
-  // addr 0 -> wiper 1
-  // addr 3 -> wiper 4
-  // 128 == 200k, 0 = 1k
-  // &hspi
-
-  // ncs = 0
-  // set_resistance(uint8_t addr, uint8_t res, SPI_HandleTypeDef *hspi);
-  // ncs = 1
-  
-
-
-  // enable_connection(8, 0);
-  // enable_connection(9, 4);
-  // enable_connection(10, 1);
-  // enable_connection(11, 4);
-
-  // HAL_Delay(5000);
-  // enable_connection(8, 0);
-
-
-  // enable_connection(2, 0);
-
 
   while(true) {
     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);
