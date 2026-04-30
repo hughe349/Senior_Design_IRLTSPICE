@@ -17,6 +17,8 @@
 
 #define REAL_BOARD
 // #define SINGLE_CELL
+#define REAL_CONFIG
+// #define MEM_DUMP
 
 #define WAIT_FOR_UART_TX while (!(USART5->ISR & USART_ISR_TXE))
 #ifdef REAL_BOARD
@@ -111,20 +113,27 @@ int main(void)
 
   sr_shift_en(CD22M_SR);
   sr_shift_en(CD22M_SR);
+
+  enable_connection(4, 5);
+  enable_connection(3, 7);
+  enable_connection(5, 4);
+
   sr_shift_en(CD22M_SR);
   sr_shift_en(CD22M_SR);
   sr_shift_en(CD22M_SR);
   sr_shift_en(CD22M_SR);
   sr_shift_en(CD22M_SR);
 
-  enable_connection(10, 0);
-  enable_connection(11, 3);
-  enable_connection(0, 3);
-  enable_connection(1, 4);
   
+  enable_connection(2, 1);
+  enable_connection(1, 1);
+  enable_connection(0, 4);
+  enable_connection(3, 3);
+
   enable_connection(4, 3);
 
-  program_bruz(5, 0, 32, &hspi);
+  program_bruz(5, 0, 31, &hspi);
+  program_bruz(5, 2, 31, &hspi);
 
 
   // sr_reset(BRUZ_SR);
@@ -148,8 +157,6 @@ int main(void)
   // sr_set(CD22M_SR, 0);
   // sr_reset(CD22M_SR);
   // sr_start(CD22M_SR);
-
-  while (true);
 
   while (true) {  
 
@@ -224,48 +231,51 @@ int main(void)
             WAIT_FOR_UART_TX;
             USART5->TDR = CONFIG_SUCCESS;
 
-            // for (int i = 0; i < NUM_OF_CROSSBARS; i++) {
-            //   WAIT_FOR_UART_TX;
-            //   USART5->TDR = i;
-            //   for (int j = 0; j < NUM_OF_CROSSBAR_CONS; j++) {
-            //     if (crossbar_cons[i][j]) {
-            //       WAIT_FOR_UART_TX;
-            //       USART5->TDR = j;
-            //     }
-            //   }
-            //   WAIT_FOR_UART_TX;
-            //   USART5->TDR = '\n';
-            // }
+            #ifdef MEM_DUMP
+              for (int i = 0; i < NUM_OF_CROSSBARS; i++) {
+                WAIT_FOR_UART_TX;
+                USART5->TDR = i;
+                for (int j = 0; j < NUM_OF_CROSSBAR_CONS; j++) {
+                  if (crossbar_cons[i][j]) {
+                    WAIT_FOR_UART_TX;
+                    USART5->TDR = j;
+                  }
+                }
+                WAIT_FOR_UART_TX;
+                USART5->TDR = '\n';
+              }
 
-            // for (int i = 0; i < NUM_OF_POTS; i++) {
-            //   if (pot_resistances[i]) {
-            //     // send_num(i);
-            //     WAIT_FOR_UART_TX;
-            //     USART5->TDR = i;
-            //     // send_num(pot_resistances[i]);
-            //     WAIT_FOR_UART_TX;
-            //     USART5->TDR = pot_resistances[i];
-            //     WAIT_FOR_UART_TX;
-            //     USART5->TDR = '\n';
-            //   }
-            // }
+              for (int i = 0; i < NUM_OF_POTS; i++) {
+                if (pot_resistances[i]) {
+                  // send_num(i);
+                  WAIT_FOR_UART_TX;
+                  USART5->TDR = i;
+                  // send_num(pot_resistances[i]);
+                  WAIT_FOR_UART_TX;
+                  USART5->TDR = pot_resistances[i];
+                  WAIT_FOR_UART_TX;
+                  USART5->TDR = '\n';
+                }
+              }
+            #endif
+            
+            #ifdef REAL_CONFIG
+            config_pots(pot_resistances, &hspi);
 
-            // config_pots(pot_resistances, &hspi);
+            // crossbar config
+            sr_start(CD22M_SR);
+            for (int i = 0; i < NUM_OF_CROSSBARS; i++) {
+              for (int j = 0; j < NUM_OF_CROSSBAR_CONS; j++) {
+                if (crossbar_cons[crossbar_order[i]][j]) {
+                  enable_connection(get_x(j), get_y(j));
+                }
+              }
+              sr_shift_en(CD22M_SR);
+            }
+            state = IDLE;
 
-            // // crossbar config
-            // sr_start(CD22M_SR);
-            // for (int i = 0; i < NUM_OF_CROSSBARS; i++) {
-            //   for (int j = 0; j < NUM_OF_CROSSBAR_CONS; j++) {
-            //     if (crossbar_cons[crossbar_order[i]][j]) {
-            //       enable_connection(get_x(j), get_y(j));
-            //     }
-            //   }
-            //   sr_shift_en(CD22M_SR);
-            // }
-            // state = IDLE;
-
-            // WAIT_FOR_UART_TX;
-            // USART5->TDR = CONFIG_SUCCESS;
+            WAIT_FOR_UART_TX;
+            #endif
 
           } else {
             state = ERROR_STATE;
