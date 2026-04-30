@@ -82,22 +82,7 @@ void reset_pots(void) {
 }
 
 void config_pots(uint8_t *pot_resistances, SPI_HandleTypeDef *hspi) {
-
-  sr_start(BRUZ_SR);
   for (int i = 0; i < NUM_OF_POTS; i++) {
-
-    uint8_t pot_index = pot_order[i] % 6;
-    if (pot_index <= 3) {
-      // 0 -> 0, 1 -> 1, 2 -> 2, 3 -> 3
-      set_resistance(pot_index, pot_resistances[pot_order[i]], hspi);
-    } else {
-      // 4 -> 0, 5 -> 2
-      set_resistance((pot_index - 4) * 2, pot_resistances[pot_order[i]], hspi);
-    }
-
-    // if we reach the end of an enable bit
-    if ((pot_index == 3) | (pot_index == 5)) {
-      sr_shift_en(BRUZ_SR);
-    }
+    program_pot(i, pot_order[i], hspi);
   }
 }

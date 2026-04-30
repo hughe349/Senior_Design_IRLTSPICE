@@ -40,6 +40,7 @@ uint8_t crossbar_order[9] = {
 int main(void)
 {
   SPI_HandleTypeDef hspi;
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
 
   HAL_Init();
   internal_clock();
@@ -60,6 +61,7 @@ int main(void)
   reset_crossbars();
   reset_pots();
 
+  /*
   sr_start(CD22M_SR);
   enable_connection(14,4);
   // for (int i = 0; i < NUM_OF_CROSSBARS; i++) {
@@ -70,6 +72,7 @@ int main(void)
   //   }
   // Shift twice = cell 2 bar 1
   // Y4 is input
+  
   sr_shift_en(CD22M_SR);
   sr_shift_en(CD22M_SR);
   // enable_connection(14,0);
@@ -100,14 +103,43 @@ int main(void)
   sr_shift_en(CD22M_SR);
   // At 7 now
   enable_connection(0,0);
+  */
+
+  sr_start(CD22M_SR);
+
+  enable_connection(14, 4);
+
+  sr_shift_en(CD22M_SR);
+  sr_shift_en(CD22M_SR);
+  sr_shift_en(CD22M_SR);
+  sr_shift_en(CD22M_SR);
+  sr_shift_en(CD22M_SR);
+  sr_shift_en(CD22M_SR);
+  sr_shift_en(CD22M_SR);
+
+  enable_connection(10, 0);
+  enable_connection(11, 3);
+  enable_connection(0, 3);
+  enable_connection(1, 4);
+  
+  enable_connection(4, 3);
+
+  program_bruz(5, 0, 32, &hspi);
 
 
+  // sr_reset(BRUZ_SR);
+
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
+  // sr_start(BRUZ_SR);
   while (true) {
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
-    HAL_Delay(500);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);
+    HAL_Delay(2000);
+    // sr_clock(BRUZ_SR);
 
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
-    HAL_Delay(500);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);
+    HAL_Delay(2000);
+    // sr_clock(BRUZ_SR);
+
 
   }
 
