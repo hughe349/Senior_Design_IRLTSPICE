@@ -58,12 +58,22 @@ void setup_gpios(void) {
   GPIOA_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIOA_InitStruct);
 
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  GPIO_InitTypeDef GPIOC_InitStruct = {0};
+  GPIOC_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_5;
+  GPIOC_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIOC_InitStruct.Pull = GPIO_NOPULL;
+  GPIOC_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIOC_InitStruct);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
+
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, 1);  // active low resets
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, 1);
 
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, 0);
 
 }
+
 
 void internal_clock()
 {
