@@ -52,14 +52,15 @@ void program_pot(uint8_t pot_num, uint8_t res, SPI_HandleTypeDef *hspi) {
 }
 
 void program_bruz(uint8_t bruz_num, uint8_t addr, uint8_t res, SPI_HandleTypeDef *hspi) {
+  sr_reset(BRUZ_SR);
   sr_start(BRUZ_SR);
 
   for (int i = 0; i < 7; i++ ) {
     if (bruz_order[i] != bruz_num) { sr_clock(BRUZ_SR); }
     else { break; }
   }
-
-  sr_reset(BRUZ_SR);
+  set_resistance(addr, res, hspi);
+  sr_shift_en(BRUZ_SR);
 }
 
 void set_resistance(uint8_t addr, uint8_t res, SPI_HandleTypeDef *hspi) {
