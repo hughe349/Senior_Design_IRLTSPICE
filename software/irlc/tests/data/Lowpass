@@ -1,5 +1,8 @@
 Lowpass
 
-R1 INPUT cout 10k
-C1 cout GND 1u
+//R700 cout INPUT 200k
+//R701 GND cout 200k
+R1 INPUT cout 100k
+//C1 cout GND 10n
+U2 cout cout CUSTOM
 U1 OUTPUT cout IRL_BUFFER

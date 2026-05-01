@@ -1,1 +1,5 @@
 /build/**
+tests/data/*.kicad_prl
+tests/data/*.kicad_pro
+tests/data/*.kicad_sch
+tests/data/*.wbk

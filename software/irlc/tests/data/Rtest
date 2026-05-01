@@ -1,0 +1,10 @@
+*
+
+
+R1 INPUT inner1 10k
+R2 inner1 inner2 40k
+R3 inner2 inner3 70k
+R4 inner3 inner4 100k
+R5 inner4 inner5 130k
+R6 inner5 out 160k
+U1 OUTPUT out IRL_BUFFER

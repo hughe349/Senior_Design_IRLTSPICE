@@ -66,6 +66,7 @@ typedef enum unspecified_t { UNSPECIFIED } unspecified_t;
               PROGRAMMING)                                                                         \
     TYPED_OPT(board, "", std::string, "MAIN_BOARD", "Board to use", PROGRAMMING)                   \
     FLAG_OPT(do_worstcase, "", "Do worst case and time it. NOT FOR NORMAL USERS", PROGRAMMING)     \
+    FLAG_OPT(expect_dump, "", "Expect a dump at end of programming", PROGRAMMING)                  \
     FLAG_OPT(verbose, "v", "SUPER VERBOSE. Enable all verbose flags", GENERAL)
 
 struct IrlCompilerOptions {

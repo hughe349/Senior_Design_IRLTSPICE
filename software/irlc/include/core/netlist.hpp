@@ -182,7 +182,7 @@ struct RCStorage {
     COMPONENT(Q_NPN, "BJT (NPN)", false, arrify("Q"), arrify("NPN"),
               arrify(PIN_Q_NPN_COLLECTOR, PIN_Q_NPN_BASE, PIN_Q_NPN_EMITTER))
     COMPONENT(CUSTOM, "User's custom component", false, arrify("U"), arrify("CUSTOM"),
-              arrify(PIN_CUSTOM_A, PIN_CUSTOM_B, PIN_Q_NPN_EMITTER))
+              arrify(PIN_CUSTOM_A, PIN_CUSTOM_B))
     COMPONENT(CELL_BUFFER, "IRLTSPICE standard cell output buffer", false, arrify("U"),
               arrify("IRL_BUFFER"), arrify(PIN_CELL_BUFFER_OUT, PIN_CELL_BUFFER_IN))
 };

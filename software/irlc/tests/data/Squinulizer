@@ -1,0 +1,20 @@
+*
+
+.subckt Squinulizer
+
+
+.include "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Simulation_SPICE.sp"
+.model __D1 D
+.model __D2 D
+XU3 Net-_D1-A_ Net-_U3--_ unconnected-_U3-V+-Pad3_ unconnected-_U3-V--Pad4_ Net-_U3--_ kicad_builtin_opamp
+R3 INPUT Net-_D1-A_ 10k
+R4 GND Net-_D1-A_ 100k
+D1 Net-_D1-A_ GND __D1
+D2 GND Net-_D1-A_ __D2
+R1 Net-_U1--_ Net-_U3--_ 3k
+U2 OUTPUT Net-_U2-IN_ IRL_BUFFER
+R2 Net-_U2-IN_ Net-_U1--_ 15k
+XU1 GND Net-_U1--_ unconnected-_U1-V+-Pad3_ unconnected-_U1-V--Pad4_ Net-_U2-IN_ kicad_builtin_opamp
+U400 Net-_U2-IN_ Net-_U2-IN_ CUSTOM
+
+.ends

@@ -290,10 +290,14 @@ const SimpleTspiceInfo MAIN_BOARD = []() {
                                                 .kind = R, .pin_kind = PIN_R, .id = FIRST_R + 2},  \
                                             ComponentColCon{                                       \
                                                 .kind = R, .pin_kind = PIN_R, .id = FIRST_R + 2},  \
-                                            ComponentColCon{                                       \
-                                                .kind = R, .pin_kind = PIN_R, .id = FIRST_R + 4},  \
-                                            ComponentColCon{                                       \
-                                                .kind = R, .pin_kind = PIN_R, .id = FIRST_R + 4},  \
+                                            FloatingCon{},                                         \
+                                            FloatingCon{}, /*                                      \
+                                                           ComponentColCon{                        \
+                                                               .kind = R, .pin_kind = PIN_R, .id = \
+                                                           FIRST_R + 4}, ComponentColCon{ .kind =  \
+                                                           R, .pin_kind = PIN_R, .id = FIRST_R +   \
+                                                           4},                                     \
+                                                           */                                      \
                                             ComponentColCon{.kind = C,                             \
                                                             .pin_kind = PIN_C,                     \
                                                             .id = uniquie(),                       \

@@ -1,0 +1,19 @@
+*
+
+.subckt BandReject
+
+
+.include "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Simulation_SPICE.sp"
+R1 INPUT Net-_U2-+_ 5k
+C2 Net-_U3-+_ INPUT 1n
+C1 Net-_U2-+_ GND 100n
+R2 GND Net-_U3-+_ 5k
+XU2 Net-_U2-+_ Net-_U2--_ unconnected-_U2-V+-Pad3_ unconnected-_U2-V--Pad4_ Net-_U2--_ kicad_builtin_opamp
+XU3 Net-_U3-+_ Net-_U3--_ unconnected-_U3-V+-Pad3_ unconnected-_U3-V--Pad4_ Net-_U3--_ kicad_builtin_opamp
+R3 Net-_U1-IN_ Net-_U2--_ 25k
+R4 Net-_U1-IN_ Net-_U3--_ 25k
+R5 Net-_U1-IN_ GND 25k
+U1 OUTPUT Net-_U1-IN_ IRL_BUFFER
+U100 Net-_U1-IN_ Net-_U1-IN_ CUSTOM
+
+.ends

@@ -1,0 +1,11 @@
+*
+
+.subckt HalfWave
+
+
+.model __D1 D
+U1 OUTPUT Net-_D1-K_ IRL_BUFFER
+R1 Net-_D1-K_ GND 10k
+D1 INPUT Net-_D1-K_ __D1
+
+.ends
