@@ -76,7 +76,7 @@ int main(void)
         state = IDLE;
 
         memset(crossbar_cons,   0, sizeof(crossbar_cons));
-        memset(pot_resistances, 0, sizeof(pot_resistances));
+        memset(pot_resistances, 1, sizeof(pot_resistances));
 
         reset_crossbars();
         reset_pots();
