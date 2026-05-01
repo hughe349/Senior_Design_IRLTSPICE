@@ -290,14 +290,11 @@ const SimpleTspiceInfo MAIN_BOARD = []() {
                                                 .kind = R, .pin_kind = PIN_R, .id = FIRST_R + 2},  \
                                             ComponentColCon{                                       \
                                                 .kind = R, .pin_kind = PIN_R, .id = FIRST_R + 2},  \
-                                            FloatingCon{},                                         \
-                                            FloatingCon{}, /*                                      \
-                                                           ComponentColCon{                        \
-                                                               .kind = R, .pin_kind = PIN_R, .id = \
-                                                           FIRST_R + 4}, ComponentColCon{ .kind =  \
-                                                           R, .pin_kind = PIN_R, .id = FIRST_R +   \
-                                                           4},                                     \
-                                                           */                                      \
+                                            ComponentColCon{                                       \
+                                                .kind = R, .pin_kind = PIN_R, .id = FIRST_R + 4},  \
+                                            ComponentColCon{                                       \
+                                                .kind = R, .pin_kind = PIN_R, .id = FIRST_R + 4},  \
+                                                                                                   \
                                             ComponentColCon{.kind = C,                             \
                                                             .pin_kind = PIN_C,                     \
                                                             .id = uniquie(),                       \
@@ -363,6 +360,71 @@ const SimpleTspiceInfo MINIMAL_MAIN = []() {
     auto prev = [&i]() { return i; };
 
     auto out =
+        SimpleTspiceInfo{
+            .root =
+                ChainedCrossbar(
+                    {PhysCrossbar{
+                        .id = ROOT_BAR,
+                        .rows =
+                            std::vector<RowCon>{
+                                SpecialNetCon{.kind = V_HIGH},
+                                FloatingCon{},
+                                SpecialNetCon{.kind = V_NEG},
+                                FloatingCon{},
+                                // BufferOutputRowCon{.id = 3},
+                                SpecialNetCon{.kind = CIR_INPUT},
+                                FloatingCon{},
+                                // BufferOutputRowCon{.id = 0},
+                                BufferOutputRowCon{.id = 0},
+                                BufferOutputRowCon{.id = 1},
+                            },
+                        .cols =
+                            std::vector<ColCon>{
+                                FloatingCon{},
+                                FloatingCon{},
+                                FloatingCon{},
+                                // RoutableColCon{.child_id = CELL_0_BAR_0, .child_row = 2},
+                                // RoutableColCon{.child_id = CELL_0_BAR_0, .child_row = 1},
+                                // RoutableColCon{.child_id = CELL_0_BAR_0, .child_row = 0},
+                                // FloatingCon{},
+                                // FloatingCon{},
+                                // FloatingCon{},
+                                RoutableColCon{.child_id = CELL_1_BAR_0, .child_row = 2},
+                                RoutableColCon{.child_id = CELL_1_BAR_0, .child_row = 1},
+                                RoutableColCon{.child_id = CELL_1_BAR_0, .child_row = 0},
+                                RoutableColCon{.child_id = CELL_2_BAR_0, .child_row = 2},
+                                FloatingCon{},
+                                FloatingCon{},
+                                FloatingCon{},
+                                // RoutableColCon{.child_id = CELL_3_BAR_0, .child_row = 0},
+                                // RoutableColCon{.child_id = CELL_3_BAR_0, .child_row = 1},
+                                // RoutableColCon{.child_id = CELL_3_BAR_0, .child_row = 2},
+                                SpecialNetCon{.kind = CIR_OUTPUT},
+                                FloatingCon{},
+                                FloatingCon{},
+                                FloatingCon{},
+                                RoutableColCon{.child_id = CELL_2_BAR_0, .child_row = 0},
+                                RoutableColCon{.child_id = CELL_2_BAR_0, .child_row = 1},
+                            },
+                    }}),
+            .cells = std::vector<PhysStdCell>{STD_CELL(1, 5, 5, 4, 3), STD_CELL(2, 11, 14, 15, 6)},
+            .valid_caps = std::set{1_n, 10_n, 100_n, 1_u}};
+
+    // "Binning"
+    out.cells[1].crossbars.bars[1].cols[10] = FloatingCon{};
+    out.cells[1].crossbars.bars[1].cols[11] = FloatingCon{};
+    // Hack
+    out.cells[0].id = 0;
+    out.cells[1].id = 1;
+    return out;
+}();
+
+const SimpleTspiceInfo MINIMAL_MAIN_CELL2_ONLY = []() {
+    uint8_t i = 0;
+    auto uniquie = [&i]() { return --i; };
+    auto prev = [&i]() { return i; };
+
+    auto out =
         SimpleTspiceInfo{.root = ChainedCrossbar({PhysCrossbar{
                              .id = ROOT_BAR,
                              .rows =
@@ -376,7 +438,7 @@ const SimpleTspiceInfo MINIMAL_MAIN = []() {
                                      FloatingCon{},
                                      // BufferOutputRowCon{.id = 0},
                                      FloatingCon{},
-                                     // BufferOutputRowCon{.id = 1},
+                                     // BufferOutputRowCon{.id = 0},
                                      BufferOutputRowCon{.id = 0},
                                  },
                              .cols =
@@ -411,6 +473,9 @@ const SimpleTspiceInfo MINIMAL_MAIN = []() {
                          .cells = std::vector<PhysStdCell>{STD_CELL(2, 11, 14, 15, 6)},
                          .valid_caps = std::set{1_n, 10_n, 100_n, 1_u}};
 
+    // "Binning"
+    out.cells[0].crossbars.bars[1].cols[10] = FloatingCon{};
+    out.cells[0].crossbars.bars[1].cols[11] = FloatingCon{};
     // Hack
     out.cells[0].id = 0;
     return out;
@@ -421,6 +486,8 @@ static inline const SimpleTspiceInfo *get_board_info_by_name(std::string_view na
         return &MAIN_BOARD;
     } else if (name == "MINIMAL_MAIN") {
         return &MINIMAL_MAIN;
+    } else if (name == "MINIMAL_MAIN_CELL2_ONLY") {
+        return &MINIMAL_MAIN_CELL2_ONLY;
     } else {
         throw std::runtime_error((std::ostringstream() << "No board with name: " << name).str());
     }

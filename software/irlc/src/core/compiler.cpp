@@ -76,7 +76,7 @@ int IrlCompiler::invoke() {
         return -1;
     }
 
-    if (opts.should_verbose_cell_assign()) {
+    if (opts.should_verbose_parse()) {
         log_fd << "Parsing done\n";
     }
     const SimpleTspiceInfo &active_board = *get_board_info_by_name(opts.board);

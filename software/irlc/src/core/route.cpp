@@ -414,9 +414,9 @@ ProgrammingInfo SimpleTspiceRouter::do_routing(unique_ptr<AssignedNetlist> &assi
     // We first make a map of which root rows are free
     // And one for which std cell rows are free
     free_cells_t free_cells{};
-    free_cells.resize(board.cells.size());
+    // free_cells.resize(board.cells.size());
     for (auto const &cell : board.cells) {
-        free_cells[cell.id] = vector(cell.crossbars.rows().size(), true);
+        free_cells.push_back(vector(cell.crossbars.rows().size(), true));
     }
 
     // First, a non-optional connection is the output cell's output to the circuit output.

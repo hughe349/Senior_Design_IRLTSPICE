@@ -1,0 +1,10 @@
+*
+
+R1 INPUT out1 10k
+C1 out1 GND 1n
+U2 out1 out1 CUSTOM
+U1 buffedout1 out1 IRL_BUFFER
+
+C2 buffedout1 out2 10n
+R2 out2 GND 15k
+U2 OUTPUT out2 IRL_BUFFER

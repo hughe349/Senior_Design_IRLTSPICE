@@ -1,0 +1,26 @@
+*
+
+.subckt Notch
+
+
+.include "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Simulation_SPICE.sp"
+C1 Net-_U2-+_ GND 100n
+C2 Net-_U1-IN_ INPUT 1n
+R1 INPUT Net-_U2-+_ 5k
+R2 GND Net-_U1-IN_ 5k
+U1 Net-_U1-OUT_ Net-_U1-IN_ IRL_BUFFER
+
+U200 Net-_U1-IN_ Net-_U1-IN_ CUSTOM
+
+XU2 Net-_U2-+_ Net-_U2--_ nothing1 nothing2 Net-_U2--_ kicad_builtin_opamp
+R3 Net-_U2--_ Net-_U3--_ 10k
+R4 Net-_U1-OUT_ Net-_U3--_ 10k
+XU3 GND Net-_U3--_ unconnected-_U3-V+-Pad3_ unconnected-_U3-V--Pad4_ Net-_U4-IN_ kicad_builtin_opamp
+
+U4 OUTPUT Net-_U4-IN_ IRL_BUFFER
+
+U200 Net-_U4-IN_ Net-_U4-IN_ CUSTOM
+
+R5 Net-_U3--_ Net-_U4-IN_ 10k
+
+.ends
