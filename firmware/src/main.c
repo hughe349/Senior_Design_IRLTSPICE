@@ -11,12 +11,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-// temp funcs
-// void send_array(uint8_t *data, uint32_t size);
-// void send_string(char *str);
-
 #define REAL_BOARD
-// #define SINGLE_CELL
 #define REAL_CONFIG
 // #define MEM_DUMP
 
@@ -51,7 +46,6 @@ int main(void)
   setup_gpios();
 
   // var inits for loop
-  #ifdef REAL_BOARD
   board_state_t state = IDLE;
   uint8_t crossbar_cons[NUM_OF_CROSSBARS][NUM_OF_CROSSBAR_CONS] = {0};
   uint8_t pot_resistances[NUM_OF_POTS] = {0};
@@ -62,132 +56,6 @@ int main(void)
 
   reset_crossbars();
   reset_pots();
-
-  /*
-  sr_start(CD22M_SR);
-  enable_connection(14,4);
-  // for (int i = 0; i < NUM_OF_CROSSBARS; i++) {
-  //   for (int j = 0; j < NUM_OF_CROSSBAR_CONS; j++) {
-  //     if (crossbar_cons[crossbar_order[i]][j]) {
-  //       enable_connection(get_x(j), get_y(j));
-  //     }
-  //   }
-  // Shift twice = cell 2 bar 1
-  // Y4 is input
-  
-  sr_shift_en(CD22M_SR);
-  sr_shift_en(CD22M_SR);
-  // enable_connection(14,0);
-  // Divider
-  // enable_connection(6,4);
-  // enable_connection(7,7);
-  // enable_connection(8,7);
-  // enable_connection(9,0);
-
-  // IDK
-  // enable_connection(1,4);
-  // enable_connection(0,7);
-  // enable_connection(2,7);
-
-  // Inverting amp
-  // enable_connection(6,4);
-  // enable_connection(7,3);
-  // enable_connection(2,3);
-  // enable_connection(8,3);
-  // enable_connection(1,0);
-  // enable_connection(9,7);
-  // enable_connection(0,7);
-
-  sr_shift_en(CD22M_SR);
-  sr_shift_en(CD22M_SR);
-  sr_shift_en(CD22M_SR);
-  sr_shift_en(CD22M_SR);
-  sr_shift_en(CD22M_SR);
-  // At 7 now
-  enable_connection(0,0);
-  */
-
-  // STARTR WOOOOO
-
-  // // program_bruz(5, 0, 0x3F, &hspi);
-  // // program_bruz(5, 2, 0x3F, &hspi);
-  // // program_bruz(4, 0, 2, &hspi);
-  // // program_bruz(4, 1, 2, &hspi);
-  // // program_bruz(4, 2, 2, &hspi);
-  // program_bruz(4, 3, 2, &hspi);
-
-
-  // sr_start(CD22M_SR);
-
-  // // enable_connection(14, 4);
-  // // enable_connection(10, 7);
-
-  // sr_shift_en(CD22M_SR);
-  // sr_shift_en(CD22M_SR);
-
-  // enable_connection(7,0);
-  // // enable_connection(10,0);
-
-  // enable_connection(1,1);
-  // enable_connection(9,1);
-
-  // enable_connection(5,2);
-  // // enable_connection(11,2);
-
-  // enable_connection(8,4);
-
-  // enable_connection(0,5);
-  // enable_connection(2,5);
-
-  // enable_connection(3,6);
-  // enable_connection(4,6);
-
-  // ENDNENDNDNDE
-
-  // enable_connection(4, 5);
-  // enable_connection(3, 7);
-  // enable_connection(5, 4);
-
-  // sr_shift_en(CD22M_SR);
-  // sr_shift_en(CD22M_SR);
-  // sr_shift_en(CD22M_SR);
-  // sr_shift_en(CD22M_SR);
-  // sr_shift_en(CD22M_SR);
-  
-  // enable_connection(2, 1);
-  // enable_connection(1, 1);
-  // enable_connection(0, 4);
-  // enable_connection(3, 3);
-
-  // enable_connection(4, 3);
-
-  // program_bruz(5, 0, 31, &hspi);
-  // program_bruz(5, 2, 31, &hspi);
-
-
-  // sr_reset(BRUZ_SR);
-
-  // HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
-  // sr_start(BRUZ_SR);
-  // while (true) {
-  //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);
-  //   HAL_Delay(2000);
-  //   // sr_clock(BRUZ_SR);
-
-  //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);
-  //   HAL_Delay(2000);
-  //   // sr_clock(BRUZ_SR);
-
-
-  // }
-
-  // HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
-
-  // sr_set(CD22M_SR, 0);
-  // sr_reset(CD22M_SR);
-  // sr_start(CD22M_SR);
-
-  // while (true);
 
   while (true) {  
 
@@ -202,9 +70,7 @@ int main(void)
     if ((USART5->ISR & USART_ISR_RXNE)) {
       HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
       HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);
-      // error_flag_sent = 0;
       rx = USART5->RDR;
-      // to_instruction(&instruction, rx);
 
       if (rx == RESET_CONFIG) {
         state = IDLE;
@@ -278,10 +144,8 @@ int main(void)
 
               for (int i = 0; i < NUM_OF_POTS; i++) {
                 if (pot_resistances[i]) {
-                  // send_num(i);
                   WAIT_FOR_UART_TX;
                   USART5->TDR = i;
-                  // send_num(pot_resistances[i]);
                   WAIT_FOR_UART_TX;
                   USART5->TDR = pot_resistances[i];
                   WAIT_FOR_UART_TX;
@@ -339,89 +203,9 @@ int main(void)
       }
     }
   }
-  #endif
-
-  #ifdef SINGLE_CELL
-  reset_crossbars();
-  // reset_pots();
-  // enable_connection(15, 1);
-  
-
-  /* low pass */
-  // enable_connection(8, 1);
-  // enable_connection(9, 2);
-
-  // enable_connection(10, 2);
-  // enable_connection(11, 4);
-
-  /* high pass */
-  enable_single_cell_connection(0, 14, 0);
-  enable_single_cell_connection(0, 15, 1);
-  enable_single_cell_connection(0, 10, 1);
-  enable_single_cell_connection(0, 11, 4);
-
-  /* testing pots */
-  program_single_cell_pot(0, 0, 96, &hspi);
-  program_single_cell_pot(0, 1, 96, &hspi);
-  program_single_cell_pot(0, 2, 96, &hspi);
-  program_single_cell_pot(0, 3, 96, &hspi);
-
-  while(true) {
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);
-    HAL_Delay(500);
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);
-    HAL_Delay(500);
-  }
-
-  #endif
-
 }
 
 void SysTick_Handler(void)
 {
   HAL_IncTick();
 }
-
-// for (int i = 0; i < NUM_OF_CROSSBARS; i++) {
-//   WAIT_FOR_UART_TX;
-//   USART5->TDR = i;
-//   for (int j = 0; j < NUM_OF_CROSSBAR_CONS; j++) {
-//     if (crossbar_cons[i][j]) {
-//       WAIT_FOR_UART_TX;
-//       USART5->TDR = j;
-//     }
-//   }
-//   WAIT_FOR_UART_TX;
-//   USART5->TDR = '\n';
-// }
-
-// for (int i = 0; i < NUM_OF_POTS; i++) {
-//   if (pot_resistances[i]) {
-//     // send_num(i);
-//     WAIT_FOR_UART_TX;
-//     USART5->TDR = i;
-//     // send_num(pot_resistances[i]);
-//     WAIT_FOR_UART_TX;
-//     USART5->TDR = pot_resistances[i];
-//     WAIT_FOR_UART_TX;
-//     USART5->TDR = '\n';
-//   }
-// }
-
-// void send_array(uint8_t *data, uint32_t size)
-// {
-//     for (uint32_t i = 0; i < size; i++) {
-//         while (!(USART5->ISR & USART_ISR_TXE));
-//         USART5->TDR = data[i];
-//     }
-
-//     while (!(USART5->ISR & USART_ISR_TC));
-// }
-
-// void send_string(char *str)
-// {
-//     while (*str) {
-//         while (!(USART5->ISR & USART_ISR_TXE));
-//         USART5->TDR = *str++;
-//     }
-// }
