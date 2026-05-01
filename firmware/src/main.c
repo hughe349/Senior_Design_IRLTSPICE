@@ -107,56 +107,87 @@ int main(void)
   enable_connection(0,0);
   */
 
-  sr_start(CD22M_SR);
+  // STARTR WOOOOO
 
-  enable_connection(14, 4);
+  // // program_bruz(5, 0, 0x3F, &hspi);
+  // // program_bruz(5, 2, 0x3F, &hspi);
+  // // program_bruz(4, 0, 2, &hspi);
+  // // program_bruz(4, 1, 2, &hspi);
+  // // program_bruz(4, 2, 2, &hspi);
+  // program_bruz(4, 3, 2, &hspi);
 
-  sr_shift_en(CD22M_SR);
-  sr_shift_en(CD22M_SR);
 
-  enable_connection(4, 5);
-  enable_connection(3, 7);
-  enable_connection(5, 4);
+  // sr_start(CD22M_SR);
 
-  sr_shift_en(CD22M_SR);
-  sr_shift_en(CD22M_SR);
-  sr_shift_en(CD22M_SR);
-  sr_shift_en(CD22M_SR);
-  sr_shift_en(CD22M_SR);
+  // // enable_connection(14, 4);
+  // // enable_connection(10, 7);
 
+  // sr_shift_en(CD22M_SR);
+  // sr_shift_en(CD22M_SR);
+
+  // enable_connection(7,0);
+  // // enable_connection(10,0);
+
+  // enable_connection(1,1);
+  // enable_connection(9,1);
+
+  // enable_connection(5,2);
+  // // enable_connection(11,2);
+
+  // enable_connection(8,4);
+
+  // enable_connection(0,5);
+  // enable_connection(2,5);
+
+  // enable_connection(3,6);
+  // enable_connection(4,6);
+
+  // ENDNENDNDNDE
+
+  // enable_connection(4, 5);
+  // enable_connection(3, 7);
+  // enable_connection(5, 4);
+
+  // sr_shift_en(CD22M_SR);
+  // sr_shift_en(CD22M_SR);
+  // sr_shift_en(CD22M_SR);
+  // sr_shift_en(CD22M_SR);
+  // sr_shift_en(CD22M_SR);
   
-  enable_connection(2, 1);
-  enable_connection(1, 1);
-  enable_connection(0, 4);
-  enable_connection(3, 3);
+  // enable_connection(2, 1);
+  // enable_connection(1, 1);
+  // enable_connection(0, 4);
+  // enable_connection(3, 3);
 
-  enable_connection(4, 3);
+  // enable_connection(4, 3);
 
-  program_bruz(5, 0, 31, &hspi);
-  program_bruz(5, 2, 31, &hspi);
+  // program_bruz(5, 0, 31, &hspi);
+  // program_bruz(5, 2, 31, &hspi);
 
 
   // sr_reset(BRUZ_SR);
 
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
+  // HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 0);
   // sr_start(BRUZ_SR);
-  while (true) {
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);
-    HAL_Delay(2000);
-    // sr_clock(BRUZ_SR);
+  // while (true) {
+  //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);
+  //   HAL_Delay(2000);
+  //   // sr_clock(BRUZ_SR);
 
-    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);
-    HAL_Delay(2000);
-    // sr_clock(BRUZ_SR);
+  //   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 0);
+  //   HAL_Delay(2000);
+  //   // sr_clock(BRUZ_SR);
 
 
-  }
+  // }
 
   // HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
 
   // sr_set(CD22M_SR, 0);
   // sr_reset(CD22M_SR);
   // sr_start(CD22M_SR);
+
+  // while (true);
 
   while (true) {  
 
@@ -262,7 +293,6 @@ int main(void)
             #ifdef REAL_CONFIG
             config_pots(pot_resistances, &hspi);
 
-            // crossbar config
             sr_start(CD22M_SR);
             for (int i = 0; i < NUM_OF_CROSSBARS; i++) {
               for (int j = 0; j < NUM_OF_CROSSBAR_CONS; j++) {
