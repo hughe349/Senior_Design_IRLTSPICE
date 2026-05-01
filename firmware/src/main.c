@@ -60,11 +60,11 @@ int main(void)
   while (true) {  
 
     if (state == ERROR_STATE) {
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
     }
 
     if (state == IDLE) {
-      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
+      HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);
     }
 
     if ((USART5->ISR & USART_ISR_RXNE)) {
