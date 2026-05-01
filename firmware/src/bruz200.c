@@ -44,7 +44,7 @@ void program_pot(uint8_t pot_num, uint8_t res, SPI_HandleTypeDef *hspi) {
     addr = (pot_num % 6);
   } else {
     bruz_num = ((pot_num / 6) * 2) + 1;
-    addr = ((pot_num % 6) * 2) + 1;
+    addr = (((pot_num % 6) - 4) * 2);
   }
 
   program_bruz(bruz_num, addr, res, hspi);
