@@ -112,6 +112,29 @@ constexpr std::array RAW_VERTEX_RULES = {
         },
     },
     RawNetlistVertexRule{
+        .rule_name = "Opamp output must not drive a voltage",
+        .rule = [](RawNetlist const &netlist, RawVert v) -> RuleViolationResult {
+            if (netlist[v].kind != OPAMP)
+                return NO_VIOLATION;
+
+            for (auto e : pair_to_iter(boost::out_edges(v, netlist))) {
+
+                RawNetlistVertexInfo const &target_info = netlist[boost::target(e, netlist)];
+                assert(target_info.kind == NET);
+
+                if (netlist[e].kind == PIN_OPAMP_OUT) {
+                    if (target_info.value.net_value == V_NEG ||
+                        target_info.value.net_value == V_HIGH ||
+                        target_info.value.net_value == V_GND) {
+                        return "";
+                    }
+                }
+            }
+
+            return NO_VIOLATION;
+        },
+    },
+    RawNetlistVertexRule{
         .rule_name = "Components should not be bypassed",
         .rule = [](RawNetlist const &netlist, RawVert v) -> RuleViolationResult {
             if (netlist[v].kind == R || netlist[v].kind == C || netlist[v].kind == DIODE ||

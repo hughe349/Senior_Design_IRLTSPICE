@@ -1,0 +1,10 @@
+*
+
+.subckt EvilOpamp
+
+
+.include "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Simulation_SPICE.sp"
+XU1 INPUT GND unconnected-_U1-V+-Pad3_ unconnected-_U1-V--Pad4_ GND kicad_builtin_opamp
+U2 OUTPUT GND IRL_BUFFER
+
+.ends

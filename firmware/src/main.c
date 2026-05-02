@@ -117,7 +117,7 @@ int main(void)
             cur_pot = get_message(rx);
             state = CHOOSE_POT_RES;
           } else if (rx == END_CONFIG) {
-            HAL_GPIO_WritePin(GPIOC, GPIO_PIN_6, 1);
+            // HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, 1);
 
             reset_crossbars();
             reset_pots();

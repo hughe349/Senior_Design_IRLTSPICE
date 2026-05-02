@@ -4,13 +4,9 @@
 
 
 .include "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Simulation_SPICE.sp"
-R1 INPUT Net-_U1--_ 25k
-R3 INPUT Net-_U3--_ 25k
-R2 Net-_U1--_ Net-_R2-Pad2_ 50k
-XU1 GND Net-_U1--_ unconnected-_U1-V+-Pad3_ unconnected-_U1-V--Pad4_ Net-_R2-Pad2_ kicad_builtin_opamp
 U2 OUTPUT Net-_U2-IN_ IRL_BUFFER
-R4 Net-_U3--_ Net-_U2-IN_ 50k
-XU3 GND Net-_U3--_ unconnected-_U3-V+-Pad3_ unconnected-_U3-V--Pad4_ Net-_U2-IN_ kicad_builtin_opamp
-U3 Net-_U2-IN_ Net-_U2-IN_ CUSTOM
+R2 Net-_U1--_ Net-_U2-IN_ 50k
+XU1 GND Net-_U1--_ unconnected-_U1-V+-Pad3_ unconnected-_U1-V--Pad4_ Net-_U2-IN_ kicad_builtin_opamp
+R1 INPUT Net-_U1--_ 25k
 
 .ends

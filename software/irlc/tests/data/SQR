@@ -1,0 +1,14 @@
+*
+
+.subckt SQR
+
+
+.include "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Simulation_SPICE.sp"
+R1 INPUT Net-_U2-IN_ 3k
+U2 OUTPUT Net-_U2-IN_ IRL_BUFFER
+R3 Net-_U1-+_ Net-_U2-IN_ 20k
+XU1 Net-_U1-+_ INPUT unconnected-_U1-V+-Pad3_ unconnected-_U1-V--Pad4_ Net-_U2-IN_ kicad_builtin_opamp
+R2 Net-_U1-+_ GND 20k
+C1 INPUT GND 1u
+
+.ends
